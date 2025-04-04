@@ -1,8 +1,7 @@
-import React from "react";
-
 import type { ShortAnswerPrompt } from "../bindings/ShortAnswerPrompt";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
+import React from "react";
 
 export let InformationalMethods: QuestionMethods<
   ShortAnswerPrompt,

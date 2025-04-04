@@ -3,7 +3,6 @@ import hljs from "highlight.js/lib/core";
 //@ts-ignore
 import rust from "highlight.js/lib/languages/rust";
 import React, { useEffect, useRef } from "react";
-import ReactDOM from "react-dom/client";
 
 // This reduces bundle size by not including a bunch of extra languages
 hljs.registerLanguage("rust", rust);
@@ -52,7 +51,7 @@ export let snippetToNode = ({
 
   return pre;
 };
-
+/*
 let extractMarks = (inp: string): { s: string; marks: [number, number][] } => {
   let outp = [];
   let marks: [number, number][] = [];
@@ -76,7 +75,7 @@ let extractMarks = (inp: string): { s: string; marks: [number, number][] } => {
   }
   return { s: outp.join(""), marks };
 };
-/*
+
 export let renderIde = (
   container: HTMLElement,
   options?: Partial<SnippetOptions>

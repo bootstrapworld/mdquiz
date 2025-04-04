@@ -332,7 +332,7 @@ let aCode = "a".charCodeAt(0);
 export let generateQuestionTitles = (quiz: Quiz): string[] => {
   let groups: Question[][] = [];
   let group = undefined;
-  let part = undefined;
+  let part:any = undefined;
   quiz.questions.forEach(q => {
     if (q.multipart) {
       if (q.multipart === part) {
@@ -511,7 +511,7 @@ export let QuizView: React.FC<QuizViewProps> = observer(
         ✕
       </div>
     );
-    let wrapperRef = useRef<HTMLDivElement | undefined>();
+    let wrapperRef = useRef<HTMLDivElement>(undefined);
 
     return (
       <QuizConfigContext.Provider value={config}>

@@ -1,8 +1,20 @@
 {
-  "include": [
-    "src"
-  ],
   "compilerOptions": {
-    "outDir": "dist"
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "allowJs": true,
+    "declaration": true,
+    "jsx": "react",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+/*    "strict": false, */
+    "noEmit": false,
+    "types": [
+      "vite/client"
+    ]
+
   }
 }
+
+

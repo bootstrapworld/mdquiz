@@ -7,7 +7,7 @@ let highlightExtension = (
   options?: Partial<SnippetOptions>
 ): ShowdownExtension => ({
   type: "output",
-  filter(text) {
+  filter(text:string) {
     let parser = new DOMParser();
     let document = parser.parseFromString(text, "text/html");
     let snippets = document.querySelectorAll("pre > code");
@@ -45,7 +45,7 @@ export let MarkdownView: React.FC<{
 }> = ({ markdown, imag = null, snippetOptions }) => {
   let ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-//    renderIde(ref.current!, snippetOptions);
+    //renderIde(ref.current!, snippetOptions);
     window.initAquascopeBlocks?.(ref.current!);
   }, [markdown]);
 

@@ -1,5 +1,5 @@
 import { parse } from 'smol-toml'
-import { type Quiz, QuizView } from "../../src/lib";
+import { type Quiz, QuizView } from "./lib";
 import React from "react";
 import ReactDOM from "react-dom/client";
 

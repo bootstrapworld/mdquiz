@@ -6,7 +6,7 @@ import type {
 } from "react-hook-form";
 
 export interface QuestionMethods<Prompt, Answer, State = any> {
-  PromptView: React.FC<{ prompt: Prompt; image: string }>;
+  PromptView: React.FC<{ prompt: Prompt; image?: string }>;
 
   ResponseView: React.FC<{
     prompt: Prompt;
