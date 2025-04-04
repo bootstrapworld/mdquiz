@@ -12,7 +12,6 @@ answer.answer = "`x` cannot be changed after being assigned to a value."
 context = """
 Immutable means "not mutable", or not changeable.
 """
-id = "18ea4c61-c7c3-433f-add5-d3d3156e3e71"
 
 [[questions]]
 type = "ShortAnswer"

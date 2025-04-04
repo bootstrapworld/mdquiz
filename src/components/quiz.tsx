@@ -364,6 +364,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     const questionStates = useMemo(
       () =>
         config.quiz.questions.map(q => {
+          // TODO(check with Will about this?)
+          if(!q.id) q.id = hash.MD5(q);
           const methods = getQuestionMethods(q.type);
           return methods.questionState?.(q.prompt, q.answer);
         }),
