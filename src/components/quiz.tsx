@@ -29,7 +29,7 @@ interface StoredAnswers {
 }
 
 declare global {
-  var telemetry:
+  const telemetry:
     | {
         log: (endpoint: string, payload: any) => void;
       }
@@ -50,7 +50,7 @@ class AnswerStorage {
     attempt: number,
     wrongAnswers?: number[]
   ) {
-    let storedAnswers: StoredAnswers = {
+    const storedAnswers: StoredAnswers = {
       answers,
       confirmedDone,
       attempt,
@@ -61,9 +61,9 @@ class AnswerStorage {
   }
 
   load(): StoredAnswers | undefined {
-    let storedAnswersJson = localStorage.getItem(this.storageKey());
+    const storedAnswersJson = localStorage.getItem(this.storageKey());
     if (storedAnswersJson) {
-      let storedAnswers: StoredAnswers = JSON.parse(storedAnswersJson);
+      const storedAnswers: StoredAnswers = JSON.parse(storedAnswersJson);
       if (storedAnswers.quizHash === this.quizHash) {
         return storedAnswers;
       }
@@ -71,12 +71,12 @@ class AnswerStorage {
   }
 }
 
-let ExitExplanation = ({
+const ExitExplanation = ({
   wrapperRef
 }: {
   wrapperRef: React.RefObject<HTMLDivElement>;
 }) => {
-  let [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   useEffect(() => {
     if (expanded) {
       wrapperRef.current!.scrollTo({
@@ -84,7 +84,7 @@ let ExitExplanation = ({
         behavior: "smooth"
       });
     }
-  }, [expanded]);
+  }, [expanded, wrapperRef]);
   return (
     <div className="exit-explanation">
       <div className="trigger" onClick={() => setExpanded(!expanded)}>
@@ -109,7 +109,7 @@ interface QuizState {
   wrongAnswers?: number[];
 }
 
-let loadState = ({
+const loadState = ({
   quiz,
   answerStorage,
   cacheAnswers,
@@ -120,12 +120,12 @@ let loadState = ({
   cacheAnswers?: boolean;
   autoStart?: boolean;
 }): QuizState => {
-  let stored = answerStorage.load();
+  const stored = answerStorage.load();
 
   // If an outdated quiz didn't store wrongAnswers, then we need to
   // clear that cache.
   // TODO: we should be able to remove this code eventually?
-  let badSchema =
+  const badSchema =
     stored &&
     stored.attempt > 0 &&
     !stored.confirmedDone &&
@@ -164,9 +164,9 @@ interface HeaderProps {
   ended: boolean;
 }
 
-let Header = observer(({ state, ended }: HeaderProps) => {
-  let { quiz } = useContext(QuizConfigContext)!;
-  let informationalCount = quiz.questions.filter(
+const Header = observer(({ state, ended }: HeaderProps) => {
+  const { quiz } = useContext(QuizConfigContext)!;
+  const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
   return (
@@ -208,17 +208,17 @@ interface AnswerReviewProps {
   onGiveUp: () => void;
 }
 
-let AnswerReview = ({
+const AnswerReview = ({
   state,
   nCorrect,
   onRetry,
   onGiveUp
 }: AnswerReviewProps) => {
-  let { quiz, name } = useContext(QuizConfigContext)!;
-  let informationalCount = quiz.questions.filter(
+  const { quiz, name } = useContext(QuizConfigContext)!;
+  const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
-  let confirm = !state.confirmedDone && (
+  const confirm = !state.confirmedDone && (
     <p style={{ marginBottom: "1em" }}>
       You can either{" "}
       <button type="button" onClick={onRetry}>
@@ -231,7 +231,7 @@ let AnswerReview = ({
       .
     </p>
   );
-  let questionTitles = generateQuestionTitles(quiz);
+  const questionTitles = generateQuestionTitles(quiz);
   return (
     <>
       <h3>Answer Review</h3>
@@ -245,7 +245,7 @@ let AnswerReview = ({
       </p>
       {confirm}
       {quiz.questions.map((question, i) => {
-        let { answer, correct } = state.answers[i];
+        const { answer, correct } = state.answers[i];
         return (
           <div className="answer-wrapper" key={i}>
             <AnswerView
@@ -266,11 +266,11 @@ let AnswerReview = ({
   );
 };
 
-export let useCaptureMdbookShortcuts = (capture: boolean) => {
+export const useCaptureMdbookShortcuts = (capture: boolean) => {
   useLayoutEffect(() => {
     if (capture) {
-      let captureKeyboard = (e: KeyboardEvent) => e.stopPropagation();
-      let captureTouchscreen = (e: TouchEvent) => {
+      const captureKeyboard = (e: KeyboardEvent) => e.stopPropagation();
+      const captureTouchscreen = (e: TouchEvent) => {
         e.preventDefault();
         e.stopPropagation();
         return false;
@@ -326,11 +326,11 @@ export type QuizViewProps = QuizViewConfig & {
   onFinish?: (answers: TaggedAnswer[]) => void;
 };
 
-export let QuizConfigContext = React.createContext<QuizViewConfig | null>(null);
+export const QuizConfigContext = React.createContext<QuizViewConfig | null>(null);
 
-let aCode = "a".charCodeAt(0);
-export let generateQuestionTitles = (quiz: Quiz): string[] => {
-  let groups: Question[][] = [];
+const aCode = "a".charCodeAt(0);
+export const generateQuestionTitles = (quiz: Quiz): string[] => {
+  const groups: Question[][] = [];
   let group = undefined;
   let part:any = undefined;
   quiz.questions.forEach(q => {
@@ -357,19 +357,19 @@ export let generateQuestionTitles = (quiz: Quiz): string[] => {
   );
 };
 
-export let QuizView: React.FC<QuizViewProps> = observer(
+export const QuizView: React.FC<QuizViewProps> = observer(
   ({ onFinish, ...config }) => {
-    let [quizHash] = useState(() => hash.MD5(config.quiz));
-    let answerStorage = new AnswerStorage(config.name, quizHash);
-    let questionStates = useMemo(
+    const [quizHash] = useState(() => hash.MD5(config.quiz));
+    const answerStorage = new AnswerStorage(config.name, quizHash);
+    const questionStates = useMemo(
       () =>
         config.quiz.questions.map(q => {
-          let methods = getQuestionMethods(q.type);
+          const methods = getQuestionMethods(q.type);
           return methods.questionState?.(q.prompt, q.answer);
         }),
       [config.quiz]
     );
-    let state = useLocalObservable(() =>
+    const state = useLocalObservable(() =>
       loadState({
         quiz: config.quiz,
         answerStorage,
@@ -378,7 +378,7 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       })
     );
 
-    let saveToCache = () => {
+    const saveToCache = () => {
       if (config.cacheAnswers)
         answerStorage.save(
           state.answers,
@@ -390,13 +390,13 @@ export let QuizView: React.FC<QuizViewProps> = observer(
 
     // Don't allow any keyboard inputs to reach external listeners
     // while the quiz is active (e.g. to avoid using the search box).
-    let ended = state.index === config.quiz.questions.length;
-    let inProgress = state.started && !ended;
+    const ended = state.index === config.quiz.questions.length;
+    const inProgress = state.started && !ended;
     useCaptureMdbookShortcuts(inProgress);
 
     // Restore the user's scroll position after leaving fullscreen mode
-    let [lastTop, setLastTop] = useState<number | undefined>();
-    let showFullscreen = inProgress && (config.fullscreen ?? false);
+    const [lastTop, setLastTop] = useState<number | undefined>();
+    const showFullscreen = inProgress && (config.fullscreen ?? false);
     useLayoutEffect(() => {
       document.body.style.overflowY = showFullscreen ? "hidden" : "auto";
       if (showFullscreen) {
@@ -404,9 +404,9 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       } else if (config.fullscreen && lastTop !== undefined) {
         window.scrollTo(0, lastTop);
       }
-    }, [showFullscreen]);
+    }, [showFullscreen, config.fullscreen, lastTop]);
 
-    let onSubmit = action((answer: TaggedAnswer) => {
+    const onSubmit = action((answer: TaggedAnswer) => {
       answer = structuredClone(answer);
 
       if (state.attempt === 0) {
@@ -418,7 +418,7 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       } else {
         state.answers[state.index] = answer;
 
-        let wrongAnswerIdx = state.wrongAnswers!.findIndex(
+        const wrongAnswerIdx = state.wrongAnswers!.findIndex(
           n => n === state.index
         );
         if (wrongAnswerIdx === state.wrongAnswers!.length - 1)
@@ -434,7 +434,7 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       });
 
       if (state.index === config.quiz.questions.length) {
-        let wrongAnswers = state.answers
+        const wrongAnswers = state.answers
           .map((a, i) => ({ a, i }))
           .filter(({ a }) => !a.correct);
         if (wrongAnswers.length === 0 || !config.allowRetry) {
@@ -448,15 +448,15 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       }
     });
 
-    let nCorrect = state.answers.filter(a => a.correct).length;
+    const nCorrect = state.answers.filter(a => a.correct).length;
 
     // HACK: need this component to observe confirmedDone
     // on first render...
     state.confirmedDone;
 
-    let questionTitles = generateQuestionTitles(config.quiz);
+    const questionTitles = generateQuestionTitles(config.quiz);
 
-    let body = (
+    const body = (
       <section>
         {state.started ? (
           ended ? (
@@ -498,20 +498,20 @@ export let QuizView: React.FC<QuizViewProps> = observer(
       </section>
     );
 
-    let wrapperClass = classNames("mdbook-quiz-wrapper", {
+    const wrapperClass = classNames("mdbook-quiz-wrapper", {
       expanded: showFullscreen
     });
-    let onExit = action(() => {
+    const onExit = action(() => {
       state.started = false;
       state.index = 0;
       state.answers = [];
     });
-    let exitButton = (
+    const exitButton = (
       <div className="exit" onClick={onExit}>
         ✕
       </div>
     );
-    let wrapperRef = useRef<HTMLDivElement>(undefined);
+    const wrapperRef = useRef<HTMLDivElement>(undefined);
 
     return (
       <QuizConfigContext.Provider value={config}>

@@ -4,7 +4,7 @@ import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
 import React from "react";
 
-export let ShortAnswerMethods: QuestionMethods<
+export const ShortAnswerMethods: QuestionMethods<
   ShortAnswerPrompt,
   ShortAnswerAnswer
 > = {
@@ -18,7 +18,7 @@ export let ShortAnswerMethods: QuestionMethods<
     </div>
   ),
   ResponseView: ({ prompt, submit, formValidators: { required } }) => {
-    let formFields = required("answer");
+    const formFields = required("answer");
     return (
       <>
         {!prompt.response || prompt.response === "short" ? (
@@ -54,8 +54,8 @@ export let ShortAnswerMethods: QuestionMethods<
     providedAnswer: ShortAnswerAnswer,
     userAnswer: ShortAnswerAnswer
   ): boolean {
-    let clean = (s: string) => s.toLowerCase().trim();
-    let possibleAnswers = [providedAnswer.answer]
+    const clean = (s: string) => s.toLowerCase().trim();
+    const possibleAnswers = [providedAnswer.answer]
       .concat(providedAnswer.alternatives || [])
       .map(clean);
     return possibleAnswers.includes(clean(userAnswer.answer));

@@ -1,6 +1,4 @@
-//@ts-ignore
 import hljs from "highlight.js/lib/core";
-//@ts-ignore
 import rust from "highlight.js/lib/languages/rust";
 import React, { useEffect, useRef } from "react";
 
@@ -13,7 +11,7 @@ export interface SnippetOptions {
   language?: string;
 }
 
-export let snippetToNode = ({
+export const snippetToNode = ({
   snippet,
   language,
   lineNumbers
@@ -32,7 +30,7 @@ export let snippetToNode = ({
 
   // Insert line numbers if requested
   if (lineNumbers) {
-    let lines = snippet.split("\n");
+    const lines = snippet.split("\n");
     snippet = lines
       .map(line => `<span class="line-number"></span><code>${line}</code>`)
       .join("\n");
@@ -40,12 +38,12 @@ export let snippetToNode = ({
     snippet = `<code>${snippet}</code>`;
   }
 
-  let code = document.createElement("code");
+  const code = document.createElement("code");
   code.className = `language-${language || "rust"}`;
   code.innerHTML = snippet;
   hljs.highlightBlock(code);
 
-  let pre = document.createElement("pre");
+  const pre = document.createElement("pre");
   pre.innerHTML = code.innerHTML;
   if (lineNumbers) pre.classList.add("line-numbers");
 
@@ -130,10 +128,10 @@ export let renderIde = (
   return () => setTimeout(() => roots.forEach(root => root.unmount()));
 };
 */
-export let Snippet: React.FC<SnippetOptions> = options => {
-  let ref = useRef<HTMLDivElement>(null);
+export const Snippet: React.FC<SnippetOptions> = options => {
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     ref.current!.appendChild(snippetToNode(options));
-  }, []);
+  }, [options]);
   return <div ref={ref} />;
 };

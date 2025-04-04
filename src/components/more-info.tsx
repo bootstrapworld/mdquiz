@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { MarkdownView } from "./markdown";
 
 // TODO: replace this, the bug reporter, and the "why fullscreen?" text with popperjs
-export let MoreInfo = ({ markdown }: { markdown: string }) => {
-  let [open, setOpen] = useState(false);
+export const MoreInfo = ({ markdown }: { markdown: string }) => {
+  const [open, setOpen] = useState(false);
   return (
     <span className="info-wrapper">
       {open && (

@@ -14,7 +14,7 @@ interface MultipleChoiceState {
 
 const shuffle = (n:any[]) => [...n].sort(() => 0.5 - Math.random());
 
-export let MultipleChoiceMethods: QuestionMethods<
+export const MultipleChoiceMethods: QuestionMethods<
   MultipleChoicePrompt,
   MultipleChoiceAnswer,
   MultipleChoiceState
@@ -29,7 +29,7 @@ export let MultipleChoiceMethods: QuestionMethods<
 
   questionState(prompt, answer) {
     let choices: string[];
-    let answers = Array.isArray(answer.answer)
+    const answers = Array.isArray(answer.answer)
       ? answer.answer
       : [answer.answer];
     if (prompt.answerIndex !== undefined) {
@@ -49,8 +49,8 @@ export let MultipleChoiceMethods: QuestionMethods<
   ResponseView: ({ answer, state, formValidators: { required, register } }) => (
     <>
       {state!.choices.map((choice, i) => {
-        let id = useId();
-        let multiAnswer = Array.isArray(answer.answer);
+        const id = useId();
+        const multiAnswer = Array.isArray(answer.answer);
         return (
           <div className="choice" key={i}>
             <input
@@ -78,7 +78,7 @@ export let MultipleChoiceMethods: QuestionMethods<
   },
 
   compareAnswers(provided, user) {
-    let toList = (s: Markdown | Markdown[]) =>
+    const toList = (s: Markdown | Markdown[]) =>
       (Array.isArray(s) ? s : [s]).sort();
     return isEqual(toList(provided.answer), toList(user.answer));
   },

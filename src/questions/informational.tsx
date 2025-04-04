@@ -3,7 +3,7 @@ import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
 import React from "react";
 
-export let InformationalMethods: QuestionMethods<
+export const InformationalMethods: QuestionMethods<
   ShortAnswerPrompt,
   null,
   null

@@ -18,19 +18,19 @@ export { MultipleChoiceMethods } from "./multiple-choice";
 export { ShortAnswerMethods } from "./short-answer";
 export { TracingMethods } from "./tracing";
 
-let methodMapping = {
+const methodMapping = {
   ShortAnswer: ShortAnswerMethods,
   Tracing: TracingMethods,
   MultipleChoice: MultipleChoiceMethods,
   Informational: InformationalMethods
 };
 
-export let getQuestionMethods = (
+export const getQuestionMethods = (
   type: Question["type"]
 ): QuestionMethods<any, any> => methodMapping[type];
 
-let questionNameToCssClass = (name: string) => {
-  let output = [];
+const questionNameToCssClass = (name: string) => {
+  const output = [];
   for (let i = 0; i < name.length; ++i) {
     if (i > 0 && name[i].match(/[A-Z]/)) {
       output.push("-");
@@ -41,22 +41,22 @@ let questionNameToCssClass = (name: string) => {
   return output.join("");
 };
 
-let BugReporter = ({
+const BugReporter = ({
   quizName,
   question
 }: {
   quizName: string;
   question: number;
 }) => {
-  let [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
 
   // Disable mdbook shortcuts if the bug reporter is opened and we're not
   // fullscreen
   useCaptureMdbookShortcuts(show);
 
-  let onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
-    let data = new FormData(event.target as any);
-    let feedback = data.get("feedback")!.toString();
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
+    const data = new FormData(event.target as any);
+    const feedback = data.get("feedback")!.toString();
     window.telemetry!.log("bug", {
       quizName,
       question,
@@ -106,7 +106,7 @@ export interface TaggedAnswer {
   explanation?: string;
 }
 
-let now = () => new Date().getTime();
+const now = () => new Date().getTime();
 
 const EXPLANATION_HELP = `
 Normally, we only observe *whether* readers get a question correct or incorrect. 
@@ -130,7 +130,7 @@ interface MultipartContextProps {
   question: Question;
 }
 
-let MultipartContext = ({
+const MultipartContext = ({
   title,
   multipart,
   question
@@ -146,7 +146,7 @@ let MultipartContext = ({
   </div>
 );
 
-export let QuestionView: React.FC<QuestionViewProps> = ({
+export const QuestionView: React.FC<QuestionViewProps> = ({
   multipart,
   question,
   index,
@@ -155,11 +155,11 @@ export let QuestionView: React.FC<QuestionViewProps> = ({
   questionState,
   onSubmit
 }) => {
-  let { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
-  let start = useMemo(now, [quizName, question, index]);
-  let ref = useRef<HTMLFormElement>(null);
-  let [showExplanation, setShowExplanation] = useState(false);
-  let methods = getQuestionMethods(question.type);
+  const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
+  const start = useMemo(now, [quizName, question, index]);
+  const ref = useRef<HTMLFormElement>(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const methods = getQuestionMethods(question.type);
   if (!methods) {
     return (
       <div>
@@ -168,23 +168,23 @@ export let QuestionView: React.FC<QuestionViewProps> = ({
     );
   }
 
-  let formValidators = useForm();
-  let required = (name: string, options?: RegisterOptions) => {
-    let attrs = formValidators.register(name, { ...options, required: true });
-    let className = classNames({
+  const formValidators = useForm();
+  const required = (name: string, options?: RegisterOptions) => {
+    const attrs = formValidators.register(name, { ...options, required: true });
+    const className = classNames({
       error: formValidators.formState.errors[name]
     });
     return { ...attrs, className };
   };
 
-  let questionClass = questionNameToCssClass(question.type);
+  const questionClass = questionNameToCssClass(question.type);
 
-  let submit = formValidators.handleSubmit(data => {
-    let answer = methods.getAnswerFromDOM
+  const submit = formValidators.handleSubmit(data => {
+    const answer = methods.getAnswerFromDOM
       ? methods.getAnswerFromDOM(data, ref.current!)
       : data;
-    let comparator = methods.compareAnswers || isEqual;
-    let correct = comparator(question.answer, answer);
+    const comparator = methods.compareAnswers || isEqual;
+    const correct = comparator(question.answer, answer);
     onSubmit({
       answer,
       correct,
@@ -194,9 +194,9 @@ export let QuestionView: React.FC<QuestionViewProps> = ({
     });
   });
 
-  let shouldPrompt = question.promptExplanation && attempt === 0;
+  const shouldPrompt = question.promptExplanation && attempt === 0;
 
-  let explanationId = useId();
+  const explanationId = useId();
 
   return (
     <div className={classNames("question", questionClass)}>
@@ -273,7 +273,7 @@ interface AnswerViewProps {
   showCorrect: boolean;
 }
 
-export let AnswerView: React.FC<AnswerViewProps> = ({
+export const AnswerView: React.FC<AnswerViewProps> = ({
   multipart,
   question,
   index,
@@ -282,13 +282,13 @@ export let AnswerView: React.FC<AnswerViewProps> = ({
   correct,
   showCorrect
 }) => {
-  let { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
-  let methods = getQuestionMethods(question.type);
-  let questionClass = questionNameToCssClass(question.type);
+  const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
+  const methods = getQuestionMethods(question.type);
+  const questionClass = questionNameToCssClass(question.type);
 
   let multipartView = null;
   if (question.multipart) {
-    let anchorId = `${quizName}-${question.multipart}`;
+    const anchorId = `${quizName}-${question.multipart}`;
     if (title.substring(1, 2) === "a")
       multipartView = (
         <div>

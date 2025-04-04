@@ -3,31 +3,31 @@ import { Markdown as Showdown, type ShowdownExtension } from "react-showdown";
 
 import { type SnippetOptions, snippetToNode } from "./snippet";
 
-let highlightExtension = (
+const highlightExtension = (
   options?: Partial<SnippetOptions>
 ): ShowdownExtension => ({
   type: "output",
   filter(text:string) {
-    let parser = new DOMParser();
-    let document = parser.parseFromString(text, "text/html");
-    let snippets = document.querySelectorAll("pre > code");
+    const parser = new DOMParser();
+    const document = parser.parseFromString(text, "text/html");
+    const snippets = document.querySelectorAll("pre > code");
     snippets.forEach(node => {
       if (node.classList.contains("ide")) return;
 
       let language = undefined;
       node.classList.forEach(cls => {
-        let prefix = "language-";
+        const prefix = "language-";
         if (cls.startsWith(prefix)) {
           language = cls.slice(prefix.length);
         }
       });
 
-      let newNode = snippetToNode({
+      const newNode = snippetToNode({
         ...(options || {}),
         snippet: node.textContent!,
         language
       });
-      let pre = node.parentNode as HTMLPreElement;
+      const pre = node.parentNode as HTMLPreElement;
       pre.replaceWith(newNode);
     });
     return document.body.innerHTML;
@@ -38,12 +38,12 @@ declare global {
   function initAquascopeBlocks(root: HTMLElement): void;
 }
 
-export let MarkdownView: React.FC<{
+export const MarkdownView: React.FC<{
   markdown: string;
   imag?: string;
   snippetOptions?: Partial<SnippetOptions>;
 }> = ({ markdown, imag = null, snippetOptions }) => {
-  let ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     //renderIde(ref.current!, snippetOptions);
     window.initAquascopeBlocks?.(ref.current!);

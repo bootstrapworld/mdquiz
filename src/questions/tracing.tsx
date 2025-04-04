@@ -21,7 +21,7 @@ import type { QuestionMethods } from "./types";
 // Here, that would be line 4. (Since without line 4, this program would compile!)
 // `;
 
-export let TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
+export const TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
   PromptView: ({ prompt, image }) => (
     <>
       <p>
@@ -42,13 +42,13 @@ export let TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
       formState: { errors }
     }
   }) => {
-    let [doesCompile, setDoesCompile] = useState<boolean | undefined>(
+    const [doesCompile, setDoesCompile] = useState<boolean | undefined>(
       undefined
     );
     // let lineNumbers = _.range(prompt.program.trim().split("\n").length).map(
     //   i => i + 1
     // );
-    let [doesCompileTrueId, doesCompileFalseId] = [useId(), useId()];
+    const [doesCompileTrueId, doesCompileFalseId] = [useId(), useId()];
     return (
       <>
         <div className="response-block">
@@ -104,9 +104,9 @@ export let TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
   },
 
   getAnswerFromDOM(data) {
-    let doesCompile = data.doesCompile === "true";
+    const doesCompile = data.doesCompile === "true";
     if (doesCompile) {
-      let stdout = data.stdout;
+      const stdout = data.stdout;
       return { doesCompile, stdout };
     } else {
       return { doesCompile };
@@ -114,7 +114,7 @@ export let TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
   },
 
   AnswerView: ({ answer, baseline }) => {
-    let correctnessClass = (key: keyof TracingAnswer) =>
+    const correctnessClass = (key: keyof TracingAnswer) =>
       answer[key] === baseline[key] ? "correct" : "incorrect";
     return (
       <div>
@@ -149,7 +149,7 @@ export let TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
     providedAnswer: TracingAnswer,
     userAnswer: TracingAnswer
   ): boolean {
-    let clean = (s: string) => s.trim();
+    const clean = (s: string) => s.trim();
     return (
       providedAnswer.doesCompile === userAnswer.doesCompile &&
       (providedAnswer.doesCompile

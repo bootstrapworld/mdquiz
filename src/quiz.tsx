@@ -6,8 +6,14 @@ import ReactDOM from "react-dom/client";
 import quizStr from "./quiz.toml?raw";
 import "./telemetry";
 
-let App = () => {
-  let quiz = parse(quizStr) as any as Quiz;
+declare global {
+  interface Window {
+      telemetry:any;
+  }
+}
+
+const App = () => {
+  const quiz = parse(quizStr) as any as Quiz;
   return (
     <div>
       <h1>Example quiz</h1>
