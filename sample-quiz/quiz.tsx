@@ -1,6 +1,4 @@
-import { parseTOML, type Quiz, QuizView } from "../src/lib";
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { React, ReactDOM, parseTOML, type Quiz, QuizView } from "../dist/mdquiz";
 
 import quizStr from "./quiz.toml?raw";
 

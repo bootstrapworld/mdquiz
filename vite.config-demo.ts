@@ -5,29 +5,22 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vite.dev/config/
 export default defineConfig({
+  root: "sample-quiz",
   build: {
-    emptyOutDir: true,
-    outDir: "./dist",
-    lib: {
-      entry: 'src/lib.ts',
-      formats: ['es']
-    },
+    emptyOutDir: false,
+    outDir: "../dist",
   },
   plugins: [
     react(), 
     viteSingleFile(),
-    /*
     // copy all image files from sample-quiz, since they are not inlined
     viteStaticCopy({
       targets: [
         {
-          src: [
-            'sample-quiz/*'
-          ],
+          src: ['*.svg', '*.gif', '*.jpg', '*.png'],
           dest: './'
         }
       ]
     })
-    */
   ],  
 })

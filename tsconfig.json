@@ -10,11 +10,9 @@
     "outDir": "dist",
 /*    "strict": false, */
     "noEmit": false,
-    "types": [
-      "vite/client"
-    ]
-
-  }
+    "types": ["vite/client"],
+  },
+  "include": ["src", "lib"]
 }
 
 
