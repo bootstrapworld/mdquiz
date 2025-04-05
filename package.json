@@ -3,11 +3,15 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main":"dist/mdquiz.js",
-  "files":["src/*", "tsconfig.json", "vite.config-lib.ts"],
+  "main": "dist/mdquiz.js",
+  "files": [
+    "src/*",
+    "tsconfig.json",
+    "vite.config-lib.ts"
+  ],
   "scripts": {
     "build": "tsc -b && vite build -c vite.config-lib.ts",
-    "dev-demo": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview -c vite.config-demo.ts",
+    "dev": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview -c vite.config-demo.ts",
     "lint": "eslint .",
     "prepare": "npm run build"
   },

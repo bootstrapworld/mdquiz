@@ -5,6 +5,9 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    'process.env.NODE_ENV': '"production"',
+  },
   build: {
     emptyOutDir: true,
     outDir: "./dist",
