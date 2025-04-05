@@ -1,9 +1,9 @@
 import hljs from "highlight.js/lib/core";
-import rust from "highlight.js/lib/languages/rust";
+//import rust from "highlight.js/lib/languages/rust";
 import React, { useEffect, useRef } from "react";
 
 // This reduces bundle size by not including a bunch of extra languages
-hljs.registerLanguage("rust", rust);
+//hljs.registerLanguage("rust", rust);
 
 export interface SnippetOptions {
   snippet: string;
