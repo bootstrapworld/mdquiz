@@ -6,9 +6,8 @@
   "main":"dist/mdquiz.js",
   "files":["src/*", "tsconfig.json", "vite.config-lib.ts"],
   "scripts": {
-    "dev": "tsc -b && vite",
     "build": "tsc -b && vite build -c vite.config-lib.ts",
-    "build-demo": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview -c vite.config-demo.ts",
+    "dev-demo": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview -c vite.config-demo.ts",
     "lint": "eslint .",
     "prepare": "npm run build"
   },
