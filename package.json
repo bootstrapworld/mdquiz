@@ -4,13 +4,13 @@
   "version": "0.0.1",
   "type": "module",
   "main":"dist/mdquiz.js",
-  "files":["src/*"],
+  "files":["src/*", "tsconfig.json", "vite.config-lib.ts"],
   "scripts": {
     "dev": "tsc -b && vite",
     "build": "tsc -b && vite build -c vite.config-lib.ts",
     "build-demo": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview -c vite.config-demo.ts",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "classnames": "^2.5.1",
