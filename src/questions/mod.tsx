@@ -12,17 +12,20 @@ import { InformationalMethods } from "./informational";
 import { MultipleChoiceMethods } from "./multiple-choice";
 import { ShortAnswerMethods } from "./short-answer";
 import { TracingMethods } from "./tracing";
+import { CardSortMethods } from "./card-sort";
 import type { QuestionMethods } from "./types";
 
 export { MultipleChoiceMethods } from "./multiple-choice";
 export { ShortAnswerMethods } from "./short-answer";
 export { TracingMethods } from "./tracing";
+export { CardSortMethods } from "./card-sort";
 
 const methodMapping = {
   ShortAnswer: ShortAnswerMethods,
   Tracing: TracingMethods,
   MultipleChoice: MultipleChoiceMethods,
-  Informational: InformationalMethods
+  Informational: InformationalMethods,
+  CardSort: CardSortMethods
 };
 
 export const getQuestionMethods = (

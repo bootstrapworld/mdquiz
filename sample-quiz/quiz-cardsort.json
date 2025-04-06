@@ -1,0 +1,22 @@
+{
+    "title": "Emmanuel's Sample Quiz",
+    "questions": [
+        {
+            "type": "CardSort",
+            "prompt": {
+                "prompt": "Sort these cards into colors and animals",
+                "cards": [
+                    {"id":"colorA", "title":"some title", "content": "red"},
+                    {"id":"colorB", "title":"some title", "content": "yellow"},
+                    {"id":"colorC", "title":"some title", "content": "blue"},
+                    {"id":"colorD", "title":"some title", "content": "green"},
+
+                    {"id":"animalA", "title":"some title", "content": "cat"},
+                    {"id":"animalB", "title":"some title", "content": "dog"},
+                    {"id":"animalC", "title":"some title", "content": "pig"},
+                    {"id":"animalD", "title":"some title", "content": "wombat"}
+                ]
+            }
+        }
+    ]
+}
