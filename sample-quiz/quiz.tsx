@@ -2,13 +2,14 @@ import { React, ReactDOM, parseTOML, type Quiz, QuizView } from "../dist/mdquiz"
 
 import quizStr from "./quiz.toml?raw";
 import quizJSON from "./quiz.json?raw";
+import quizJSON2 from "./quiz-multipart.json?raw";
 
 const App = () => {
   //const quiz = parseTOML(quizStr) as Quiz;
-  const quiz = JSON.parse(quizJSON) as Quiz;
+  const quiz = JSON.parse(quizJSON2) as Quiz;
+  console.log(JSON.stringify(quiz, null, 2));
   return (
     <div>
-      <h1>Example quiz</h1>
       <QuizView name="Bootstrap - Assessment" quiz={quiz} />
     </div>
   );

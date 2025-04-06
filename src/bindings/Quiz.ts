@@ -3,6 +3,7 @@ import type { Markdown } from "./Markdown";
 import type { Question } from "./Question";
 
 export interface Quiz { 
+	title?: string,
 	questions: Array<Question>, 
 	multipart?: Record<string, Markdown>, 
 }

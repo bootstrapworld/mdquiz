@@ -1,50 +1,125 @@
+[multipart]
+q = """
+**Context:** You are designing a simple event system that calls callback functions in response to events. 
+
+**Functionality:** An `Events` struct provides functions to register callbacks.
+A callback is either parallelizable (runnable across multiple threads) or sequential (must be run only on the main thread).
+
+**Designs:** Below are several proposed designs to implement the functionality.
+
+```
+pub struct Events {
+  // ...
+}
+
+// Option 1: parallel and sequential are two separate methods
+impl Events {
+  pub fn register<E, F: Fn(E)>(&mut self, f: F) { /* .. */ }
+  pub fn register_sequential<E, F: Fn(E)>(&mut self, f: F) { /* .. */ }
+}
+
+// Option 2: parallel and sequential are two members of an enum
+pub enum Callback<F> {
+  Parallel(F),
+  Sequential(F)
+}
+impl Events {
+  pub fn register<E, F: Fn(E)>(&mut self, f: Callback<F>) { /* .. */ }
+}
+
+// Option 3: parallel and sequential are markers in a trait method
+pub trait Register<Marker, F, E> {
+  fn register(&mut self, f: F);
+}
+pub struct Parallel;
+pub struct Sequential;
+impl<F, E> Register<Parallel, F, E> for Events 
+where F: Fn(E) {
+  fn register(&mut self, f: F) { /* .. */ }
+}
+impl<F, E> Register<Sequential, F, E> for Events 
+where F: Fn(Sequential, E) {
+  fn register(&mut self, f: F) { /* .. */ }
+}
+```
+"""
+
 [[questions]]
 type = "MultipleChoice"
+multipart = "q"
 prompt.prompt = """
-What does it mean if a variable `x` is immutable?
+Select each design option that satisfies the following requirement:
+
+**Requirement:** A callback should be considered parallelizable by default, and the API should reflect that default behavior.
 """
-prompt.distractors = [
-  "`x` is stored in the immutable region of memory.",
-  "After being defined, `x` can be changed at most once.",
-  "You cannot create a reference to `x`."
-]
-answer.answer = "`x` cannot be changed after being assigned to a value."
+prompt.distractors = ["2"]
+prompt.sortAnswers = true
+answer.answer = ["1", "3"]
 context = """
-Immutable means "not mutable", or not changeable.
+First, let's imagine what it would look like to register a callback under each design.
+
+```rust
+// Option 1
+events.register(|e: OnClick| { /* .. */ });
+events.register_sequential(|e: OnClick| { /* .. */ })
+
+// Option 2
+events.register(Callback::Parallel(|e: OnClick| { /* .. */ }));
+events.register(Callback::Sequential(|e: OnClick| { /* .. */ }));
+
+// Option 3
+events.register(|e: OnClick| { /* .. */ });
+events.register(|_: Sequential, e: OnClick| { /* .. */ });
+```
+
+Of these options, Options 1 and 3 convey that parallel is the default mode as it corresponds to the simplest option.
+Being sequential requires either using a longer method name (`_sequential`) or a marker type (`_: Sequential)`.
+
+Option 2 does not clearly mark that parallel should be default because both `Parallel` and `Sequential` must be passed in
+to `register`.
 """
+id = "4a32bad8-fee7-45b5-80ef-775d059aab48"
 
 [[questions]]
-type = "ShortAnswer"
-prompt.prompt = "What is the keyword used after `let` to indicate that a variable can be mutated?"
-image = "./react.svg" # Optional image URL
-answer.answer = "mut"
-context = """
-For example, you can make a mutable variable `x` by writing: `let mut x = 1`.
+type = "MultipleChoice"
+multipart = "q"
+prompt.prompt = """
+Select each design option that satisfies the following requirement:
+
+**Requirement:** The API should export as few methods as possible.
 """
-id = "dbbaea6a-f469-464f-9d60-99ae98456b6a"
+prompt.distractors = ["1"]
+prompt.sortAnswers = true
+answer.answer = ["2", "3"]
+context = """
+Options 2 and 3 only export a single `register` method. Option 1 requires exporting two distinctly-named register methods.
+"""
+id = "eaeafdad-ac3a-4d92-85eb-995991a81c2d"
+
 
 [[questions]]
-type = "Informational"
-prompt.prompt = "Hello! Good news! This is just a poster, no questions to answer."
-image = "https://www.bootstrapworld.org/images/icon.png" # Optional image URL
-context = """
-It's so awesome!
-"""
-id = "dbbaea6a-f469-464f-9d60-99ae98456b6a"
+multipart = "q"
+type = "MultipleChoice"
+prompt.prompt = """
+Select each design option that satisfies the following requirement:
 
-[[questions]]
-type = "Tracing"
-prompt.program = """
-fn main() {
-  let x = 1;
-  println!("{x}");
-  x += 1;
-  println!("{x}");
-}
+**Requirement:** The API should lean on the compiler's type inference system as little as possible.
 """
-answer.doesCompile = false
-answer.lineNumber = 4
+prompt.distractors = ["3"]
+prompt.sortAnswers = true
+answer.answer = ["1", "2"]
 context = """
-This is a compiler error because line 4 tries to mutate `x` when `x` is not marked as `mut`.
+Options 1 and 2 do not require much type inference beyond determining the type of the function `F`.
+
+Option 3 uses an overloading trick by creating a `Register` trait parameterized over a "marker" type.
+Remember its two register calls:
+```
+events.register(|e: OnClick| { /* .. */ })
+events.register(|_: Sequential, e: OnClick| { /* .. */ })
+```
+
+These look like they use the same implementation, but they actually refer to different implementations of the same method.
+This implementation relies on the compiler to infer the type of `Marker` when resolving which implementation of `Register` that
+each `.register(..)` call corresponds to. Therefore if our goal is to *not* rely on type inference, then Option 3 is inappropriate.
 """
-id = "bba6a299-b20f-4685-934a-792a591df3c0"
+id = "e0c4f766-b82a-496a-b669-ea9e0a367af7"

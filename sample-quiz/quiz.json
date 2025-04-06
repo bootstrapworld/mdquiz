@@ -1,4 +1,5 @@
 {
+    "title": "Emmanuel's Sample Quiz",
     "questions": [
         {
             "type": "MultipleChoice",
@@ -7,7 +8,7 @@
                 "distractors": [
                     "`x` is stored in the immutable region of memory.",
                     "After being defined, `x` can be changed at most once.",
-                    "You cannot create a reference to `x`."
+                    "You cannot create a reference to `x`.![alt text](./react.svg 'react logo')"
                 ]
             },
             "answer": {

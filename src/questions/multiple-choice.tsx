@@ -53,6 +53,7 @@ export const MultipleChoiceMethods: QuestionMethods<
         const multiAnswer = Array.isArray(answer.answer);
         return (
           <div className="choice" key={i}>
+            <label htmlFor={id}>
             <input
               type={multiAnswer ? "checkbox" : "radio"}
               {...(multiAnswer
@@ -63,7 +64,6 @@ export const MultipleChoiceMethods: QuestionMethods<
               value={choice}
               id={id}
             />
-            <label htmlFor={id}>
               <MarkdownView markdown={choice} />
             </label>
           </div>

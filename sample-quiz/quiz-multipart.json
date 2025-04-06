@@ -1,0 +1,43 @@
+{
+  "multipart": {
+    "q": "*The Little Red Ball*\n\nSam had a little red ball. He liked to roll it. He rolled it up the hill. The ball went whoosh! Sam ran after it. He found the ball at the bottom of the hill. Sam smiled. He rolled the ball again."
+  },
+  "questions": [
+    {
+      "type": "MultipleChoice",
+      "multipart": "q",
+      "prompt": {
+        "prompt": "What color was the ball?",
+        "distractors": ["blue", "pink", "cerulean"],
+        "sortAnswers": false
+      },
+      "answer": {"answer":"red"},
+      "context": "Do _you_ remember what color the ball was?",
+      "id": "4a32bad8-fee7-45b5-80ef-775d059aab48"
+    },
+    {
+      "type": "MultipleChoice",
+      "multipart": "q",
+      "prompt": {
+        "prompt": "What did Sam do with the ball?",
+        "distractors": ["Ate the ball", "Yeeted it"],
+        "sortAnswers": true
+      },
+      "answer": {"answer":"rolled it"},
+      "context": "Do _you_ remember what Sam did with the ball?",
+      "id": "eaeafdad-ac3a-4d92-85eb-995991a81c2d"
+    },
+    {
+      "multipart": "q",
+      "type": "MultipleChoice",
+      "prompt": {
+        "prompt": "Where did the ball go?",
+        "distractors": ["To school", "To Space", "Aaaaaaaall the way home"],
+        "sortAnswers": true
+      },
+      "answer": {"answer":"Up and down the hill"},
+      "context": "Do _you_ remember where the ball went?",
+      "id": "e0c4f766-b82a-496a-b669-ea9e0a367af7"
+    }
+  ]
+}

@@ -171,12 +171,12 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   ).length;
   return (
     <header>
-      <h3>Quiz</h3>
+      <h3>{quiz.title || "Quiz"}</h3>
       <div className="counter">
         {state.started ? (
-          quiz.questions.at(state.index)?.type === "Informational" ? (
-            <>{"Poster"}</>
-          ) : !ended ? (
+          quiz.questions
+            .at(state.index)?.type === "Informational" ? (<></>) 
+            : !ended ? (
             <>
               Question{" "}
               {(state.attempt === 0
