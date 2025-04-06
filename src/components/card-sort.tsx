@@ -6,7 +6,7 @@ import React, {
   CSSProperties 
 } from "react";
 import { DndProvider, useDrag, useDrop, XYCoord } from 'react-dnd';
-import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { MarkdownView } from "./markdown";
 import { CardSortPrompt, Card } from "../bindings/CardSortPrompt";
 import hash from "object-hash";
@@ -34,19 +34,24 @@ export const CardSortView: React.FC<{data: Card[]}> = ({data}) => {
 const Container: React.FC<{data: Card[]}> = ({data}) => {
   const [cards, setCards] = useState(data);
 
-  const moveCard = useCallback( (id, left, top) => {
+  const moveCard = useCallback( 
+    (id, left, top) => {
 
-      const droppedIndex = cards.findIndex(c => c.id === id)
+      // shallow copy the NON-moved cards
+      const newCards = cards.filter(c => c.id !== id)
+      // grab the MOVED card
+      const movedCard = cards.find(c => c.id === id)
 
-      const newCards = [...cards];
-      newCards[droppedIndex].left = left; 
-      newCards[droppedIndex].top = top;
-      newCards[droppedIndex].id = newCards[droppedIndex].id+".";
+      // update with new posn, and change the id
+      // so react redraws it
+      movedCard.left = left; 
+      movedCard.top = top;
+      movedCard.id += ".";
 
-      newCards[droppedIndex] = structuredClone(newCards[droppedIndex]);
+      // add it to the NON-moved cards
+      newCards.push(movedCard);
 
-      console.log('newcards (w/moved) are', newCards);
-      console.log(newCards[droppedIndex])
+      // set state
       return setCards(newCards);
     },
     [cards, setCards]
@@ -66,7 +71,7 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
     }),
     [moveCard],
   )
-console.log(cards);
+
   // @ts-ignore
   return (<div ref={drop} style={containerStyle}>
         {cards.map( (card, idx) => (
@@ -87,7 +92,8 @@ console.log(cards);
 
 const Card = ({ id, title, content, moveCard, left, top }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag, preview] = useDrag(
+  const [clicked, setClicked] = useState(false);
+  const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'CARD',
       item: { id, left, top },
@@ -96,13 +102,8 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
       }),
     }),
     [id, left, top],
-  );
-
+  )
 /*
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true })
-  }, [])
-
   const [, drop] = useDrop({
     accept: 'CARD',
     hover: (item:itemType, monitor) => {
@@ -130,7 +131,7 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
     maxWidth:     '200px',
     boxShadow:    '10px 5px 5px gray',
     background:   'white',
-    zIndex:        isDragging? '1000' : 'auto',
+    zIndex:        clicked? '1000' : 'auto',
     opacity:       1,
   }
 
@@ -144,6 +145,8 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
       ref={ref}
       id={id}
       style={{...cardStyle, left, top}}
+      onMouseDown={() => setClicked(true)}
+      onMouseLeave={() => setClicked(false)}
     >
       <h3>{title}</h3>
       <MarkdownView markdown={content} />
