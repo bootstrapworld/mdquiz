@@ -10,8 +10,8 @@
     "vite.config-lib.ts"
   ],
   "scripts": {
-    "build": "tsc -b && vite build -c vite.config-lib.ts",
-    "dev": "tsc && vite build -c vite.config-lib.ts && vite build -c vite.config-demo.ts && vite preview --open -c vite.config-demo.ts",
+    "build": "tsc && vite build -c vite.config-lib.ts",
+    "dev": "npm run build && vite build -c vite.config-demo.ts && vite preview --open -c vite.config-demo.ts",
     "lint": "eslint .",
     "prepare": "npm run build"
   },
@@ -21,7 +21,7 @@
     "globals": "^16.0.0",
     "highlight.js": "^11.11.1",
     "mobx": "^6.13.7",
-    "mobx-react": "^9.2.0",
+    "mobx-react": "npm:mobx-react-lite@^4.1.0",
     "object-hash": "^3.0.0",
     "preact": "^10.26.4",
     "react": "npm:@preact/compat@^18.3.1",

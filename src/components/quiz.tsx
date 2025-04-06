@@ -42,7 +42,7 @@ class AnswerStorage {
     readonly quizHash: string
   ) {}
 
-  storageKey = () => `mdbook-quiz:${this.quizName}`;
+  storageKey = () => `quiz:${this.quizName}`;
 
   save(
     answers: TaggedAnswer[],
