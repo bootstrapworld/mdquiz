@@ -1,3 +1,1 @@
-import type { CardSortAnswerFormat } from "./CardSortAnswerFormat";
-
-export interface CardSortAnswer { answer: CardSortAnswerFormat, }
+export interface CardSortAnswer { answer: Array<Array<string>>, ordered: boolean}

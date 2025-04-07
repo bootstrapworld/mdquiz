@@ -3,7 +3,9 @@ import React, {
   useEffect, 
   useRef, 
   useCallback, 
-  CSSProperties 
+  CSSProperties,
+  Dispatch,
+  SetStateAction
 } from "react";
 import { DndProvider, useDrag, useDrop, XYCoord } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -25,15 +27,28 @@ export interface DragItem {
   left: number
 }
 
-export const CardSortView: React.FC<{data: Card[]}> = ({data}) => {
+export const CardSortView: React.FC<{
+  data: Card[], 
+  updateData: Dispatch<SetStateAction<Card[]>>
+}> = ({data, updateData}) => {
+
+  const cards = data.map( card => {
+    card.cards = card.cards || []; // initialize to empty
+    card.left = card.left   || Math.random() * 400;
+    card.top  = card.top    || Math.random() * 200;
+    return card
+  })
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container data={data}/>
+      <Container cards={cards} setCards={updateData}/>
     </DndProvider>);
 }
 
-const Container: React.FC<{data: Card[]}> = ({data}) => {
-  const [cards, setCards] = useState(data);
+const Container: React.FC<{
+  cards: Card[], 
+  setCards: Dispatch<SetStateAction<Card[]>>
+}> = ({cards, setCards}) => {
 
   const moveCard = useCallback( 
     (id, left, top) => {
@@ -103,7 +118,7 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
     }),
     [moveCard],
   )
-console.log(cards)
+
   // @ts-ignore
   return (<div ref={drop} style={containerStyle}>
         {cards.map( (card, idx) => (

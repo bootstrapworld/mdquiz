@@ -16,6 +16,13 @@
                     {"id":"pig",    "title":"pig",      "content": "some markdown"},
                     {"id":"wombat", "title":"wombat",   "content": "some markdown"}
                 ]
+            },
+            "answer": {
+                "answer": [
+                    ["red", "yellow", "blue", "green"],
+                    ["cat", "dog", "pig", "wombat"]
+                ],
+                "ordered": "false"
             }
         }
     ]
