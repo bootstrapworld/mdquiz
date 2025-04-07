@@ -6,15 +6,15 @@
             "prompt": {
                 "prompt": "Sort these cards into colors and animals",
                 "cards": [
-                    {"id":"colorA", "title":"red",    "content": "some markdown"},
-                    {"id":"colorB", "title":"yellow", "content": "some markdown"},
-                    {"id":"colorC", "title":"blue",   "content": "some markdown"},
-                    {"id":"colorD", "title":"green",  "content": "some markdown"},
+                    {"id":"red",    "title":"red",      "content": "some markdown"},
+                    {"id":"yellow", "title":"yellow",   "content": "some markdown"},
+                    {"id":"blue",   "title":"blue",     "content": "some markdown"},
+                    {"id":"green",  "title":"green",    "content": "some markdown"},
 
-                    {"id":"animalA", "title":"cat",   "content": "some markdown"},
-                    {"id":"animalB", "title":"dog",   "content": "some markdown"},
-                    {"id":"animalC", "title":"pig",   "content": "some markdown"},
-                    {"id":"animalD", "title":"wombat","content": "some markdown"}
+                    {"id":"cat",    "title":"cat",      "content": "some markdown"},
+                    {"id":"dog",    "title":"dog",      "content": "some markdown"},
+                    {"id":"pig",    "title":"pig",      "content": "some markdown"},
+                    {"id":"wombat", "title":"wombat",   "content": "some markdown"}
                 ]
             }
         }
