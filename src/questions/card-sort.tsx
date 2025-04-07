@@ -28,6 +28,11 @@ export const CardSortMethods: QuestionMethods<
     )
   },
 
+  // not done yet - need to figure out how to return the state
+  getAnswerFromDOM({data}):CardSortAnswer {
+    return {answer: new Array(), ordered: false} 
+  },
+
   ResponseView: ({ prompt, submit, formValidators: { required } }) => {
     const formFields = required("answer");
     return (<>Emmanuel hasn't figured out how to do this yet!</>);
