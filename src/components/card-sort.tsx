@@ -15,7 +15,8 @@ const containerStyle: CSSProperties = {
   position: 'relative', 
   width: '600px', 
   height: '300px', 
-  border: 'solid 1px black' 
+  border: 'solid 1px black',
+  overflow: 'hidden',
 }
 export interface DragItem {
   id: string
@@ -37,19 +38,44 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
   const moveCard = useCallback( 
     (id, left, top) => {
 
-      // shallow copy the NON-moved cards
-      const newCards = cards.filter(c => c.id !== id)
-      // grab the MOVED card
-      const movedCard = cards.find(c => c.id === id)
+      const childCards = cards.map(c => c.cards).flat();
+      const parentId   = cards.find(c => c.cards.find(c => c.id==id))?.id
+      const movedCard  = cards.concat(childCards).find(c => c.id === id)
+      //console.log('moved card is', id, '. parent card is', parentId)
 
-      // update with new posn, and change the id
-      // so react redraws it
+      const newCards = cards.filter(c => c.id !== id)
+      
+      if (parentId) { 
+        const parentCard = newCards.find(c => c.id == parentId);
+        //console.log('removing',movedCard.id, 'from', parentCard)
+        parentCard.cards = parentCard.cards.filter(c => c.id !== id)
+      }
+
+      // update the moved card with new posn, and change
+      // the id so react redraws it
       movedCard.left = left; 
       movedCard.top = top;
       movedCard.id += ".";
 
-      // add it to the NON-moved cards
-      newCards.push(movedCard);
+      // set state
+      return setCards(newCards.concat([movedCard]));
+    },
+    [cards, setCards]
+  )
+
+  const addCardToGroup = useCallback(
+    (id, parentId) => {
+      const childCards = cards.map(c => c.cards).flat();
+      const movedCard = childCards.concat(cards).find(c => c.id === id);
+      const parentCard = cards.find(c => c.id === parentId)
+      console.log(movedCard.id, 'was dropped onto', parentCard.id);
+
+      // add the moved card to the parent's card group
+      parentCard.cards = [...parentCard.cards, movedCard]
+
+      // shallow copy the cards
+      const newCards = cards
+        .filter(c => ![c.id, parentId].includes(id))
 
       // set state
       return setCards(newCards);
@@ -61,9 +87,15 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
     () => ({
       accept: 'CARD',
       drop(item: DragItem, monitor) {
+        // if the drop event was= already handled, 
+        // (ie - dropped on a card), return;
+        if(monitor.didDrop()) { 
+          return;
+        }
         const change = monitor.getDifferenceFromInitialOffset() as XYCoord
-        const left = Math.round(item.left + change.x)
-        const top = Math.round(item.top + change.y)
+        const coord = monitor.getClientOffset() as XYCoord
+        const left   = Math.round(item.left + change.x)
+        const top    = Math.round(item.top  + change.y)
         //console.log(item,'dropped at', left, top)
         moveCard(item.id, left, top)
         return undefined
@@ -71,7 +103,7 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
     }),
     [moveCard],
   )
-
+console.log(cards)
   // @ts-ignore
   return (<div ref={drop} style={containerStyle}>
         {cards.map( (card, idx) => (
@@ -81,8 +113,11 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
             title={card.title}
             content={card.content}
             moveCard={moveCard}
+            addCardToGroup={addCardToGroup}
             left={card.left}
             top={card.top}
+            cards={card.cards}
+            inGroup={false}
           />
         ))}
       </div>
@@ -90,9 +125,23 @@ const Container: React.FC<{data: Card[]}> = ({data}) => {
 };
 
 
-const Card = ({ id, title, content, moveCard, left, top }) => {
+const Card = ({ 
+  id, 
+  title, 
+  content, 
+  moveCard, 
+  addCardToGroup, 
+  left, 
+  top,
+  cards,
+  inGroup,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
+
+  // state to determine z-index
   const [clicked, setClicked] = useState(false);
+
+  // dragging code
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'CARD',
@@ -103,36 +152,34 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
     }),
     [id, left, top],
   )
-/*
-  const [, drop] = useDrop({
+
+  // dropping code
+  const [{isUnder}, drop] = useDrop({
     accept: 'CARD',
-    hover: (item:itemType, monitor) => {
-      if (!item || item.id === id) {
-        return;
-      }
-      const targetIndex = index;
-      const sourceIndex = item.index;
-      if (targetIndex === sourceIndex) {
-        return;
-      }
-      moveCard(sourceIndex, targetIndex);
-      item.index = targetIndex;
+    collect: (monitor) => ({
+        isUnder: monitor.isOver() && !inGroup
+    }),
+    drop: (item:DragItem, monitor) => {
+      addCardToGroup(item.id, id);
     },
   });
   drag(drop(ref));
-*/
-  drag(ref);
 
   const cardStyle: CSSProperties = {
-    position:     'absolute',
-    border:       '1px dashed gray',
-    padding:      '0.5rem 1rem',
+    position:     inGroup? 'unset' : 'absolute',
     cursor:       'move',
     maxWidth:     '200px',
-    boxShadow:    '10px 5px 5px gray',
-    background:   'white',
-    zIndex:        clicked? '1000' : 'auto',
-    opacity:       1,
+    background:   isUnder? 'gray' 
+                    : (cards.length > 0)? 'lightgray'
+                    : 'white',
+    border:       isUnder? '2px solid black' 
+                    : inGroup? 'none'
+                    : '1px dashed gray',
+    borderTop:    '1px dashed gray',
+    zIndex:       clicked? '1000' : 'auto',
+    opacity:      1,
+    display:      'flex',
+    flexDirection:'column',
   }
 
   if(isDragging) {
@@ -142,6 +189,7 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
 
   return (
     <div
+      className="card"
       ref={ref}
       id={id}
       style={{...cardStyle, left, top}}
@@ -150,6 +198,20 @@ const Card = ({ id, title, content, moveCard, left, top }) => {
     >
       <h3>{title}</h3>
       <MarkdownView markdown={content} />
+      {cards.map( (card, idx) => (
+          <Card
+            key={card.id}
+            id={card.id}
+            title={card.title}
+            content={card.content}
+            moveCard={moveCard}
+            addCardToGroup={(id, parent) => false}
+            left={card.left}
+            top={card.top}
+            cards={[]}
+            inGroup={true}
+          />
+        ))}
     </div>
   );
 };

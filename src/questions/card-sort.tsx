@@ -18,6 +18,7 @@ export const CardSortMethods: QuestionMethods<
       <CardSortView
         data={
           prompt.cards.map( card => {
+            card.cards = []; // initialize to empty
             card.left = Math.random() * 400;
             card.top  = Math.random() * 200;
             return card
