@@ -13,7 +13,7 @@ export default defineConfig({
     outDir: "./dist",
     minify: false,
     lib: {
-      entry: 'src/lib.ts',
+      entry: 'src/lib.tsx',
       formats: ['es']
     },
   },
