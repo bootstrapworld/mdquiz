@@ -32,10 +32,12 @@ export const CardSortView: React.FC<{
   updateData: Dispatch<SetStateAction<Card[]>>
 }> = ({data, updateData}) => {
 
+  // take the original data and extend it with empty child 
+  // arrays and randomly-distributed coords
   const cards = data.map( card => {
-    card.cards = card.cards || []; // initialize to empty
-    card.left = card.left   || Math.random() * 400;
-    card.top  = card.top    || Math.random() * 200;
+    card.children = card.children || []; 
+    card.left     = card.left     || Math.random() * 400;
+    card.top      = card.top      || Math.random() * 200;
     return card
   })
 
@@ -53,9 +55,9 @@ const Container: React.FC<{
   const moveCard = useCallback( 
     (id, left, top) => {
 
-      const childCards = cards.map(c => c.cards).flat();
-      const parentId   = cards.find(c => c.cards.find(c => c.id==id))?.id
-      const movedCard  = cards.concat(childCards).find(c => c.id === id)
+      const children  = cards.map(c => c.children).flat();
+      const parentId  = cards.find(c => c.children.find(c => c.id==id))?.id
+      const movedCard = cards.concat(children).find(c => c.id === id)
       //console.log('moved card is', id, '. parent card is', parentId)
 
       const newCards = cards.filter(c => c.id !== id)
@@ -63,7 +65,7 @@ const Container: React.FC<{
       if (parentId) { 
         const parentCard = newCards.find(c => c.id == parentId);
         //console.log('removing',movedCard.id, 'from', parentCard)
-        parentCard.cards = parentCard.cards.filter(c => c.id !== id)
+        parentCard.children = parentCard.children.filter(c => c.id !== id)
       }
 
       // update the moved card with new posn, and change
@@ -80,17 +82,17 @@ const Container: React.FC<{
 
   const addCardToGroup = useCallback(
     (id, parentId) => {
-      const childCards = cards.map(c => c.cards).flat();
+      const childCards = cards.map(c => c.children).flat();
       const movedCard = childCards.concat(cards).find(c => c.id === id);
       const parentCard = cards.find(c => c.id === parentId)
       console.log(movedCard.id, 'was dropped onto', parentCard.id);
 
       // add the moved card to the parent's card group,
-      // and any child cards in may have
-      parentCard.cards = [
-        ...parentCard.cards, 
+      // and any children the moved card might have
+      parentCard.children = [
+        ...parentCard.children, 
         movedCard, 
-        ...movedCard.cards
+        ...movedCard.children
       ]
 
       // shallow copy the cards
@@ -136,7 +138,7 @@ const Container: React.FC<{
             addCardToGroup={addCardToGroup}
             left={card.left}
             top={card.top}
-            cards={card.cards}
+            cards={card.children}
             inGroup={false}
           />
         ))}
