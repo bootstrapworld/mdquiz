@@ -83,9 +83,16 @@ const Container: React.FC<{
   const addCardToGroup = useCallback(
     (id, parentId) => {
       const childCards = cards.map(c => c.children).flat();
-      const movedCard = childCards.concat(cards).find(c => c.id === id);
-      const parentCard = cards.find(c => c.id === parentId)
+      const movedCard  = childCards.concat(cards).find(c => c.id == id);
+      const parentCard = cards.find(c => c.id == parentId)
       console.log(movedCard.id, 'was dropped onto', parentCard.id);
+
+      // if the moved card was already in a group, remove first
+      cards.forEach(c => {
+        const idx = c.children.findIndex(c => c.id == movedCard.id);
+        if(idx == -1) return; // it's not in this list
+        else c.children.splice(idx, 1) // it is in the list, remove it
+      })
 
       // add the moved card to the parent's card group,
       // and any children the moved card might have
@@ -96,8 +103,7 @@ const Container: React.FC<{
       ]
 
       // shallow copy the cards
-      const newCards = cards
-        .filter(c => ![c.id, parentId].includes(id))
+      const newCards = cards.filter(c => ![c.id, parentId].includes(id))
 
       // set state
       return setCards(newCards);
