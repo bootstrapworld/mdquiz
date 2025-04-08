@@ -85,8 +85,13 @@ const Container: React.FC<{
       const parentCard = cards.find(c => c.id === parentId)
       console.log(movedCard.id, 'was dropped onto', parentCard.id);
 
-      // add the moved card to the parent's card group
-      parentCard.cards = [...parentCard.cards, movedCard]
+      // add the moved card to the parent's card group,
+      // and any child cards in may have
+      parentCard.cards = [
+        ...parentCard.cards, 
+        movedCard, 
+        ...movedCard.cards
+      ]
 
       // shallow copy the cards
       const newCards = cards
