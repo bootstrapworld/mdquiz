@@ -5,16 +5,16 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vite.dev/config/
 export default defineConfig({
-  root: "sample-quiz",
+  root: "demo",
   build: {
-    emptyOutDir: false,
+    emptyOutDir: true,
     outDir: "../dist",
     minify: false,
   },
   plugins: [
     react(), 
     viteSingleFile(),
-    // copy all image files from sample-quiz, since they are not inlined
+    // copy all image files from demo/, since they are not inlined
     viteStaticCopy({
       targets: [
         {

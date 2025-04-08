@@ -8,13 +8,13 @@
                 "cards": [
                     {"id":"red",    "title":"red",      "content": "some markdown"},
                     {"id":"yellow", "title":"yellow",   "content": "some markdown"},
-                    {"id":"blue",   "title":"blue",     "content": "some markdown"},
+                    {"id":"blue",   "title":"blue",     "content": "some markdown![alt text](./react.svg 'react logo')"},
                     {"id":"green",  "title":"green",    "content": "some markdown"},
 
-                    {"id":"cat",    "title":"cat",      "content": "some markdown"},
+                    {"id":"cat",    "title":"cat",      "content": "some markdown![alt text](./react.svg 'react logo')"},
                     {"id":"dog",    "title":"dog",      "content": "some markdown"},
                     {"id":"pig",    "title":"pig",      "content": "some markdown"},
-                    {"id":"wombat", "title":"wombat",   "content": "some markdown"}
+                    {"id":"wombat", "title":"wombat",   "content": "some markdown![alt text](./react.svg 'react logo')"}
                 ]
             },
             "answer": {
