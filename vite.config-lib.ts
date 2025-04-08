@@ -11,6 +11,7 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: "./dist",
+    minify: false,
     lib: {
       entry: 'src/lib.ts',
       formats: ['es']
