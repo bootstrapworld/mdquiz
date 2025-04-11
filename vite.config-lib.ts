@@ -13,8 +13,8 @@ export default defineConfig({
     outDir: "./dist",
     minify: false,
     lib: {
-      entry: 'src/lib.tsx',
-      formats: ['es']
+      entry: ['src/lib.tsx'],
+      formats: ['es', 'cjs'],
     },
   },
   plugins: [react()],  

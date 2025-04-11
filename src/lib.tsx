@@ -20,21 +20,23 @@ export { React };
 export { ReactDOM };
 export const parseTOML = (tomlStr) => (parse(tomlStr) as any as Quiz)
 
-export default function buildQuiz(rootNode, quizConfigStr) {
-  let quizConfig;
-  try {
-    console.log('trying to parse quiz string as JSON');
-    quizConfig = JSON.parse(quizConfigStr) as Quiz;
-  } catch (e) {
-    try { 
-      console.log('trying to parse quiz string as TOML');
-      quizConfig = parseTOML(quizConfigStr) as Quiz;
+export default function buildQuiz(rootNode, quizConfig) {
+  if(typeof quizConfig !== "object") {
+    console.log('Read:\n', quizConfig);
+    try {
+      console.log('trying to parse quiz string as JSON');
+      quizConfig = JSON.parse(quizConfig) as Quiz;
     } catch (e) {
-      throw ('Could not parse quiz configuration:\n' + e);
+      try { 
+        console.log('trying to parse quiz string as TOML');
+        quizConfig = parseTOML(quizConfig) as Quiz;
+      } catch (e) {
+        throw ('Could not parse quiz configuration:\n' + e);
+      }
     }
   }
   
-  console.log('QuizConfig is:\n',quizConfig);
+  console.log('QuizConfig is:\n', quizConfig);
   const App = () => {
     return (
       <div>

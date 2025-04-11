@@ -15,9 +15,6 @@ import hash from "object-hash";
 
 const containerStyle: CSSProperties = {
   position: 'relative', 
-  width: '600px', 
-  height: '300px', 
-  border: 'solid 1px black',
   overflow: 'hidden',
 }
 export interface DragItem {
@@ -133,7 +130,7 @@ const Container: React.FC<{
   )
 
   // @ts-ignore
-  return (<div ref={drop} style={containerStyle}>
+  return (<div ref={drop} style={containerStyle} className="container">
         {cards.map( (card, idx) => (
           <Card
             key={card.id}

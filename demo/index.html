@@ -8,8 +8,9 @@
   <body>
     <div id="root"></div>
     <script type="module">
-      import buildQuiz from "./src/lib";
-      import quizStr from "./quiz.json?raw";
+      import buildQuiz from "../dist/lib.js";
+      import quizStr from "./quiz-cardsort.json?raw" with {type: 'json'};
+      console.log(quizStr)
       buildQuiz("root", quizStr);
     </script>
   </body>

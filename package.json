@@ -10,6 +10,11 @@
     "tsconfig.json",
     "vite.config-lib.ts"
   ],
+  "exports": {
+    ".": {
+      "buildQuiz" : "./dist/mdquiz"
+    }
+  },
   "scripts": {
     "build": "tsc && vite build -c vite.config-lib.ts",
     "build-demo": "tsc && vite build -c vite.config-demo.ts && vite preview --open",
