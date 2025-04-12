@@ -20,7 +20,8 @@
     "build-demo": "tsc && vite build -c vite.config-demo.ts && vite preview --open",
     "dev": "npm run build && vite build -c vite.config-demo.ts && vite preview --open -c vite.config-demo.ts",
     "lint": "eslint .",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "classnames": "^2.5.1",
