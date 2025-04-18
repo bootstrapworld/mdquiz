@@ -9,7 +9,7 @@
     "jsx": "react",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "dist",
+    "outDir": "./dist",
 /*    "strict": false, */
     "noEmit": false,
   },

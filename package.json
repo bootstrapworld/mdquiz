@@ -7,7 +7,8 @@
   "files": [
     "src/*",
     "tsconfig.json",
-    "vite.config-lib.ts"
+    "vite.config-lib.ts",
+    ".npmignore"
   ],
   "exports": {
     ".": {
