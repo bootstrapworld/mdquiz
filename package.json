@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/mdquiz.js",
   "files": [
+    "dist",
     "src/*",
     "tsconfig.json",
     "vite.config-lib.ts",
