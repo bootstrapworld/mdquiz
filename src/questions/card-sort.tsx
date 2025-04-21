@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import hash from "object-hash";
 
 /**
- * This function computes the similarity score between the user's answer and the real answer, 0 to 1, where 1 is correct. If unordered, then the
+ * This function computes the similarity score between the user's answer and the real answer, 0 to 1, where 1 is correct. If unordered, then the score is based on ratio of correct element. If ordered, then the partial credit is average between unordered score and a ratio of whether cards are in the right position.
  * @param { answer: solution, ordered } solution
  * @param {userAnswer}
  * @returns A partial credit score for the answer.
@@ -207,7 +207,6 @@ export const CardSortMethods: QuestionMethods<
             {CardSortMethods.compareAnswers(baseline || { answer: [], ordered: "false" }, answer)
             ? `${calculateSimilarityScore(baseline || { answer: [], ordered: "false" }, answer) * 100}% correct.`
             : `The answer is ${(calculateSimilarityScore(baseline || { answer: [], ordered: "false" }, answer) * 100).toFixed(2)}% correct.`}
-
 
         </p>
         <p>{answer.answer.map((group, index) => (

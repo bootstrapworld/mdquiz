@@ -22,7 +22,7 @@
                     ["red", "yellow", "blue", "green"],
                     ["cat", "dog", "pig", "wombat"]
                 ],
-                "ordered": "true"
+                "ordered": "false"
             }
         }
     ]
