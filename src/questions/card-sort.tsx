@@ -6,11 +6,48 @@ import { MarkdownView } from "../components/markdown";
 import React, { useState } from "react";
 import hash from "object-hash";
 
+/**
+ * This function computes the similarity score between the user's answer and the real answer, 0 to 1, where 1 is correct. If unordered, then the
+ * @param { answer: solution, ordered } solution
+ * @param {userAnswer}
+ * @returns A partial credit score for the answer.
+ */
 function calculateSimilarityScore(
   { answer: solution, ordered }: CardSortAnswer,
   { answer: userAnswer }: CardSortAnswer
 ): number {
   console.log("ordered is ", ordered, typeof ordered);
+
+  const sanitize = (group) => (ordered ? group : new Set(group));
+  const sanitizedSolution = solution.map(sanitize);
+  const sanitizedUserAnswer = userAnswer.map(sanitize);
+
+  let totalItems = 0;
+  let matchingItems = 0;
+
+  // Compare each group in the solution with each group in the user answer
+  sanitizedSolution.forEach((solutionGroup) => {
+  const solutionSet = new Set(solutionGroup);
+  totalItems += solutionSet.size;
+
+  // Find the best matching group in the user answer
+  let bestMatchCount = 0;
+  sanitizedUserAnswer.forEach((userGroup) => {
+    const userSet = new Set(userGroup);
+    const intersection = new Set(
+      [...solutionSet].filter((item) => userSet.has(item))
+    );
+    bestMatchCount = Math.max(bestMatchCount, intersection.size);
+  });
+    matchingItems += bestMatchCount;
+  });
+  // Check if the total number of groups matches
+  if (sanitizedSolution.length !== sanitizedUserAnswer.length) {
+    return 0; // Return 0 if the number of groups is not the same
+  }
+  // Calculate the similarity score
+  const unOrderedScore = totalItems > 0 ? matchingItems / totalItems : 0;
+
   if (ordered === "true") {
     console.log("Comparing ordered groups");
     if (solution.length !== userAnswer.length) {
@@ -41,99 +78,15 @@ function calculateSimilarityScore(
     }
   
     // Calculate the similarity score
-    return totalItems > 0 ? matchingItems / totalItems : 0;
+    const orderedScore = totalItems > 0 ? matchingItems / totalItems : 0;
+    console.log("Ordered score:", orderedScore);
+    console.log("Unordered score:", unOrderedScore);
+    return (orderedScore + unOrderedScore) / 2;
   } else {
     console.log("Comparing unordered groups");
-    const sanitize = (group) => (ordered ? group : new Set(group));
-      const sanitizedSolution = solution.map(sanitize);
-  const sanitizedUserAnswer = userAnswer.map(sanitize);
-
-  let totalItems = 0;
-  let matchingItems = 0;
-
-  // Compare each group in the solution with each group in the user answer
-  sanitizedSolution.forEach((solutionGroup) => {
-    const solutionSet = new Set(solutionGroup);
-    totalItems += solutionSet.size;
-
-    // Find the best matching group in the user answer
-    let bestMatchCount = 0;
-    sanitizedUserAnswer.forEach((userGroup) => {
-      const userSet = new Set(userGroup);
-      const intersection = new Set(
-        [...solutionSet].filter((item) => userSet.has(item))
-      );
-      bestMatchCount = Math.max(bestMatchCount, intersection.size);
-    });
-
-    matchingItems += bestMatchCount;
-  });
-  // Check if the total number of groups matches
-  if (sanitizedSolution.length !== sanitizedUserAnswer.length) {
-    return 0; // Return 0 if the number of groups is not the same
+    return unOrderedScore;
   }
-  // Calculate the similarity score
-  return totalItems > 0 ? matchingItems / totalItems : 0;
 }
-}
-
-
-// function calculateSimilarityScore(
-//   { answer: solution, ordered }: CardSortAnswer,
-//   { answer: userAnswer }: CardSortAnswer
-// ): number {
-//   const sanitize = (group) => (ordered ? group : new Set(group));
-
-//   if (ordered) {
-//     console.log("Comparing ordered groups");
-//     const sanitizedSolution = solution.map((group) => JSON.stringify(group));
-//     const sanitizedUserAnswer = userAnswer.map((group) => JSON.stringify(group));
-
-//     if (sanitizedSolution.length !== sanitizedUserAnswer.length) {
-//       return 0; // Return 0 if the number of groups is not the same
-//     }
-
-//     let matchingGroups = 0;
-
-//     sanitizedSolution.forEach((solutionGroup, index) => {
-//       if (sanitizedUserAnswer[index] === solutionGroup) {
-//         matchingGroups++;
-//       }
-//     });
-
-//     return matchingGroups / sanitizedSolution.length;
-//   }
-
-//   const sanitizedSolution = solution.map(sanitize);
-//   const sanitizedUserAnswer = userAnswer.map(sanitize);
-
-//   let totalItems = 0;
-//   let matchingItems = 0;
-
-//   // Compare each group in the solution with each group in the user answer
-//   sanitizedSolution.forEach((solutionGroup) => {
-//     const solutionSet = new Set(solutionGroup);
-//     totalItems += solutionSet.size;
-
-//     // Find the best matching group in the user answer
-//     let bestMatchCount = 0;
-//     sanitizedUserAnswer.forEach((userGroup) => {
-//       const userSet = new Set(userGroup);
-//       const intersection = new Set(
-//         [...solutionSet].filter((item) => userSet.has(item))
-//       );
-//       bestMatchCount = Math.max(bestMatchCount, intersection.size);
-//     });
-
-//     matchingItems += bestMatchCount;
-//   });
-//   // Check if the total number of groups matches
-//   if (sanitizedSolution.length !== sanitizedUserAnswer.length) {
-//     return 0; // Return 0 if the number of groups is not the same
-//   }
-//   // Calculate the similarity score
-//   return totalItems > 0 ? matchingItems / totalItems : 0;
-// }
 
 export const CardSortMethods: QuestionMethods<
   CardSortPrompt,
