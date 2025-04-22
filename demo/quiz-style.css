@@ -20,5 +20,5 @@
   border: solid 1px black; 
 }
 
-  
+.pyret iframe { min-height: 400px; min-width: 750px; }
   
