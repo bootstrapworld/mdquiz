@@ -1,0 +1,13 @@
+{
+    "title": "Emmanuel's Sample Quiz",
+    "questions": [
+        {
+            "type": "Pyret",
+            "prompt": {
+                "prompt": "Lookit the pretty code",
+                "program": "use context starter2024\n1 + 2"
+            },
+            "answer": true
+        }
+    ]
+}
