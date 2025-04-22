@@ -1,11 +1,9 @@
 import classNames from "classnames";
 import React, { useId, useState } from "react";
 
-//import type { TracingAnswer } from "../bindings/TracingAnswer";
-//import type { TracingPrompt } from "../bindings/TracingPrompt";
 import type { Markdown } from "../bindings/Markdown";
 // import { MoreInfo } from "../components/more-info";
-import { Snippet } from "../components/snippet";
+import { PyretSnippet } from "../components/pyret-snippet";
 import type { QuestionMethods } from "./types";
 import { QuestionFields } from "../bindings/QuestionFields";
 
@@ -21,7 +19,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
       <p>
         {prompt.prompt}
       </p>
-      <Snippet snippet={prompt.program} lineNumbers />
+      <PyretSnippet snippet={prompt.program} />
       {image && <img src={image} alt="" />}
     </>
   ),
