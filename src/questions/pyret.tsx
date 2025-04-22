@@ -19,7 +19,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
       <p>
         {prompt.prompt}
       </p>
-      <PyretSnippet snippet={prompt.program} />
+      <PyretSnippet program={prompt.program} />
       {image && <img src={image} alt="" />}
     </>
   ),
