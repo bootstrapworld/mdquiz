@@ -1,1 +1,1 @@
-export interface CardSortAnswer { answer: Array<Array<string>>, ordered: boolean}
+export interface CardSortAnswer { answer: Array<Array<string>>, ordered: string}
