@@ -44,7 +44,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
     editor.runDefinitions();
     editor.setInteractions(prompt.checkblock);
     const result = JSON.parse(await editor.runInteractionResult());
-    console.log(result, editor.currentState());
+    //console.log(result, editor.currentState());
     return {
       passed: result.texts.some(t => t.includes("Looks shipshape")),
       ...editor.currentState()
