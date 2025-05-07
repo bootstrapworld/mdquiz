@@ -22,7 +22,7 @@ export const parseTOML = (tomlStr) => (parse(tomlStr) as any as Quiz)
 
 export default function buildQuiz(rootNode, quizConfig) {
   if(typeof quizConfig !== "object") {
-    console.log('Read:\n', quizConfig);
+    //console.log('Read:\n', quizConfig);
     try {
       console.log('trying to parse quiz string as JSON');
       quizConfig = JSON.parse(quizConfig) as Quiz;

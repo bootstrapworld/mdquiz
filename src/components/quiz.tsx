@@ -408,11 +408,21 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       }
     }, [showFullscreen, config.fullscreen, lastTop]);
 
+    const goBack = action(() => {
+      if (state.index > 0) {
+        state.index -= 1;
+        if (config.quiz.questions[state.index - 1]?.type === "Informational") {
+          state.encounteredInfos -= 1;
+        }
+      } else {
+        throw "IMPOSSIBLE - goBack was called from the first question???"
+      }
+    });
+
     const onSubmit = action((answer: TaggedAnswer) => {
       answer = structuredClone(answer);
-
       if (state.attempt === 0) {
-        state.answers.push(answer);
+        state.answers[state.index] = answer;
         state.index += 1;
         if (config.quiz.questions[state.index - 1]?.type === "Informational") {
           state.encounteredInfos += 1;
@@ -484,6 +494,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
               question={config.quiz.questions[state.index]}
               questionState={questionStates[state.index]}
               onSubmit={onSubmit}
+              goBack={goBack}
             />
           )
         ) : (
