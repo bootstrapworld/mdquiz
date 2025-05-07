@@ -33,7 +33,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
     }
   }) => {
     return (<>
-    You got it right!
+    TBD
     </>
     );
   },
@@ -64,7 +64,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
       <div>
       <MarkdownView markdown={defns} />
       <p/>
-      <b>{ answer.passed? "This was not correct!" : "This was not correct" }</b>
+      <b>{ answer.passed? "This was correct!" : "This was not correct" }</b>
       <p/>
       One possible answer is:
       <MarkdownView markdown={baseline} />
