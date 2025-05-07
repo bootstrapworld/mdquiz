@@ -254,7 +254,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
         )}
         {index?
           (<button type="button" onClick={() => goBack()}>
-            Go Back
+            Previous
           </button>)
           :
           (<></>)}
@@ -267,7 +267,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
         ) : (
           <input
             type="submit"
-            value={question.type === "Informational" ? "Continue" : "Submit"}
+            value="Next"
           />
         )}
       </form>
