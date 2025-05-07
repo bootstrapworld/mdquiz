@@ -22,7 +22,7 @@ export const InformationalMethods: QuestionMethods<
 
   ResponseView: () => (
     <div className="informational-message">
-      <p>This is an informational question. No response is required.</p>
+      <p>Continue on to the next page</p>
     </div>
   ),
 
@@ -34,9 +34,5 @@ export const InformationalMethods: QuestionMethods<
     return true; // Always correct since no answer is required.
   },
 
-  AnswerView: () => (
-    <div className="informational-message">
-      <p>This question is informational and does not have an answer.</p>
-    </div>
-  )
+  AnswerView: () => (<></>)
 };
