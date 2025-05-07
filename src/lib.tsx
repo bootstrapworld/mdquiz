@@ -1,9 +1,10 @@
-import { parse } from 'smol-toml'
 import { type Quiz } from "./bindings/Quiz";
 import "./telemetry";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { QuizView } from "./components/quiz";
+import { parse } from '@prantlf/jsonlint';
+
 
 
 declare global {
@@ -18,26 +19,36 @@ export * from "./components/snippet";
 export { type Quiz } from "./bindings/Quiz";
 export { React };
 export { ReactDOM };
-export const parseTOML = (tomlStr) => (parse(tomlStr) as any as Quiz)
 
 export default function buildQuiz(rootNode, quizConfig) {
-  if(typeof quizConfig !== "object") {
-    console.log('Read:\n', quizConfig);
-    try {
-      console.log('trying to parse quiz string as JSON');
-      quizConfig = JSON.parse(quizConfig) as Quiz;
-    } catch (e) {
-      try { 
-        console.log('trying to parse quiz string as TOML');
-        quizConfig = parseTOML(quizConfig) as Quiz;
-      } catch (e) {
-        throw ('Could not parse quiz configuration:\n' + e);
+  const App = () => {
+
+    if(typeof quizConfig !== "object") {
+      console.log('Read:\n', quizConfig);
+      try {
+        console.log('trying to parse quiz string as JSON');
+        quizConfig = parse(quizConfig) as unknown as Quiz;
+      } catch (error) {
+        const { message, reason, excerpt, pointer, location } = error
+          const { column, line, offset } = location.start
+
+        return (
+          <div className="json-error">
+            Could not parse quiz configuration! This is usually because of a JSON error:
+            <p/>
+            {`Parse error on line ${line}, column ${column}:`}
+            <p/>
+            {excerpt}
+            <p/>
+            {pointer}
+            <p/>
+            {reason}
+          </div>
+        );
       }
     }
-  }
-  
-  console.log('QuizConfig is:\n', quizConfig);
-  const App = () => {
+
+    console.log('QuizConfig is:\n', quizConfig);
     return (
       <div>
         <QuizView name="Bootstrap - Assessment" quiz={quizConfig} />
