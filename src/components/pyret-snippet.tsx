@@ -18,9 +18,6 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
         editorContents: options.program,
         replContents: ""
       });
-
-      //@ts-ignore
-      editor.getFrame().editor = editor;
     }
     setupEditor();
   }, [options]);

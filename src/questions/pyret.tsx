@@ -15,13 +15,12 @@ type Pyret = QuestionFields<PyretPrompt, PyretAnswer>;
 export { Pyret, PyretPrompt, PyretAnswer };
 
 export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
-  PromptView: ({ prompt, image }) => (
+  PromptView: ({ prompt }) => (
     <>
       <p>
       <MarkdownView markdown={prompt.prompt} />
       </p>
       <PyretSnippet program={prompt.program} checkblock={prompt.checkblock}/>
-      {image && <img src={image} alt="" />}
     </>
   ),
 
@@ -40,15 +39,12 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
 
   async getAnswerFromDOM(_, parentNode, prompt) {
     const editorNode = document.getElementById('EmbeddedEditor');
-    const editor = (editorNode as any).editor as API;
+    const editor = (editorNode as any).pyretEmbed as API;
     editor.runDefinitions();
     editor.setInteractions(prompt.checkblock);
     const result = JSON.parse(await editor.runInteractionResult());
-    //console.log(result, editor.currentState());
-    return {
-      passed: result.texts.some(t => t.includes("Looks shipshape")),
-      ...editor.currentState()
-    }
+    console.log(result, editor.currentState(), result.texts.some(t => t.includes("Looks shipshape")));
+    return result.texts.some(t => t.includes("Looks shipshape"))
   },
 
   AnswerView: ({ answer, baseline, prompt }) => {
@@ -76,6 +72,6 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
     providedAnswer: PyretAnswer,
     userAnswer: PyretAnswer
   ): boolean {
-    return true;
+    return userAnswer;
   }
 };
