@@ -207,7 +207,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
     <div className={classNames("question", questionClass)}>
       <div className="prompt">
         {question.type === "Informational" ? (
-          <h4>Informational Poster</h4>
+          <h4>This Page is Purely Informational</h4>
         ) : (
           <h4>Question {title}</h4>
         )}
@@ -224,17 +224,21 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
         )}
       </div>
       <form className="response" ref={ref} onSubmit={submit}>
-        <h4>Response</h4>
-        <fieldset disabled={showExplanation}>
-          <methods.ResponseView
-            key={`${quizName}-question${index}`}
-            prompt={question.prompt}
-            answer={question.answer}
-            submit={submit}
-            state={questionState}
-            formValidators={{ ...formValidators, required }}
-          />
-        </fieldset>
+        {question.type !== "Informational" ? (
+          <>
+            <h4>Response</h4>
+            <fieldset disabled={showExplanation}>
+              <methods.ResponseView
+                key={`${quizName}-question${index}`}
+                prompt={question.prompt}
+                answer={question.answer}
+                submit={submit}
+                state={questionState}
+                formValidators={{ ...formValidators, required }}
+              />
+            </fieldset>
+          </>
+        ) : (<></>)}
         {showExplanation && (
           <>
             <p>

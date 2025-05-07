@@ -234,6 +234,21 @@ const AnswerReview = ({
   const questionTitles = generateQuestionTitles(quiz);
   return (
     <>
+      <h3>You've finished the assessment!</h3>
+      <p>
+        You answered{" "}
+        <strong>
+          {nCorrect - informationalCount}/
+          {quiz.questions.length - informationalCount}
+        </strong>{" "}
+        questions correctly.
+      </p>
+      Your answers (and final score) have been uploaded.
+    </>
+  );
+/*
+  return (
+    <>
       <h3>Answer Review</h3>
       <p>
         You answered{" "}
@@ -264,6 +279,7 @@ const AnswerReview = ({
       {confirm}
     </>
   );
+  */
 };
 
 export const useCaptureMdbookShortcuts = (capture: boolean) => {
