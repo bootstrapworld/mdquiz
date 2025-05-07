@@ -184,9 +184,9 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
 
   const questionClass = questionNameToCssClass(question.type);
 
-  const submit = formValidators.handleSubmit(data => {
+  const submit = formValidators.handleSubmit(async data => {
     const answer = methods.getAnswerFromDOM
-      ? methods.getAnswerFromDOM(data, ref.current!)
+      ? await methods.getAnswerFromDOM(data, ref.current!, question.prompt)
       : data;
     const comparator = methods.compareAnswers || isEqual;
     const correct = comparator(question.answer, answer);

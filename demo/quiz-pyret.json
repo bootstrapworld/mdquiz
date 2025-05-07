@@ -4,10 +4,11 @@
         {
             "type": "Pyret",
             "prompt": {
-                "prompt": "Lookit the pretty code",
-                "program": "use context starter2024\n1 + 2"
+                "prompt": "Change the definition of `r` so that the rectangle will be 400px wide",
+                "program": "use context starter2024\n\nr = rectangle(100, 200, \"solid\", \"orange\")",
+                "checkblock": "check:\nimage-width(r) is 400\nend"
             },
-            "answer": true
+            "answer": "`r = rectangle(4 * 100, 200, \"solid\", \"orange\")`"
         }
     ]
 }

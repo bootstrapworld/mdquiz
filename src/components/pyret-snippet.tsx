@@ -3,6 +3,7 @@ import { makeEmbed } from "pyret-embed";
 
 export interface SnippetOptions {
   program: string;
+  checkblock?: string;
   // exported API types go here
 }
 
@@ -10,15 +11,18 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect( () => {
     const setupEditor = async () => {
-      const editor = await makeEmbed("Embedded Editor", ref.current, "https://pyret-horizon.herokuapp.com/editor")
+      const editor = await makeEmbed("EmbeddedEditor", ref.current, "https://pyret-horizon.herokuapp.com/editor")
       editor.sendReset({
-        definitionsAtLastRun: "use context starter2024",
-        interactionsSinceLastRun: [],
+        definitionsAtLastRun: options.program,
+        interactionsSinceLastRun: ["r"],
         editorContents: options.program,
         replContents: ""
       });
+
+      //@ts-ignore
+      editor.getFrame().editor = editor;
     }
     setupEditor();
   }, [options]);
-  return <div ref={ref} />;
+  return <div ref={ref} className="embedded-editor"/>;
 };
