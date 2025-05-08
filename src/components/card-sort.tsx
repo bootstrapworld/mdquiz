@@ -10,7 +10,7 @@ import React, {
 import { DndProvider, useDrag, useDrop, XYCoord } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { MarkdownView } from "./markdown";
-import { CardSortPrompt, Card } from "../bindings/CardSortPrompt";
+import { CardSortPrompt, Card } from "../questions/card-sort";
 import hash from "object-hash";
 
 const containerStyle: CSSProperties = {

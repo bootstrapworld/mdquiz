@@ -1,10 +1,20 @@
-import { CardSortPrompt, Card } from "../bindings/CardSortPrompt";
-import { CardSortAnswer } from "../bindings/CardSortAnswer";
 import { CardSortView } from "../components/card-sort";
 import type { QuestionMethods } from "./types";
+import type { QuestionFields } from "../bindings/QuestionFields";
+import type { Markdown } from "../bindings/Markdown";
 import { MarkdownView } from "../components/markdown";
 import React, { useState } from "react";
 import hash from "object-hash";
+
+
+// a card is a tuple containing a title and some content
+type Card = { id?: string, title:string, content:string, top?: number, left?: number, children?: Card[] }
+// a CardSort Prompt contains a normal prompt and a CardArray
+type CardSortPrompt = { prompt: Markdown, cards: Card[] }
+type CardSortAnswer = { answer: Array<Array<string>>, ordered: string}
+type CardSort = QuestionFields<CardSortPrompt, CardSortAnswer>;
+
+export { Card, CardSortPrompt, CardSortAnswer, CardSort };
 
 /**
  * This function computes the similarity score between the user's answer and the real answer, 0 to 1, where 1 is correct. If unordered, then the score is based on ratio of correct element. If ordered, then the partial credit is average between unordered score and a ratio of whether cards are in the right position.
