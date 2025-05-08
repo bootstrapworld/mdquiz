@@ -1,1 +1,0 @@
-export interface CardSortAnswer { answer: Array<Array<string>>, ordered: string}

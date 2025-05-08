@@ -1,9 +1,8 @@
 import type { MultipleChoice } from "./MultipleChoice";
 import type { ShortAnswer } from "./ShortAnswer";
 import type { Tracing } from "./Tracing";
-import type { Informational } from "./Informational";
-import type { CardSort } from "./CardSort";
-import type { Pyret } from "../questions/pyret";
+import type { Informational } from "../questions/informational";
+import type { CardSort } from "../questions/card-sort";
 
 export type Question = 
 	{ "type": "ShortAnswer" } 	 & ShortAnswer 	  | 
