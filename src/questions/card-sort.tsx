@@ -1,7 +1,6 @@
 import { CardSortView } from "../components/card-sort";
 import type { QuestionMethods } from "./types";
-import type { QuestionFields } from "../bindings/QuestionFields";
-import type { Markdown } from "../bindings/Markdown";
+import type { QuestionFields, Markdown } from "../bindings/Question";
 import { MarkdownView } from "../components/markdown";
 import React, { useState } from "react";
 import hash from "object-hash";

@@ -1,8 +1,8 @@
-import { type Quiz } from "./bindings/Quiz";
 import "./telemetry";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { QuizView } from "./components/quiz";
+import type { Quiz } from "./components/quiz";
 import { parse } from '@prantlf/jsonlint';
 
 
@@ -16,7 +16,7 @@ declare global {
 export * from "./questions/mod";
 export * from "./components/quiz";
 export * from "./components/snippet";
-export { type Quiz } from "./bindings/Quiz";
+export { Quiz }
 export { React };
 export { ReactDOM };
 

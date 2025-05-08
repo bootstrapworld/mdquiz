@@ -2,11 +2,15 @@ import classNames from "classnames";
 import isEqual from "fast-deep-equal";
 import React, { useId } from "react";
 
-import type { Markdown } from "../bindings/Markdown";
-import type { MultipleChoiceAnswer } from "../bindings/MultipleChoiceAnswer";
-import type { MultipleChoicePrompt } from "../bindings/MultipleChoicePrompt";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
+import type { QuestionFields, Markdown } from "../bindings/Question";
+
+type MultipleChoiceAnswerFormat = Markdown | Array<Markdown>;
+type MultipleChoiceAnswer = { answer: MultipleChoiceAnswerFormat, }
+type MultipleChoicePrompt = { prompt: Markdown, distractors: Array<Markdown>, answerIndex?: number, sortAnswers?: boolean, }
+type MultipleChoice = QuestionFields<MultipleChoicePrompt, MultipleChoiceAnswer>;
+export { MultipleChoice, MultipleChoicePrompt, MultipleChoiceAnswer }
 
 interface MultipleChoiceState {
   choices: string[];

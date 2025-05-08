@@ -1,11 +1,16 @@
 import classNames from "classnames";
 import React, { useId, useState } from "react";
+import type { QuestionFields } from "../bindings/Question";
 
-import type { TracingAnswer } from "../bindings/TracingAnswer";
-import type { TracingPrompt } from "../bindings/TracingPrompt";
 // import { MoreInfo } from "../components/more-info";
 import { Snippet } from "../components/snippet";
 import type { QuestionMethods } from "./types";
+
+
+type  TracingPrompt = { program: string, }
+type TracingAnswer = { doesCompile: boolean, stdout?: string, lineNumber?: number, }
+type Tracing = QuestionFields<TracingPrompt, TracingAnswer>;
+export { Tracing, TracingAnswer, TracingPrompt}
 
 // let HELP_TEXT = `Errors may involve multiple line numbers. For example:
 
