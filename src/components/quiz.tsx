@@ -175,6 +175,7 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
+  console.log('informationalCount is ', informationalCount);
   return (
     <header>
       <h3>{quiz.title || "Quiz"}</h3>

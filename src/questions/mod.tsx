@@ -206,9 +206,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
       <div className="prompt">
         {question.type === "Informational" ? (
           <h4>This Page is Purely Informational</h4>
-        ) : (
-          <h4>Question {title}</h4>
-        )}
+        ) : null }
         {question.multipart && (
           <MultipartContext
             question={question}
