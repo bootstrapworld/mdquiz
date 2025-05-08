@@ -1,8 +1,10 @@
-import type { MultipleChoice } from "./MultipleChoice";
-import type { ShortAnswer } from "./ShortAnswer";
-import type { Tracing } from "./Tracing";
-import type { Informational } from "./Informational";
-import type { CardSort } from "./CardSort";
+export type Markdown = string;
+
+import type { MultipleChoice } 	from "../questions/multiple-choice";
+import type { ShortAnswer } 	from "../questions/short-answer";
+import type { Tracing } 		from "../questions/tracing";
+import type { Informational } 	from "../questions/informational";
+import type { CardSort } 		from "../questions/card-sort";
 
 export type Question = 
 	{ "type": "ShortAnswer" } 	 & ShortAnswer 	  | 
@@ -10,3 +12,14 @@ export type Question =
 	{ "type": "MultipleChoice" } & MultipleChoice | 
 	{ "type": "Informational" }  & Informational  | 
 	{ "type": "CardSort" } 		 & CardSort;
+
+
+export interface QuestionFields<Prompt, Answer> {
+	id?: string,
+	multipart?: string,
+	prompt: Prompt,
+	answer: Answer,
+	context?: Markdown,
+	promptExplanation?: boolean,
+	image?: string
+}

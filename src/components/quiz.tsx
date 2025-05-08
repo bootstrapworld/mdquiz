@@ -11,14 +11,20 @@ import React, {
   useState
 } from "react";
 
-import type { Question } from "../bindings/Question";
-import type { Quiz } from "../bindings/Quiz";
 import {
   AnswerView,
   QuestionView,
   type TaggedAnswer,
   getQuestionMethods
 } from "../questions/mod";
+
+import type { Question, Markdown } from "../bindings/Question";
+
+export type Quiz = {
+  title?: string,
+  questions: Array<Question>,
+  multipart?: Record<string, Markdown>,
+}
 
 interface StoredAnswers {
   answers: TaggedAnswer[];

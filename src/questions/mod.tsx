@@ -4,7 +4,7 @@ import React, { useContext, useId, useMemo, useRef, useState } from "react";
 import { type RegisterOptions, useForm } from "react-hook-form";
 
 import type { Question } from "../bindings/Question";
-import type { Quiz } from "../bindings/Quiz";
+import type { Quiz } from "../components/quiz";
 import { MarkdownView } from "../components/markdown";
 import { MoreInfo } from "../components/more-info";
 import { QuizConfigContext, useCaptureMdbookShortcuts } from "../lib";

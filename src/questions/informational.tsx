@@ -1,7 +1,12 @@
-import type { ShortAnswerPrompt } from "../bindings/ShortAnswerPrompt";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
+import type { QuestionFields, Markdown } from "../bindings/Question";
+import type { ShortAnswerPrompt } from "./short-answer";
 import React from "react";
+
+type InformationalPrompt = { prompt: Markdown, }
+type Informational = QuestionFields<InformationalPrompt, any>;
+export { Informational, InformationalPrompt };
 
 export const InformationalMethods: QuestionMethods<
   ShortAnswerPrompt,
