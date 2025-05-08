@@ -3,13 +3,20 @@
   margin: 1rem auto;
 }
 .multiple-choice fieldset { 
-  display: grid; grid-auto-rows: 1fr; 
+  display: grid;
+  grid-auto-rows: 1fr;
+  border: none;
 }
-
-.choice label * { 
-  display: inline; 
+.multiple-choice label { display: flex; }
+.multiple-choice input[type="radio"] { margin-right: 20px; }
+.multiple-choice .choice {
+    border: solid 1px gray;
+    border-radius: 20px;
+    padding: 5px;
+    margin: 10px 0;
 }
-.choice img { 
+.multiple-choice .choice:has(input[type="radio"]:checked) { border: inset; }
+.multiple-choice .choice img {
   vertical-align: middle; 
 }
 
