@@ -1,8 +1,7 @@
-import type { ShortAnswerPrompt } from "../bindings/ShortAnswerPrompt";
-import type { Markdown } from "../bindings/Markdown";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
-import type { QuestionFields } from "../bindings/QuestionFields";
+import type { QuestionFields, Markdown } from "../bindings/Question";
+import type { ShortAnswerPrompt } from "./short-answer";
 import React from "react";
 
 type InformationalPrompt = { prompt: Markdown, }

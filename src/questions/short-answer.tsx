@@ -1,8 +1,13 @@
-import type { ShortAnswerAnswer } from "../bindings/ShortAnswerAnswer";
-import type { ShortAnswerPrompt } from "../bindings/ShortAnswerPrompt";
+import type { QuestionFields, Markdown } from "../bindings/Question";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
 import React from "react";
+
+type ShortAnswerResponseFormat = "short" | "long" | "code";
+type ShortAnswerPrompt = { prompt: Markdown, response?: ShortAnswerResponseFormat, }
+type ShortAnswerAnswer = { answer: string, alternatives?: Array<string>, }
+type ShortAnswer = QuestionFields<ShortAnswerPrompt, ShortAnswerAnswer>;
+export { ShortAnswer, ShortAnswerAnswer, ShortAnswerPrompt, ShortAnswerResponseFormat };
 
 export const ShortAnswerMethods: QuestionMethods<
   ShortAnswerPrompt,
