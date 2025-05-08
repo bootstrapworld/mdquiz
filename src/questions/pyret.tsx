@@ -2,11 +2,10 @@ import classNames from "classnames";
 import React, { useId, useState } from "react";
 import { API } from "pyret-embed";
 
-import type { Markdown } from "../bindings/Markdown";
 import { MarkdownView } from "../components/markdown";
 import { PyretSnippet } from "../components/pyret-snippet";
 import type { QuestionMethods } from "./types";
-import { QuestionFields } from "../bindings/QuestionFields";
+import { QuestionFields, Markdown } from "../bindings/Question";
 
 type PyretPrompt = {prompt:Markdown, program: string, checkblock?: string};
 type PyretAnswer = any;

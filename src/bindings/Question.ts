@@ -5,6 +5,7 @@ import type { ShortAnswer } 	from "../questions/short-answer";
 import type { Tracing } 		from "../questions/tracing";
 import type { Informational } 	from "../questions/informational";
 import type { CardSort } 		from "../questions/card-sort";
+import type { Pyret } 			from "../questions/pyret";
 
 export type Question = 
 	{ "type": "ShortAnswer" } 	 & ShortAnswer 	  | 
