@@ -25,7 +25,8 @@ export interface QuestionMethods<Prompt, Answer, State = any> {
 
   getAnswerFromDOM?(
     data: { [key: string]: any },
-    container: HTMLFormElement
+    container: HTMLFormElement,
+    prompt?: Prompt,
   ): Answer;
 
   AnswerView: React.FC<{ answer: Answer; baseline: Answer; prompt: Prompt }>;

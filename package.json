@@ -35,6 +35,7 @@
     "mobx-react": "npm:mobx-react-lite@^4.1.0",
     "object-hash": "^3.0.0",
     "preact": "^10.26.4",
+    "pyret-embed": "git://github.com/jpolitz/pyret-embed-examples",
     "react": "npm:@preact/compat@^18.3.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",

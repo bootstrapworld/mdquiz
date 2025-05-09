@@ -13,6 +13,7 @@ import { MultipleChoiceMethods } from "./multiple-choice";
 import { ShortAnswerMethods } from "./short-answer";
 import { TracingMethods } from "./tracing";
 import { CardSortMethods } from "./card-sort";
+import { PyretMethods } from "./pyret";
 import type { QuestionMethods } from "./types";
 
 export { MultipleChoiceMethods } from "./multiple-choice";
@@ -25,7 +26,8 @@ const methodMapping = {
   Tracing: TracingMethods,
   MultipleChoice: MultipleChoiceMethods,
   Informational: InformationalMethods,
-  CardSort: CardSortMethods
+  CardSort: CardSortMethods,
+  Pyret : PyretMethods
 };
 
 export const getQuestionMethods = (
@@ -182,9 +184,9 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
 
   const questionClass = questionNameToCssClass(question.type);
 
-  const submit = formValidators.handleSubmit(data => {
+  const submit = formValidators.handleSubmit(async data => {
     const answer = methods.getAnswerFromDOM
-      ? methods.getAnswerFromDOM(data, ref.current!)
+      ? await methods.getAnswerFromDOM(data, ref.current!, question.prompt)
       : data;
     const comparator = methods.compareAnswers || isEqual;
     const correct = comparator(question.answer, answer);
