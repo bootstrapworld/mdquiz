@@ -3,32 +3,33 @@ import isEqual from "fast-deep-equal";
 import React, { useContext, useId, useMemo, useRef, useState } from "react";
 import { type RegisterOptions, useForm } from "react-hook-form";
 
-import type { Question } from "../bindings/Question";
-import type { Quiz } from "../components/quiz";
-import { MarkdownView } from "../components/markdown";
-import { MoreInfo } from "../components/more-info";
-import { QuizConfigContext, useCaptureMdbookShortcuts } from "../lib";
-import { InformationalMethods } from "./informational";
-import { MultipleChoiceMethods } from "./multiple-choice";
-import { ShortAnswerMethods } from "./short-answer";
-import { TracingMethods } from "./tracing";
-import { CardSortMethods } from "./card-sort";
-import { PyretMethods } from "./pyret";
-import type { QuestionMethods } from "./types";
+import type { Question }   from "../bindings/Question";
+import type { Quiz }       from "../components/quiz";
+import { MarkdownView }    from "../components/markdown";
+import { MoreInfo }        from "../components/more-info";
+import { PyretMethods }    from "./pyret";
+import { QuestionMethods } from "./types";
 
-export { MultipleChoiceMethods } from "./multiple-choice";
-export { ShortAnswerMethods } from "./short-answer";
-export { TracingMethods } from "./tracing";
-export { CardSortMethods } from "./card-sort";
+import { InformationalMethods  }  from "./informational";
+import { MultipleChoiceMethods }  from "./multiple-choice";
+import { ShortAnswerMethods    }  from "./short-answer";
+import { TracingMethods        }  from "./tracing";
+import { CardSortMethods       }  from "./card-sort";
+import { QuizConfigContext, useCaptureMdbookShortcuts } from "../lib";
+
+export { MultipleChoiceMethods }  from "./multiple-choice";
+export { ShortAnswerMethods }     from "./short-answer";
+export { TracingMethods }         from "./tracing";
+export { CardSortMethods }        from "./card-sort";
 
 const methodMapping = {
-  ShortAnswer: ShortAnswerMethods,
-  Tracing: TracingMethods,
-  MultipleChoice: MultipleChoiceMethods,
+  Pyret:         PyretMethods
+  Tracing:       TracingMethods,
+  CardSort:      CardSortMethods,
+  ShortAnswer:   ShortAnswerMethods,
   Informational: InformationalMethods,
-  CardSort: CardSortMethods,
-  Pyret : PyretMethods
-};
+  MultipleChoice:MultipleChoiceMethods,
+  };
 
 export const getQuestionMethods = (
   type: Question["type"]
