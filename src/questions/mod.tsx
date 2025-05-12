@@ -23,7 +23,7 @@ export { TracingMethods }         from "./tracing";
 export { CardSortMethods }        from "./card-sort";
 
 const methodMapping = {
-  Pyret:         PyretMethods
+  Pyret:         PyretMethods,
   Tracing:       TracingMethods,
   CardSort:      CardSortMethods,
   ShortAnswer:   ShortAnswerMethods,
