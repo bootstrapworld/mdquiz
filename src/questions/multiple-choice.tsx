@@ -2,6 +2,7 @@ import classNames from "classnames";
 import isEqual from "fast-deep-equal";
 import React, { useId } from "react";
 
+import { toJS } from "mobx";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionMethods } from "./types";
 import type { QuestionFields, Markdown } from "../bindings/Question";
@@ -14,6 +15,7 @@ export { MultipleChoice, MultipleChoicePrompt, MultipleChoiceAnswer }
 
 interface MultipleChoiceState {
   choices: string[];
+  cachedAnswer? : any;
 }
 
 const shuffle = (n:any[]) => [...n].sort(() => 0.5 - Math.random());
@@ -50,14 +52,17 @@ export const MultipleChoiceMethods: QuestionMethods<
     return { choices };
   },
 
-  ResponseView: ({ answer, state, formValidators: { required, register } }) => (
-    <>
+  ResponseView: ({ answer, state, formValidators: { required, register } }) => {
+    console.log('rendering MultiChoice ResponseView. cachedAnswer is', state.cachedAnswer?.answer);
+    return (<>
       {state!.choices.map((choice, i) => {
+        const isChecked = state.cachedAnswer?.answer === choice || state.cachedAnswer?.answer.includes(choice);
+        console.log(`checking choice ${i}:`, choice, 'answer includes?', isChecked);
         const id = useId();
         const multiAnswer = Array.isArray(answer.answer);
         return (
           <div className="choice" key={i}>
-            <label htmlFor={id}>
+            <label htmlFor={String(i)}>
             <input
               type={multiAnswer ? "checkbox" : "radio"}
               {...(multiAnswer
@@ -66,15 +71,16 @@ export const MultipleChoiceMethods: QuestionMethods<
                   })
                 : required("answer"))}
               value={choice}
-              id={id}
+              checked={true}
+              id={String(i)}
             />
               <MarkdownView markdown={choice} />
             </label>
           </div>
         );
       })}
-    </>
-  ),
+    </>)
+  },
 
   getAnswerFromDOM(data) {
     if (Array.isArray(data.answer)) data.answer.sort();

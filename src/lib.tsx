@@ -24,9 +24,7 @@ export default function buildQuiz(rootNode, quizConfig) {
   const App = () => {
 
     if(typeof quizConfig !== "object") {
-      console.log('Read:\n', quizConfig);
       try {
-        console.log('trying to parse quiz string as JSON');
         quizConfig = parse(quizConfig) as unknown as Quiz;
       } catch (error) {
         const { message, reason, excerpt, pointer, location } = error

@@ -9,6 +9,21 @@
                 "checkblock": "check:\nimage-width(r) is 400\nend"
             },
             "answer": "`r = rectangle(4 * 100, 200, \"solid\", \"orange\")`"
+        },
+        {
+            "type": "MultipleChoice",
+            "prompt": {
+                "prompt": "What does it mean if a variable `x` is immutable?\n",
+                "distractors": [
+                    "`x` is stored in the immutable region of memory.",
+                    "After being defined, `x` can be changed at most once.",
+                    "You cannot create a reference to `x`.![alt text](./react.svg 'react logo')"
+                ]
+            },
+            "answer": {
+                "answer": ["`x` cannot be changed after being assigned to a value.", "MEEEEEEE"]
+            },
+            "context": "Immutable means \"not mutable\", or not changeable.\n"
         }
     ]
 }

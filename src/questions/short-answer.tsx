@@ -7,11 +7,15 @@ type ShortAnswerResponseFormat = "short" | "long" | "code";
 type ShortAnswerPrompt = { prompt: Markdown, response?: ShortAnswerResponseFormat, }
 type ShortAnswerAnswer = { answer: string, alternatives?: Array<string>, }
 type ShortAnswer = QuestionFields<ShortAnswerPrompt, ShortAnswerAnswer>;
+interface ShortAnswerState {
+  cachedAnswer? : any;
+}
 export { ShortAnswer, ShortAnswerAnswer, ShortAnswerPrompt, ShortAnswerResponseFormat };
 
 export const ShortAnswerMethods: QuestionMethods<
   ShortAnswerPrompt,
-  ShortAnswerAnswer
+  ShortAnswerAnswer,
+  ShortAnswerState
 > = {
   PromptView: ({ prompt, image }) => (
     <div>
@@ -22,8 +26,9 @@ export const ShortAnswerMethods: QuestionMethods<
       />
     </div>
   ),
-  ResponseView: ({ prompt, submit, formValidators: { required } }) => {
+  ResponseView: ({ prompt, state, submit, formValidators: { required } }) => {
     const formFields = required("answer");
+    console.log('rendering Pyret ResponseView. cached Answer is', state.cachedAnswer);
     return (
       <>
         {!prompt.response || prompt.response === "short" ? (
@@ -34,6 +39,7 @@ export const ShortAnswerMethods: QuestionMethods<
             onKeyDown={e => {
               if (e.key === "Enter") submit();
             }}
+            value={state && state.cachedAnswer.answer}
           />
         ) : (
           /* prompt.response == "long" */

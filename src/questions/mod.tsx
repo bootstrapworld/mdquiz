@@ -163,6 +163,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   onSubmit,
   goBack
 }) => {
+  console.log('rendering QuestionView. cachedAnswer is', questionState.cachedAnswer);
   const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
   const start = useMemo(now, [quizName, question, index]);
   const ref = useRef<HTMLFormElement>(null);
@@ -205,7 +206,6 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   const shouldPrompt = question.promptExplanation && attempt === 0;
 
   const explanationId = useId();
-
   return (
     <div className={classNames("question", questionClass)}>
       <div className="prompt">

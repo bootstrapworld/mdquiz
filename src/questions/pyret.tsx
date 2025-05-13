@@ -10,28 +10,36 @@ import { QuestionFields, Markdown } from "../bindings/Question";
 type PyretPrompt = {prompt:Markdown, program: string, checkblock?: string};
 type PyretAnswer = any;
 type Pyret = QuestionFields<PyretPrompt, PyretAnswer>;
+interface PyretAnswerState {
+  cachedAnswer? : any;
+}
 
 export { Pyret, PyretPrompt, PyretAnswer };
 
-export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
+export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer, PyretAnswerState> = {
   PromptView: ({ prompt }) => (
     <>
       <p>
       <MarkdownView markdown={prompt.prompt} />
       </p>
-      <PyretSnippet program={prompt.program} checkblock={prompt.checkblock}/>
     </>
   ),
 
   ResponseView: ({
-    // prompt,
+    prompt,
+    state,
     formValidators: {
       required,
       formState: { errors }
     }
   }) => {
+    console.log('rendering Pyret ResponseView. cached Answer is', state.cachedAnswer);
     return (<>
-    TBD
+      <PyretSnippet
+        program={
+          state && state.cachedAnswer.editorState.editorContents
+          || prompt.program}
+        checkblock={prompt.checkblock}/>
     </>
     );
   },
@@ -43,7 +51,10 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
     editor.setInteractions(prompt.checkblock);
     const result = JSON.parse(await editor.runInteractionResult());
     console.log(result, editor.currentState(), result.texts.some(t => t.includes("Looks shipshape")));
-    return result.texts.some(t => t.includes("Looks shipshape"))
+    return {
+      answer: result.texts.some(t => t.includes("Looks shipshape")),
+      editorState: editor.currentState()
+    }
   },
 
   AnswerView: ({ answer, baseline, prompt }) => {

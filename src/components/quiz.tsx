@@ -175,7 +175,6 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
-  console.log('informationalCount is ', informationalCount);
   return (
     <header>
       <h3>{quiz.title || "Quiz"}</h3>
@@ -432,6 +431,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     }, [showFullscreen, config.fullscreen, lastTop]);
 
     const goBack = action(() => {
+      const answer = state.answers[state.index - 1];
       if (state.index > 0) {
         state.index -= 1;
         if (config.quiz.questions[state.index - 1]?.type === "Informational") {
@@ -491,6 +491,16 @@ export const QuizView: React.FC<QuizViewProps> = observer(
 
     const questionTitles = generateQuestionTitles(config.quiz);
 
+    // If we've seen this question before, pass the answer back so it
+    // can be recalled. (In some cases, this requires creating an empty
+    // questionState.)
+    const cachedAnswer = toJS(state.answers[state.index])?.answer;
+    console.log('About to render section. Cached answer is', cachedAnswer);
+    if(cachedAnswer) {
+      questionStates[state.index] = questionStates[state.index] || {};
+      questionStates[state.index].cachedAnswer = cachedAnswer;
+    }
+
     const body = (
       <section>
         {state.started ? (
@@ -515,7 +525,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
               title={questionTitles[state.index]}
               attempt={state.attempt}
               question={config.quiz.questions[state.index]}
-              questionState={questionStates[state.index]}
+              questionState={questionStates[state.index] || ""}
               onSubmit={onSubmit}
               goBack={goBack}
             />
