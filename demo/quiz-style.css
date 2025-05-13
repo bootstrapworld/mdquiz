@@ -22,10 +22,20 @@
 
 .card-sort p, .card-sort h3 { margin: 5px; }
 .card-sort .container { 
-  width: 600px; 
-  height: 300px; 
+  width: 100%;
+  height: 1000px;
   border: solid 1px black; 
 }
+
+.card-sort .card {
+  cursor:         move;
+  max-width:      200px;
+  opacity:        1;
+  display:        flex;
+  flex-direction: column;
+}
+
+.card-sort .card img { max-width: 200px; }
 
 .embedded-editor { border: solid 1px black;  }
 .pyret iframe { min-height: 400px; min-width: 750px; }

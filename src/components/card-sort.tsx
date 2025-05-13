@@ -192,8 +192,6 @@ const Card = ({
 
   const cardStyle: CSSProperties = {
     position:     inGroup? 'unset' : 'absolute',
-    cursor:       'move',
-    maxWidth:     '200px',
     background:   isUnder? 'gray' 
                     : (cards.length > 0)? 'lightgray'
                     : 'white',
@@ -202,9 +200,6 @@ const Card = ({
                     : '1px dashed gray',
     borderTop:    '1px dashed gray',
     zIndex:       clicked? '1000' : 'auto',
-    opacity:      1,
-    display:      'flex',
-    flexDirection:'column',
   }
 
   if(isDragging) {
