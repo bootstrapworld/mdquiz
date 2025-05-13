@@ -41,11 +41,18 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "npm:@preact/compat@^18.3.1",
     "react-hook-form": "^7.55.0",
+    "react-loader-spinner": "^6.1.6",
     "react-showdown": "^2.3.1",
     "typescript": "5.8.2",
     "vite": "^6.2.0",
     "vite-plugin-singlefile": "^2.2.0",
     "vite-plugin-static-copy": "^2.3.0"
+  },
+  "overrides": {
+    "react-loader-spinner": {
+      "react": "npm:@preact/compat@^18.3.1",
+      "react-dom": "npm:@preact/compat@^18.3.1"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
