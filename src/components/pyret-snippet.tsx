@@ -33,7 +33,9 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
 
   // the "loading" spinner, which is null if we're done loading
   const spinner = isLoading? (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      Loading...
+      <p/>
         <RotatingLines
           strokeColor="grey"
           strokeWidth="5"
@@ -42,11 +44,11 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
           visible={true}
         />
       </div>
-    ) : null;
+    ) : null
 
   return (
     <div>
       {spinner}
-      <div ref={ref} className="embedded-editor"/>;
+      <div ref={ref} className="embedded-editor" style={{display:isLoading? "none" : "unset"}}/>
     </div>)
 };

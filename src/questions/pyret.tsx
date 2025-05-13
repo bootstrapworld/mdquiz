@@ -41,7 +41,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer, PyretAnswer
           || prompt.program}
         checkblock={prompt.checkblock}/>
     </>
-    );
+    )
   },
 
   async getAnswerFromDOM(_, parentNode, prompt) {
