@@ -20,22 +20,27 @@
   vertical-align: middle; 
 }
 
-.card-sort p, .card-sort h3 { margin: 5px; }
 .card-sort .container { 
-  width: 100%;
-  height: 1000px;
-  border: solid 1px black; 
+  display: block;
+  height: 500px;
 }
 
 .card-sort .card {
   cursor:         move;
-  max-width:      200px;
+  padding:        5px;
+  max-width:      20%;
   opacity:        1;
   display:        flex;
   flex-direction: column;
 }
+.card-sort .card h3 { margin: 0; text-align: center; }
+.card-sort .card img {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}
 
-.card-sort .card img { max-width: 200px; }
+.card-sort fieldset { padding: 0; }
 
 .embedded-editor { border: solid 1px black;  }
 .pyret iframe { min-height: 400px; min-width: 750px; }
