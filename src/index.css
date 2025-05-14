@@ -16,7 +16,7 @@ fieldset>div,
 .question { display: contents; }
 
 .mdbook-quiz, .response { height: 100%; display: flex; flex-direction: column; }
-.response input[type=submit] { width: 100px; margin: 20px; }
+.response input[type=submit], button { width: 100px; margin: 20px; }
 
 .multiple-choice fieldset {
   display: grid;
