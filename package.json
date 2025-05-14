@@ -42,6 +42,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "npm:@preact/compat@^18.3.1",
     "react-hook-form": "^7.55.0",
+    "react-loader-spinner": "^6.1.6",
     "react-showdown": "^2.3.1",
     "typescript": "5.8.2",
     "vite": "^6.2.0",
@@ -60,5 +61,11 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "typescript-eslint": "^8.24.1",
     "vitest": "^3.1.1"
+  },
+  "overrides": {
+    "react-loader-spinner": {
+      "react": "npm:@preact/compat@^18.3.1",
+      "react-dom": "npm:@preact/compat@^18.3.1"
+    }
   }
 }

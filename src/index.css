@@ -43,7 +43,6 @@
 
 .card-sort fieldset { padding: 0; }
 
-.embedded-editor { border: solid 1px black;  }
-.pyret iframe { min-height: 400px; min-width: 750px; }
+.pyret iframe { min-height: 400px; min-width: 750px; border: solid 1px black !important; }
 
 code { background: #ddd; }
