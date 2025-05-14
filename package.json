@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/mdquiz.js",
   "files": [
+    "demo",
     "dist",
     "src/*",
     "tsconfig.json",
