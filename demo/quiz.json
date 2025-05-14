@@ -7,7 +7,7 @@
                 "prompt": "What does it mean if a variable `x` is immutable?\n",
                 "distractors": [
                     "`x` is stored in the immutable region of memory.",
-                    "After being defined, `x` can be changed at most once.",
+                    "After being defined, `x` can be changed at most once.![](./run-dist.png)",
                     "You cannot create a reference to `x`.![alt text](./react.svg 'react logo')"
                 ]
             },

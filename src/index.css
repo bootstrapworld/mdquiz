@@ -34,6 +34,8 @@ fieldset>div,
 .multiple-choice .choice:has(input[type="radio"]:checked) { border: inset; }
 .multiple-choice .choice img {
   vertical-align: middle;
+  max-width: 100%;
+  max-height: 110px;
 }
 
 .card-sort .container {
