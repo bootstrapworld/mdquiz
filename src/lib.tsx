@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { QuizView } from "./components/quiz";
 import type { Quiz } from "./components/quiz";
 import { parse } from '@prantlf/jsonlint';
-
+import "./index.css";
 
 
 declare global {

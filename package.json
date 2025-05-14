@@ -45,6 +45,7 @@
     "react-showdown": "^2.3.1",
     "typescript": "5.8.2",
     "vite": "^6.2.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-singlefile": "^2.2.0",
     "vite-plugin-static-copy": "^2.3.0"
   },
