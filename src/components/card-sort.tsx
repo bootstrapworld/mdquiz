@@ -192,13 +192,8 @@ const Card = ({
 
   const cardStyle: CSSProperties = {
     position:     inGroup? 'unset' : 'absolute',
-    background:   isUnder? 'gray' 
-                    : (cards.length > 0)? 'lightgray'
-                    : 'white',
-    border:       isUnder? '2px solid black' 
-                    : inGroup? 'none'
-                    : '1px dashed gray',
-    borderTop:    '1px dashed gray',
+    border:       isUnder? '2px solid black'
+                    : '',
     zIndex:       clicked? '1000' : 'auto',
   }
 
@@ -209,7 +204,7 @@ const Card = ({
 
   return (
     <div
-      className="card"
+      className={"card" + ((cards.length > 0)? " group" : "")}
       ref={ref}
       id={id}
       style={{...cardStyle, left, top}}

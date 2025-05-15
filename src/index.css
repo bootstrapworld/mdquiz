@@ -25,17 +25,20 @@ fieldset>div,
 }
 .multiple-choice label { display: flex; align-content: center; flex-wrap: wrap; }
 .multiple-choice input[type="radio"] { margin-right: 20px; }
-.multiple-choice .choice {
+.multiple-choice .choice label {
     border: solid 1px gray;
     border-radius: 20px;
     padding: 5px;
     margin: 10px 0;
 }
-.multiple-choice .choice:has(input[type="radio"]:checked) { border: inset; }
+.multiple-choice .choice:has(input[type="radio"]:checked) label,
+.multiple-choice .choice:has(input[type="checkbox"]:checked)  label { border: inset; }
+
 .multiple-choice .choice img {
   vertical-align: middle;
   max-width: 100%;
   max-height: 110px;
+  margin-left: 50px;
 }
 
 .card-sort .container {
@@ -48,6 +51,8 @@ fieldset>div,
   cursor:         move;
   padding:        5px;
   max-width:      250px;
+  background:     white;
+  border:         1px dashed grey;
   opacity:        1;
   display:        flex;
   flex-direction: column;
@@ -60,6 +65,12 @@ fieldset>div,
   max-height: 150px;
 }
 
+.card-sort .card.group {
+  background: lightgray;
+  border: '1px dashed gray';
+}
+
+.card-sort .card.group .card {   border: 1px dashed gray; }
 .card-sort fieldset { padding: 0; }
 
 .pyret iframe { min-height: 400px; min-width: 750px; border: solid 1px black !important; }
