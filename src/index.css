@@ -20,7 +20,6 @@ fieldset>div,
 
 .multiple-choice fieldset {
   display: grid;
-  grid-auto-rows: 1fr;
   border: none;
 }
 .multiple-choice label { display: flex; align-content: center; flex-wrap: wrap; }
