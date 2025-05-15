@@ -2,8 +2,12 @@ const BASE_URL = "https://www.BootstrapWorld.org/data/public/AssessmentActions.p
 
 class Telemetry {
   async log(payload: object) {
-    console.log(payload)
     const url = `${BASE_URL}`;
+
+    const urlParams = new URLSearchParams(document.location.search);
+
+    // artificially attach the teacherId
+    (payload as any).instructor_code = urlParams.get("teacherId");
 
     const response = await fetch(url, {
       method: "POST",
