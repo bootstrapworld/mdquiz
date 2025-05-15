@@ -1,7 +1,8 @@
-const BASE_URL = "https://www.BootstrapWorld.org/data/actions/AssessmentActions.php";
+const BASE_URL = "https://www.BootstrapWorld.org/data/public/AssessmentActions.php";
 
 class Telemetry {
   async log(payload: object) {
+    console.log(payload)
     const url = `${BASE_URL}`;
 
     const response = await fetch(url, {
@@ -13,7 +14,7 @@ class Telemetry {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to log with status: ${response.statusText} `);
+      throw new Error(`Failed to log! ${JSON.stringify(response)}`);
     }
   }
 }
