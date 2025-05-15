@@ -451,7 +451,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(
         else state.index = state.wrongAnswers![wrongAnswerIdx + 1];
       }
 
-      window.telemetry?.log("answers", {
+      window.telemetry?.log({
+        type: "answers",
         quizName: config.name,
         quizHash,
         answers: state.answers,

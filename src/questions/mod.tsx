@@ -62,7 +62,8 @@ const BugReporter = ({
   const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
     const data = new FormData(event.target as any);
     const feedback = data.get("feedback")!.toString();
-    window.telemetry!.log("bug", {
+    window.telemetry!.log({
+      type: "bug",
       quizName,
       question,
       feedback

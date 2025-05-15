@@ -1,8 +1,8 @@
-const BASE_URL = "http://localhost:8888";
+const BASE_URL = "https://www.BootstrapWorld.org/data/actions/AssessmentActions.php";
 
 class Telemetry {
-  async log(endpoint: string, payload: object) {
-    const url = `${BASE_URL}/${endpoint}`;
+  async log(payload: object) {
+    const url = `${BASE_URL}`;
 
     const response = await fetch(url, {
       method: "POST",
