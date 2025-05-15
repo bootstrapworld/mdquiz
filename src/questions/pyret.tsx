@@ -19,19 +19,18 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
       <p>
       <MarkdownView markdown={prompt.prompt} />
       </p>
-      <PyretSnippet program={prompt.program} checkblock={prompt.checkblock}/>
     </>
   ),
 
   ResponseView: ({
-    // prompt,
+    prompt,
     formValidators: {
       required,
       formState: { errors }
     }
   }) => {
     return (<>
-    TBD
+      <PyretSnippet program={prompt.program} checkblock={prompt.checkblock}/>
     </>
     );
   },
