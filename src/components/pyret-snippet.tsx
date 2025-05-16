@@ -16,11 +16,16 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect( () => {
+    // disable the submit button on the editor is loaded
+    const submitButton = document.querySelector('input[type=submit]') as HTMLInputElement
+    submitButton.disabled = true;
+
     const setupEditor = async () => {
       const editor = await makeEmbed("EmbeddedEditor", ref.current, "https://pyret-horizon.herokuapp.com/editor")
 
-      // hide the loading indicator
+      // hide the loading indicator and re-enable the submit button
       setIsLoading(false);
+      submitButton.disabled = false;
 
       editor.sendReset({
         definitionsAtLastRun: options.program,
@@ -29,6 +34,7 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
         replContents: ""
       });
     }
+
     setupEditor();
   }, [options]);
 
