@@ -180,9 +180,13 @@ export const CardSortMethods: QuestionMethods<
 
   ResponseView: ({ prompt, submit, formValidators: { required } }) => {
     const [cardGrouping, setCardGrouping] = useState(prompt.cards);
+
     return (
       <div>
-        <CardSortView data={cardGrouping} updateData={setCardGrouping} />
+        <CardSortView
+          data={cardGrouping}
+          setCards={setCardGrouping}
+        />
       </div>
     );
   },
