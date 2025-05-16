@@ -42,7 +42,8 @@ fieldset>div,
   max-height: 110px;
   margin-left: 50px;
 }
-.multiple-choice .prompt img { max-width:500px }
+.multiple-choice .choice p { margin: 5px; }
+.multiple-choice .prompt img { max-width: 640px }
 
 /*******************************************************************
  * CARD SORT
