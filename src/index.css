@@ -43,7 +43,7 @@ fieldset>div,
   margin-left: 50px;
 }
 .multiple-choice .choice p { margin: 5px; }
-.multiple-choice .prompt img { max-width: 640px }
+.multiple-choice .prompt img, .multiple-choice .choice label { max-width: 640px; }
 
 /*******************************************************************
  * CARD SORT
