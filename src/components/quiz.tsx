@@ -253,40 +253,6 @@ const AnswerReview = ({
       Your answers (and final score) have been uploaded.
     </>
   );
-/*
-  return (
-    <>
-      <h3>Answer Review</h3>
-      <p>
-        You answered{" "}
-        <strong>
-          {nCorrect - informationalCount}/
-          {quiz.questions.length - informationalCount}
-        </strong>{" "}
-        questions correctly.
-      </p>
-      {confirm}
-      {quiz.questions.map((question, i) => {
-        const { answer, correct } = state.answers[i];
-        return (
-          <div className="answer-wrapper" key={i}>
-            <AnswerView
-              index={i + 1}
-              title={questionTitles[i]}
-              multipart={quiz.multipart}
-              quizName={name}
-              question={question}
-              userAnswer={answer}
-              correct={correct}
-              showCorrect={state.confirmedDone}
-            />
-          </div>
-        );
-      })}
-      {confirm}
-    </>
-  );
-  */
 };
 
 export const useCaptureMdbookShortcuts = (capture: boolean) => {
@@ -451,13 +417,16 @@ export const QuizView: React.FC<QuizViewProps> = observer(
         else state.index = state.wrongAnswers![wrongAnswerIdx + 1];
       }
 
-      window.telemetry?.log({
-        type: "answers",
-        quizName: config.name,
-        quizHash,
-        answers: state.answers,
-        attempt: state.attempt
-      });
+      // If this was the last question, save results to the DB
+      if(state.index === (config.quiz.questions.length)) {
+        window.telemetry?.log({
+          type: "answers",
+          quizName: config.name,
+          quizHash,
+          answers: state.answers,
+          attempt: state.attempt
+        });
+      }
 
       if (state.index === config.quiz.questions.length) {
         const wrongAnswers = state.answers
