@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="quiz-style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module">
       import buildQuiz from "../dist/lib.js";
-      import quizStr from "./quiz-pyret.json?raw" with {type: 'json'};
+      import quizStr from "./quiz.json?raw" with {type: 'json'};
+      //import quizStr from "./quiz.json?raw" with {type: 'json'};
+//      console.log(quizStr)
       buildQuiz("root", quizStr);
     </script>
   </body>

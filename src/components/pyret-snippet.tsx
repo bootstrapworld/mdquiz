@@ -9,17 +9,24 @@ export interface SnippetOptions {
 }
 
 export const PyretSnippet: React.FC<SnippetOptions> = options => {
-  // state for showing loading indicator
-  const [isLoading, setIsLoading] = useState(true);
 
   // create a ref, so that we can render into the DOM
   const ref = useRef<HTMLDivElement>(null);
+
+  // state for showing loading indicator
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect( () => {
+    // disable the submit button on the editor is loaded
+    const submitButton = document.querySelector('input[type=submit]') as HTMLInputElement
+    submitButton.disabled = true;
+
     const setupEditor = async () => {
       const editor = await makeEmbed("EmbeddedEditor", ref.current, "https://pyret-horizon.herokuapp.com/editor")
 
-      // hide the loading indicator
+      // hide the loading indicator and re-enable the submit button
       setIsLoading(false);
+      submitButton.disabled = false;
 
       editor.sendReset({
         definitionsAtLastRun: options.program,
@@ -28,14 +35,19 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
         replContents: ""
       });
     }
+
     setupEditor();
   }, [options]);
 
   // the "loading" spinner, which is null if we're done loading
   const spinner = isLoading? (
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      Loading...
-      <p/>
+      <div style={{
+        display:       'flex',
+        flexDirection: 'column',
+        justifyContent:'center',
+        alignItems:    'center',
+      }}>
+      <div>Loading the Pyret Editor...</div>
         <RotatingLines
           strokeColor="grey"
           strokeWidth="5"
@@ -44,11 +56,12 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
           visible={true}
         />
       </div>
-    ) : null
+    ) : null;
 
   return (
     <div>
       {spinner}
       <div ref={ref} className="embedded-editor" style={{display:isLoading? "none" : "unset"}}/>
-    </div>)
+    </div>
+  );
 };

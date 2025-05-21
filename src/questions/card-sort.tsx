@@ -106,7 +106,6 @@ export const CardSortMethods: QuestionMethods<
       <div>
         <MarkdownView
           markdown={prompt.prompt}
-          imag={image}
         />
       </div>
     )
@@ -181,11 +180,13 @@ export const CardSortMethods: QuestionMethods<
 
   ResponseView: ({ prompt, submit, formValidators: { required } }) => {
     const [cardGrouping, setCardGrouping] = useState(prompt.cards);
+
     return (
       <div>
-        <pre style={{ fontSize: "0.0000000000000001px", color: "white" }}>{JSON.stringify(cardGrouping, null, 2)}</pre>
-        <MarkdownView markdown={prompt.prompt} />
-        <CardSortView data={cardGrouping} updateData={setCardGrouping} />
+        <CardSortView
+          data={cardGrouping}
+          setCards={setCardGrouping}
+        />
       </div>
     );
   },

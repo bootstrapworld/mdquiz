@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/mdquiz.js",
   "files": [
+    "demo",
     "dist",
     "src/*",
     "tsconfig.json",
@@ -28,14 +29,13 @@
     "@prantlf/jsonlint": "^16.0.0",
     "classnames": "^2.5.1",
     "fast-deep-equal": "^3.1.3",
-    "glob": "^11.0.2",
     "globals": "^16.0.0",
     "highlight.js": "^11.11.1",
     "mobx": "^6.13.7",
     "mobx-react": "npm:mobx-react-lite@^4.1.0",
     "object-hash": "^3.0.0",
     "preact": "^10.26.4",
-    "pyret-embed": "git://github.com/jpolitz/pyret-embed-examples",
+    "pyret-embed": "^0.0.1",
     "react": "npm:@preact/compat@^18.3.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -45,6 +45,7 @@
     "react-showdown": "^2.3.1",
     "typescript": "5.8.2",
     "vite": "^6.2.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-singlefile": "^2.2.0",
     "vite-plugin-static-copy": "^2.3.0"
   },
@@ -65,5 +66,11 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "typescript-eslint": "^8.24.1",
     "vitest": "^3.1.1"
+  },
+  "overrides": {
+    "react-loader-spinner": {
+      "react": "npm:@preact/compat@^18.3.1",
+      "react-dom": "npm:@preact/compat@^18.3.1"
+    }
   }
 }

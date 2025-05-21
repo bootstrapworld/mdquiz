@@ -1,68 +1,88 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  margin: 1em;
+  height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  margin: 1rem auto;
+  height: 100%;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+/* These items are just wrappers. Remove them from layout with display: contents */
+#root>div,
+.mdbook-quiz-wrapper,
+.mdbook-quiz section,
+fieldset>div,
+.question { display: contents; }
+
+.mdbook-quiz, .response { height: 100%; display: flex; flex-direction: column; }
+.response input[type=submit], button { width: 100px; margin: 20px; }
+
+/*******************************************************************
+ * MULTIPLE CHOICE
+ */
+.multiple-choice fieldset {
+  display: grid;
+  border: none;
 }
-button:hover {
-  border-color: #646cff;
+.multiple-choice label { display: flex; align-content: center; flex-wrap: wrap; }
+.multiple-choice input[type="radio"] { margin-right: 20px; }
+.multiple-choice .choice label {
+    border: solid 1px gray;
+    border-radius: 20px;
+    padding: 5px;
+    margin: 10px 0;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.multiple-choice .choice:has(input[type="radio"]:checked) label,
+.multiple-choice .choice:has(input[type="checkbox"]:checked)  label { border: inset; }
+
+.multiple-choice .choice img {
+  vertical-align: middle;
+  max-width: 100%;
+  max-height: 110px;
+  margin-left: 50px;
+}
+.multiple-choice .choice p { margin: 5px; }
+.multiple-choice .prompt img, .multiple-choice .choice label { max-width: 640px; }
+
+/*******************************************************************
+ * CARD SORT
+ */
+.card-sort .container {
+  display: block;
+  height: 100%;
+}
+.card-sort .response fieldset { flex-grow: 1; }
+
+.card-sort .card {
+  cursor:         move;
+  padding:        5px;
+  max-width:      250px;
+  background:     white;
+  border:         1px dashed grey;
+  opacity:        1;
+  display:        flex;
+  flex-direction: column;
+}
+.card-sort .card h3 { margin: 0; text-align: center; }
+.card-sort .card img {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  max-height: 150px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.card-sort .card.group {
+  background: lightgray;
+  border: '1px dashed gray';
 }
+
+.card-sort .card.group .card {   border: 1px dashed gray; }
+.card-sort fieldset { padding: 0; }
+
+/*******************************************************************
+ * PYRET
+ */
+.pyret iframe { min-height: 400px; min-width: 750px; border: solid 1px black !important; }
+
+code { background: #ddd; }

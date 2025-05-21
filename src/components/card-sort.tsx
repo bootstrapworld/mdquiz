@@ -5,7 +5,8 @@ import React, {
   useCallback, 
   CSSProperties,
   Dispatch,
-  SetStateAction
+  SetStateAction,
+  RefObject
 } from "react";
 import { DndProvider, useDrag, useDrop, XYCoord } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -26,21 +27,12 @@ export interface DragItem {
 
 export const CardSortView: React.FC<{
   data: Card[], 
-  updateData: Dispatch<SetStateAction<Card[]>>
-}> = ({data, updateData}) => {
-
-  // take the original data and extend it with empty child 
-  // arrays and randomly-distributed coords
-  const cards = data.map( card => {
-    card.children = card.children || []; 
-    card.left     = card.left     || Math.random() * 400;
-    card.top      = card.top      || Math.random() * 200;
-    return card
-  })
+  setCards: Dispatch<SetStateAction<Card[]>>,
+}> = ({data, setCards}) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container cards={cards} setCards={updateData}/>
+      <Container cards={data} setCards={setCards}/>
     </DndProvider>);
 }
 
@@ -48,6 +40,24 @@ const Container: React.FC<{
   cards: Card[], 
   setCards: Dispatch<SetStateAction<Card[]>>
 }> = ({cards, setCards}) => {
+  // create a ref, so that we can render into the DOM
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect( () =>{
+    // take the original data and extend it with empty child
+    // arrays and randomly-distributed coords
+    if(ref.current && !cards.some(card => card.children && card.left && card.top)) {
+      let { width, height } = ref.current.getBoundingClientRect();
+      width  -= 250;
+      height -= 250;
+      setCards(cards.map( card => {
+        card.children = card.children || [];
+        card.left     = Math.random() * width;
+        card.top      = Math.random() * height;
+        return card
+      }));
+    }
+  }, [ref])
 
   const moveCard = useCallback( 
     (id, left, top) => {
@@ -130,7 +140,7 @@ const Container: React.FC<{
   )
 
   // @ts-ignore
-  return (<div ref={drop} style={containerStyle} className="container">
+  return (<div ref={drop(ref)} style={containerStyle} className="container">
         {cards.map( (card, idx) => (
           <Card
             key={card.id}
@@ -139,9 +149,9 @@ const Container: React.FC<{
             content={card.content}
             moveCard={moveCard}
             addCardToGroup={addCardToGroup}
-            left={card.left}
-            top={card.top}
-            cards={card.children}
+            left={card.left || 0}       // use defaults to get the initial render
+            top={card.top || 0}         // use defaults to get the initial render
+            cards={card.children || []} // use defaults to get the initial render
             inGroup={false}
           />
         ))}
@@ -192,19 +202,9 @@ const Card = ({
 
   const cardStyle: CSSProperties = {
     position:     inGroup? 'unset' : 'absolute',
-    cursor:       'move',
-    maxWidth:     '200px',
-    background:   isUnder? 'gray' 
-                    : (cards.length > 0)? 'lightgray'
-                    : 'white',
-    border:       isUnder? '2px solid black' 
-                    : inGroup? 'none'
-                    : '1px dashed gray',
-    borderTop:    '1px dashed gray',
+    border:       isUnder? '2px solid black'
+                    : '',
     zIndex:       clicked? '1000' : 'auto',
-    opacity:      1,
-    display:      'flex',
-    flexDirection:'column',
   }
 
   if(isDragging) {
@@ -214,7 +214,7 @@ const Card = ({
 
   return (
     <div
-      className="card"
+      className={"card" + ((cards.length > 0)? " group" : "")}
       ref={ref}
       id={id}
       style={{...cardStyle, left, top}}
