@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && vite build -c vite.config-lib.ts",
-    "build-demo": "tsc && vite build -c vite.config-demo.ts && vite preview --open",
+    "build-demo": "vite build -c vite.config-demo.ts && vite preview --open",
     "dev": "npm run build && vite build -c vite.config-demo.ts && vite preview --open -c vite.config-demo.ts",
     "lint": "eslint .",
     "prepare": "npm run build",
