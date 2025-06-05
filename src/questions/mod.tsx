@@ -225,7 +225,6 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
       <form className="response" ref={ref} onSubmit={submit}>
         {question.type !== "Informational" ? (
           <>
-            <h4>Response</h4>
             <fieldset disabled={showExplanation}>
               <methods.ResponseView
                 key={`${quizName}-question${index}`}

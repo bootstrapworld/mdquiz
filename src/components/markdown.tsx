@@ -55,7 +55,6 @@ export const MarkdownView: React.FC<{
         markdown={markdown}
         extensions={[highlightExtension(snippetOptions)]}
       />
-      {imag && <img src={imag} alt="" />}
     </div>
   );
 };

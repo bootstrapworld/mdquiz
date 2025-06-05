@@ -178,7 +178,8 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   console.log('informationalCount is ', informationalCount);
   return (
     <header>
-      <h3>{quiz.title || "Quiz"}</h3>
+      <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
+      <h3>Show What You Know: {quiz.title || ""}</h3>
       <div className="counter">
         {state.started ? (
           quiz.questions
@@ -239,9 +240,8 @@ const AnswerReview = ({
     </p>
   );
   const questionTitles = generateQuestionTitles(quiz);
-  return (
+  const unusedJSX = (
     <>
-      <h3>You've finished the assessment!</h3>
       <p>
         You answered{" "}
         <strong>
@@ -251,6 +251,13 @@ const AnswerReview = ({
         questions correctly.
       </p>
       Your answers (and final score) have been uploaded.
+    </>
+  );
+
+  return (
+    <>
+      <h3>Congratulations!</h3>
+      <h3>You've completed all of the assigned questions.</h3>
     </>
   );
 };
