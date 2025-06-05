@@ -49,12 +49,6 @@
     "vite-plugin-singlefile": "^2.2.0",
     "vite-plugin-static-copy": "^2.3.0"
   },
-  "overrides": {
-    "react-loader-spinner": {
-      "react": "npm:@preact/compat@^18.3.1",
-      "react-dom": "npm:@preact/compat@^18.3.1"
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/object-hash": "^3.0.6",
