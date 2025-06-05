@@ -23,27 +23,46 @@ fieldset>div,
  */
 .multiple-choice fieldset {
   display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
   border: none;
 }
+
+@media only screen and (max-width: 700px) {
+  .multiple-choice fieldset {
+    grid-template-columns: 1fr;
+  }
+}
+
 .multiple-choice label { display: flex; align-content: center; flex-wrap: wrap; }
-.multiple-choice input[type="radio"] { margin-right: 20px; }
+.multiple-choice input[type="radio"],
+.multiple-choice input[type="checkbox"] { display: none; }
 .multiple-choice .choice label {
     border: solid 1px gray;
     border-radius: 20px;
     padding: 5px;
     margin: 10px 0;
 }
+
+.multiple-choice .choice label div { width: 100%; text-align: center; }
 .multiple-choice .choice:has(input[type="radio"]:checked) label,
-.multiple-choice .choice:has(input[type="checkbox"]:checked)  label { border: inset; }
+.multiple-choice .choice:has(input[type="checkbox"]:checked)  label {
+  border: inset;
+  background: #ddf;
+}
 
 .multiple-choice .choice img {
   vertical-align: middle;
   max-width: 100%;
-  max-height: 110px;
-  margin-left: 50px;
+  max-height: 250px;
+  display: block;
+  margin: auto;
 }
 .multiple-choice .choice p { margin: 5px; }
-.multiple-choice .prompt img, .multiple-choice .choice label { max-width: 640px; }
+.multiple-choice .prompt img, .multiple-choice .choice label {
+  margin: 10px;
+  align-content: start;
+}
 
 /*******************************************************************
  * CARD SORT
