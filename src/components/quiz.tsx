@@ -177,7 +177,7 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   ).length;
   console.log('informationalCount is ', informationalCount);
   return (
-    <header>
+    <header className={state.started? "started" : "title"}>
       <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
       <h3>Show What You Know: {quiz.title || ""}</h3>
       <div className="counter">

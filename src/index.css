@@ -1,7 +1,7 @@
 body {
   margin: 1em;
   height: 100vh;
-  background: #d8e3db;
+  background: #85C8BE;
 }
 
 #root {
@@ -10,9 +10,26 @@ body {
 }
 
 .mdbook-quiz { text-align: center; }
+
+header {
+  display:        flex;
+  align-items:    center;
+  border-bottom:  1px black solid;
+  padding-bottom: 15;
+}
 header h1 { margin: 5px auto; }
-h3, h2 { color: #478faf; margin: 5px auto; }
-header img#logo { width: 250px; }
+header h3, h2 { color: #478faf; margin: 5px auto; }
+
+
+/* Bigger, vertically-aligned header on the title slide */
+header.title { flex-direction: column; flex-wrap: wrap-reverse; }
+header.title img#logo { width: 300px; }
+header.title * { margin : 20px; }
+
+/* Smaller, horizontally-aligned header on everything else */
+header.started img#logo { width: 100px; }
+header.started * { display :inline-block; }
+
 img { max-width: 600px; max-height: 400px; }
 button.start {
   border-radius:  25px;
