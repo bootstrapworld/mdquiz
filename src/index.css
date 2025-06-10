@@ -2,6 +2,7 @@ body {
   margin: 1em;
   height: 100vh;
   background: #85C8BE;
+  color: #013A63;
 }
 
 #root {
@@ -14,21 +15,22 @@ body {
 header {
   display:        flex;
   align-items:    center;
-  border-bottom:  1px black solid;
-  padding-bottom: 15;
+  padding-bottom: 10px;
 }
 header h1 { margin: 5px auto; }
-header h3, h2 { color: #478faf; margin: 5px auto; }
-
+header h3, h2 { margin: 5px auto; }
+header .counter:empty { display: none; }
 
 /* Bigger, vertically-aligned header on the title slide */
 header.title { flex-direction: column; flex-wrap: wrap-reverse; }
 header.title img#logo { width: 300px; }
 header.title * { margin : 20px; }
+header.title h3 { font-size: 32px; }
 
 /* Smaller, horizontally-aligned header on everything else */
 header.started img#logo { width: 100px; }
-header.started * { display :inline-block; }
+header.started * { display :inline-block; margin: auto; }
+header.started { border-bottom:  1px #478faf solid;}
 
 img { max-width: 600px; max-height: 400px; }
 button.start {
@@ -48,7 +50,8 @@ section { height: 100%; }
 .mdbook-quiz, .response { height: 100%; display: flex; flex-direction: column; }
 .response input[type=submit], button { width: 100px; margin: 20px auto; }
 
-.prompt { font-style: italic; font-size: 14pt; }
+.prompt { font-size: 14pt; }
+.prompt p { margin: 0; }
 
 /*******************************************************************
  * MULTIPLE CHOICE
@@ -64,6 +67,7 @@ section { height: 100%; }
   .multiple-choice fieldset {
     grid-template-columns: 1fr;
   }
+  header.started img, header.started h3 { display: none; }
 }
 
 .multiple-choice input[type="radio"],
@@ -74,8 +78,7 @@ section { height: 100%; }
     flex-wrap:      wrap;
     border:         solid 1px gray;
     border-radius:  20px;
-    padding:        10px;
-    margin:         10px 0;
+    padding:        5px 10px;
     background:     white;
     box-shadow:     1px 1px 2px black;
 }
@@ -96,6 +99,7 @@ section { height: 100%; }
   margin: auto;
 }
 .multiple-choice .choice p { margin: 5px; }
+
 .multiple-choice .prompt img {
   margin: 10px;
   align-content: start;

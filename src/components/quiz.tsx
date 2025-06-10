@@ -171,13 +171,14 @@ interface HeaderProps {
 }
 
 const Header = observer(({ state, ended }: HeaderProps) => {
+  console.log('ended?', ended)
   const { quiz } = useContext(QuizConfigContext)!;
   const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
   console.log('informationalCount is ', informationalCount);
   return (
-    <header className={state.started? "started" : "title"}>
+    <header className={state.started? "started" : (ended? "ended" : "title") }>
       <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
       <h3>Show What You Know: {quiz.title || ""}</h3>
       <div className="counter">
