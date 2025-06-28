@@ -429,8 +429,9 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       if(state.index === (config.quiz.questions.length)) {
         window.telemetry?.log({
           type: "answers",
-          quizName: config.name,
+          quizName: config.quiz.title,
           quizHash,
+          questions:config.quiz.questions,
           answers: state.answers,
           attempt: state.attempt
         });

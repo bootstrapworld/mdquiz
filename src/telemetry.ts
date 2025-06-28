@@ -5,9 +5,19 @@ class Telemetry {
     const url = `${BASE_URL}`;
 
     const urlParams = new URLSearchParams(document.location.search);
+    let quizPath = document.location.href;
 
-    // artificially attach the teacherId
-    (payload as any).instructor_code = urlParams.get("teacherId");
+    // ensure that the quizPath is just to the containing folder
+    if (!quizPath.endsWith("/")) {
+      console.log('chopping');
+      const lastSlash = quizPath.lastIndexOf("/");
+      quizPath = quizPath.slice(0, lastSlash) + "/";
+    }
+
+    // manually attach the teacherId and quizPath
+    (payload as any).instructor_code = urlParams.get("groupId");
+    (payload as any).quizPath = quizPath;
+    console.log('sending payload', payload);
 
     const response = await fetch(url, {
       method: "POST",
