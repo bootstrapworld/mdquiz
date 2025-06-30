@@ -16,7 +16,7 @@ import hash from "object-hash";
 
 const containerStyle: CSSProperties = {
   position: 'relative', 
-  overflow: 'hidden',
+  overflow: 'scroll',
 }
 export interface DragItem {
   id: string
