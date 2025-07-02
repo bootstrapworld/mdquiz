@@ -9,7 +9,6 @@ class Telemetry {
 
     // ensure that the quizPath is just to the containing folder
     if (!quizPath.endsWith("/")) {
-      console.log('chopping');
       const lastSlash = quizPath.lastIndexOf("/");
       quizPath = quizPath.slice(0, lastSlash) + "/";
     }
