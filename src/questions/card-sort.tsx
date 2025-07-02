@@ -31,28 +31,60 @@ function calculateSimilarityScore(
 ): {groupScore: number, cardScore: number} {
   console.log("ordered is ", ordered, typeof ordered);
 
-  // sort all groupings in the solution and user-generated answer
-  const sSolution = structuredClone(solution).forEach(g => g.sort());
-  const sUserAnswer = structuredClone(userAnswer).forEach(g => g.sort());
-
   // For each X, iterate through the (sliced) rest of the array to form
   // an array of alphabetized X-Y pairs. Then flatten all the arrays
-  const getPairs = (arr) => arr.map((X, idx) =>
-      arr.slice(idx+1).map(Y => [X, Y].join("-")))
+  const getPairs = arr => arr.map((X, idx) => arr.slice(idx+1).map(Y => [X,Y]))
     .flat();
 
-  // Generate a set of all correct pairings for every group (g) of cards
-  const solnPairs = new Set(sSolution.map(getPairs).flat());
-  const userPairs = sUserAnswer.map(getPairs).flat();
+  // For each group in the solution and user-answer, make a list of all pairs
+  const solnGroupPairs = solution.map(getPairs);
+  const userGroupPairs = userAnswer.map(getPairs);
 
-  // count the number and pct of user-pairings that appear in the set
-  const correctUserPairs = userPairs.filter(p => solnPairs.has(p)).length;
-  const pctCorrect = (correctUserPairs / solnPairs.size);
-  console.log(correctUserPairs, 'pairings are correct', 100 * pctCorrect, '%');
+  // Within each group, join each pair as a string, creating two arrays:
+  //   1) Unordered pairs, where X is always in the same group as Y
+  const oSolnGroupPairs = solnGroupPairs.map(g => g.map(p => p.join("-")));
+  const oUserGroupPairs = userGroupPairs.map(g => g.map(p => p.join("-")));
 
-  // group comparisons: TBD
+  //   2) Ordered pairs, where X is always in the same group BEFORE Y
+  const uSolnGroupPairs = solnGroupPairs.map(g => g.map(p => p.sort().join("-")));
+  const uUserGroupPairs = userGroupPairs.map(g => g.map(p => p.sort().join("-")));
 
-  return {groupScore: 0, cardScore: pctCorrect};
+  // Compare groups
+  const orderedGroupStrings   = solution.map(g => g.join("-"));
+  const unOrderedGroupStrings = solution.map(g => g.sort().join("-"));
+
+  // How many user groups exactly match the solution groups?
+  const pctOrderedGroupRight = userAnswer.reduce((acc, g) =>
+    acc + Number(orderedGroupStrings.includes(g.join("-"))),
+  0) / solution.length;
+  const pctUnOrderedGroupRight = userAnswer.reduce((acc, g) =>
+    acc + Number(unOrderedGroupStrings.includes(g.sort().join("-"))),
+  0) / solution.length;
+
+  console.log(`${100*pctOrderedGroupRight}% orderedGroupMatches`);
+  console.log(`${100*pctUnOrderedGroupRight}% unOrderedGroupMatches`);
+
+  // Flatten these group-lists to compare individual card groupings
+  const oSolnPairs = oSolnGroupPairs.flat();
+  const oUserPairs = oUserGroupPairs.flat();
+  const uSolnPairs = uSolnGroupPairs.flat();
+  const uUserPairs = uUserGroupPairs.flat();
+
+  // count the number and pct of user-pairs that appear in the *ordered* set
+  const oCorrectUserPairs = oUserPairs.filter(p => oSolnPairs.includes(p)).length;
+  const oPctRight = (oCorrectUserPairs / oSolnPairs.length);
+
+  // count the number and pct of user-pairs that appear in the *un-ordered* set
+  const uCorrectUserPairs = uUserPairs.filter(p => uSolnPairs.includes(p)).length;
+  const uPctRight = (uCorrectUserPairs / uSolnPairs.length);
+
+  console.log(`${oCorrectUserPairs} (${100*oPctRight}%) ordered pairings are correct`);
+  console.log(`${uCorrectUserPairs} (${100*uPctRight}%) unordered pairings are correct`);
+
+  return {
+    groupScore: ordered? pctOrderedGroupRight : pctUnOrderedGroupRight,
+    cardScore: ordered? oPctRight : uPctRight
+  };
 
 }
 
