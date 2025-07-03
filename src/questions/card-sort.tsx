@@ -70,6 +70,9 @@ function calculateSimilarityScore(
   const uSolnPairs = uSolnGroupPairs.flat();
   const uUserPairs = uUserGroupPairs.flat();
 
+  console.log('oSolnPairs', oSolnPairs)
+  console.log('uSolnPairs', uSolnPairs)
+
   // count the number and pct of user-pairs that appear in the *ordered* set
   const oCorrectUserPairs = oUserPairs.filter(p => oSolnPairs.includes(p)).length;
   const oPctRight = (oCorrectUserPairs / oSolnPairs.length);
