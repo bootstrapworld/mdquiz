@@ -180,7 +180,8 @@ const Header = observer(({ state, ended }: HeaderProps) => {
   return (
     <header className={state.started? "started" : (ended? "ended" : "title") }>
       <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
-      <h3>Show What You Know: {quiz.title || ""}</h3>
+      <h3>Show What You Know</h3>
+      <h4>{quiz.title || ""}</h4>
       <div className="counter">
         {state.started ? (
           quiz.questions

@@ -33,6 +33,7 @@ header.title h3 { font-size: 32px; }
 header.started img#logo { width: 100px; }
 header.started * { display :inline-block; margin: auto; }
 header.started { border-bottom:  1px #478faf solid;}
+header.started h3 { display: none; }
 
 img { max-width: 600px; max-height: 400px; }
 button.start {
