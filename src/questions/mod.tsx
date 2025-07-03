@@ -106,7 +106,7 @@ const BugReporter = ({
 
 export interface TaggedAnswer {
   answer: any;
-  correct: boolean;
+  correct: number;
   start: number;
   end: number;
   explanation?: string;
@@ -189,7 +189,8 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
     const answer = methods.getAnswerFromDOM
       ? await methods.getAnswerFromDOM(data, ref.current!, question.prompt)
       : data;
-    const comparator = methods.compareAnswers || isEqual;
+
+    const comparator = methods.compareAnswers || ((a, b) => isEqual(a, b)? 1 : 0);
     const correct = comparator(question.answer, answer);
     onSubmit({
       answer,
@@ -276,7 +277,7 @@ interface AnswerViewProps {
   index: number;
   title: string;
   userAnswer: Question["answer"];
-  correct: boolean;
+  correct: number;
   showCorrect: boolean;
 }
 
@@ -339,7 +340,7 @@ export const AnswerView: React.FC<AnswerViewProps> = ({
             />
           </div>
         </div>
-        {showCorrect && !correct && (
+        {showCorrect && (correct < 1) && (
           <div>
             <div className="answer-header">The correct answer is:</div>
             <div>

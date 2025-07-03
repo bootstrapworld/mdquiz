@@ -69,7 +69,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
   compareAnswers(
     providedAnswer: PyretAnswer,
     userAnswer: PyretAnswer
-  ): boolean {
-    return userAnswer;
+  ): number {
+    return 1; // we don't know how to score this just yet...
   }
 };

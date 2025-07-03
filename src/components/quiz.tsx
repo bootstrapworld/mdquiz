@@ -440,7 +440,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       if (state.index === config.quiz.questions.length) {
         const wrongAnswers = state.answers
           .map((a, i) => ({ a, i }))
-          .filter(({ a }) => !a.correct);
+          .filter(({ a }) => (a.correct < 1));
         if (wrongAnswers.length === 0 || !config.allowRetry) {
           state.confirmedDone = true;
         } else {
@@ -452,7 +452,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       }
     });
 
-    const nCorrect = state.answers.filter(a => a.correct).length;
+    const nCorrect = state.answers.filter(a => (a.correct == 1)).length;
 
     // HACK: need this component to observe confirmedDone
     // on first render...

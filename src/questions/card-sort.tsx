@@ -142,7 +142,7 @@ export const CardSortMethods: QuestionMethods<
   compareAnswers(
     {answer, ordered}: CardSortAnswer,
     userAnswer: CardSortAnswer
-  ): boolean {
+  ): number {
 
     console.log("Extracted answer content:", answer);
     console.log("Extracted useranswer content:", userAnswer.answer);
@@ -150,11 +150,7 @@ export const CardSortMethods: QuestionMethods<
     const score = calculateSimilarityScore({ answer, ordered }, userAnswer);
     console.log("Similarity score:", score);
 
-    if (score.cardScore == 1) {
-      return true;
-    } else {
-      return false;
-    }
+    return score.cardScore;
 
   },
 
