@@ -6,23 +6,22 @@
             "prompt": {
                 "prompt": "Sort these cards into colors and animals",
                 "cards": [
-                    {"id":"red",    "title":"red",      "content": "some markdown"},
-                    {"id":"yellow", "title":"yellow",   "content": "some markdown"},
-                    {"id":"blue",   "title":"blue",     "content": "some markdown![alt text](./react.svg 'react logo')"},
-                    {"id":"green",  "title":"green",    "content": "some markdown![alt text](./bar-image.png)"},
+                    {"id":"red",    "content": "red"},
+                    {"id":"yellow", "content": "yellow"},
+                    {"id":"blue",   "content": "blue![alt text](./react.svg 'react logo')"},
+                    {"id":"green",  "content": "green![alt text](./bar-image.png)"},
 
-                    {"id":"cat",    "title":"cat",      "content": "some markdown![alt text](./react.svg 'react logo')"},
-                    {"id":"dog",    "title":"dog",      "content": "some markdown"},
-                    {"id":"pig",    "title":"pig",      "content": "some markdown![alt text](./hist-image.png)"},
-                    {"id":"wombat", "title":"wombat",   "content": "some markdown![alt text](./react.svg 'react logo')"}
-                ]
-            },
+                    {"id":"cat",    "content": "cat![alt text](./react.svg 'react logo')"},
+                    {"id":"dog",    "content": "dog"},
+                    {"id":"pig",    "content": "pig![alt text](./hist-image.png)"},
+                    {"id":"wombat", "content": "wombat![alt text](./react.svg 'react logo')"}
+                ]            },
             "answer": {
                 "answer": [
                     ["red", "yellow", "blue", "green"],
                     ["cat", "dog", "pig", "wombat"]
                 ],
-                "ordered": "false"
+                "ordered": false
             }
         }
     ]
