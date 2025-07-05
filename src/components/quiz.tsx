@@ -110,6 +110,7 @@ interface QuizState {
   index: number;
   encounteredInfos: number;
   confirmedDone: boolean;
+  participant_code: string;
   attempt: number;
   answers: TaggedAnswer[];
   wrongAnswers?: number[];
@@ -141,6 +142,7 @@ const loadState = ({
     return {
       started: true,
       index: quiz.questions.length,
+      participant_code: "unknown",
       answers: stored.answers,
       encounteredInfos: quiz.questions.filter(q => q.type === "Informational")
         .length,
@@ -157,6 +159,7 @@ const loadState = ({
     return {
       started: autoStart || false,
       index: 0,
+      participant_code: "unknown",
       encounteredInfos: 0,
       attempt: 0,
       confirmedDone: false,
@@ -434,7 +437,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(
           quizHash,
           questions:config.quiz.questions,
           answers: state.answers,
-          attempt: state.attempt
+          attempt: state.attempt,
+          participant_code: state.participant_code,
         });
       }
 
@@ -490,15 +494,21 @@ export const QuizView: React.FC<QuizViewProps> = observer(
             />
           )
         ) : (
-          <button
-            type="button"
-            className="start"
-            onClick={action(() => {
-              state.started = true;
-            })}
-          >
-            Start
-          </button>
+          <>
+            <input type="text" size={6} placeholder="Your ID" id="participant_code" />
+            <p/>
+            <button
+              type="button"
+              className="start"
+              onClick={action(() => {
+                const id_node = document.getElementById("participant_code") as HTMLInputElement;
+                state.participant_code = id_node.value;
+                state.started = true;
+              })}
+            >
+              Start
+            </button>
+          </>
         )}
       </section>
     );

@@ -54,12 +54,13 @@ function calculateSimilarityScore(
   const unOrderedGroupStrings = solution.map(g => g.sort().join("-"));
 
   // How many user groups exactly match the solution groups?
-  const pctOrderedGroupRight = userAnswer.reduce((acc, g) =>
-    acc + Number(orderedGroupStrings.includes(g.join("-"))),
-  0) / solution.length;
-  const pctUnOrderedGroupRight = userAnswer.reduce((acc, g) =>
-    acc + Number(unOrderedGroupStrings.includes(g.sort().join("-"))),
-  0) / solution.length;
+  const numOrderedRight = userAnswer.reduce((acc, g) =>
+    acc + Number(orderedGroupStrings.includes(g.join("-"))), 0);
+  const numUnOrderedRight = userAnswer.reduce((acc, g) =>
+    acc + Number(unOrderedGroupStrings.includes(g.sort().join("-"))), 0);
+
+  const pctOrderedGroupRight = numOrderedRight / solution.length;
+  const pctUnOrderedGroupRight = numUnOrderedRight / solution.length;
 
   console.log(`${100*pctOrderedGroupRight}% orderedGroupMatches`);
   console.log(`${100*pctUnOrderedGroupRight}% unOrderedGroupMatches`);
@@ -73,16 +74,23 @@ function calculateSimilarityScore(
   console.log('oSolnPairs', oSolnPairs)
   console.log('uSolnPairs', uSolnPairs)
 
-  // count the number and pct of user-pairs that appear in the *ordered* set
+  // count the number of correct and incorrect user-pairs that
+  // appear in the *ordered* set
   const oCorrectUserPairs = oUserPairs.filter(p => oSolnPairs.includes(p)).length;
+  const oInorrectUserPairs = oUserPairs.filter(p => !oSolnPairs.includes(p)).length;
   const oPctRight = (oCorrectUserPairs / oSolnPairs.length);
 
-  // count the number and pct of user-pairs that appear in the *un-ordered* set
+  // count the number of correct and incorrect user-pairs that
+  // appear in the *unordered* set
   const uCorrectUserPairs = uUserPairs.filter(p => uSolnPairs.includes(p)).length;
+  const uIncorrectUserPairs = uUserPairs.filter(p => !uSolnPairs.includes(p)).length;
   const uPctRight = (uCorrectUserPairs / uSolnPairs.length);
 
   console.log(`${oCorrectUserPairs} (${100*oPctRight}%) ordered pairings are correct`);
   console.log(`${uCorrectUserPairs} (${100*uPctRight}%) unordered pairings are correct`);
+
+console.log(oInorrectUserPairs, 'incorrect ordered pairings');
+console.log(uIncorrectUserPairs, 'incorrect unordered pairings');
 
   return {
     groupScore: ordered? pctOrderedGroupRight : pctUnOrderedGroupRight,
