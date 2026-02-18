@@ -1,4 +1,4 @@
-const BASE_URL = "https://localhost/data/actions/SubmitAssessment.php?method=mdquizLog";
+const BASE_URL = "https://www.BootstrapWorld.org/data/actions/SubmitAssessment.php?method=mdquizLog";
 
 class Telemetry {
   async log(payload: object) {
