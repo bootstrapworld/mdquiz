@@ -15,7 +15,6 @@ class Telemetry {
 
     // manually attach the teacherId and quizPath
     (payload as any).instructor_code = urlParams.get("groupId");
-    (payload as any).submission_date = Date.now();
     (payload as any).quizPath = quizPath;
     console.log('sending payload', payload);
 
