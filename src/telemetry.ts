@@ -16,7 +16,7 @@ class Telemetry {
     // manually attach the teacherId and quizPath
     (payload as any).instructor_code = urlParams.get("teacherId");
     (payload as any).class_name = urlParams.get("groupId");
-    (payload as any).link_id = urlParams.get("link_id");
+    (payload as any).link_id = urlParams.get("assessment_id");
     (payload as any).quizPath = quizPath;
     console.log('sending payload', payload);
 
