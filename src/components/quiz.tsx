@@ -35,11 +35,12 @@ interface StoredAnswers {
 }
 
 declare global {
-  const telemetry:
-    | {
-        log: (endpoint: string, payload: any) => void;
-      }
-    | undefined;
+  interface Window {
+    telemetry?: {
+      log: (payload: any) => void;
+      isValid: () => Promise<{ success: boolean; message: string }>;
+    };
+  }
 }
 
 class AnswerStorage {
@@ -535,8 +536,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(
         ✕
       </div>
     );
-    const wrapperRef = useRef<HTMLDivElement>(undefined);
-console.log(isValid);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+
     return (
       <QuizConfigContext.Provider value={config}>
         <div ref={wrapperRef} className={wrapperClass}>

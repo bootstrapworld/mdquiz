@@ -9,7 +9,10 @@ import "./index.css";
 
 declare global {
   interface Window {
-      telemetry:any;
+    telemetry?: {
+      log: (payload: any) => void;
+      isValid: () => Promise<{ success: boolean; message: string }>;
+    };
   }
 }
 
