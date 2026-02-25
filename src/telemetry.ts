@@ -1,5 +1,9 @@
 const BASE_URL = "https://beta.BootstrapWorld.org/data/SubmitAssessment.php";
 
+type Result =
+  | { success: true; data: string }
+  | { success: false; message: Error };
+
 class Telemetry {
   async log(payload: object) {
     const url = `${BASE_URL}`;
@@ -51,9 +55,10 @@ class Telemetry {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to log! ${JSON.stringify(response)}`);
+      console.error(`Failed to log! ${JSON.stringify(response)}`);
     } else {
-      console.log(response);
+      const data: Result = await response.json();
+      return data;
     }
 
   }

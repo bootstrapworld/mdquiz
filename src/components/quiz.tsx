@@ -467,6 +467,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
 
     // make sure the quiz link is valid
     const isValid = await window.telemetry?.isValid();
+    console.log(isValid);
 
     const body = (
       <section>
