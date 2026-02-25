@@ -37,7 +37,7 @@ class Telemetry {
       throw new Error(`Failed to log! ${JSON.stringify(response)}`);
     }
   }
-
+/*
   async isValid() {
     const url = `${BASE_URL}`;
 
@@ -60,8 +60,8 @@ class Telemetry {
       const data: Result = await response.json();
       return data;
     }
-
   }
+  */
 }
 
 if (typeof window !== "undefined") {

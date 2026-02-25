@@ -466,8 +466,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     const questionTitles = generateQuestionTitles(config.quiz);
 
     // make sure the quiz link is valid
-    const isValid = await window.telemetry?.isValid();
-    console.log(isValid);
+    //const isValid = await window.telemetry?.isValid();
+    //console.log(isValid);
 
     const body = (
       <section>
