@@ -359,7 +359,7 @@ export const generateQuestionTitles = (quiz: Quiz): string[] => {
 };
 
 export const QuizView: React.FC<QuizViewProps> = observer(
-  async ({ onFinish, ...config }) => {
+  ({ onFinish, ...config }) => {
     const [quizHash] = useState(() => hash.MD5(config.quiz));
     const answerStorage = new AnswerStorage(config.name, quizHash);
     const questionStates = useMemo(
@@ -408,6 +408,15 @@ export const QuizView: React.FC<QuizViewProps> = observer(
         window.scrollTo(0, lastTop);
       }
     }, [showFullscreen, config.fullscreen, lastTop]);
+
+    // check to see if the quiz link is valid
+    const [isValid, setIsValid] = useState(null);
+    useEffect(() => {
+      (async () => {
+        const result = await window.telemetry?.isValid();
+        setIsValid(result);
+      })();
+    }, []);
 
     const onSubmit = action((answer: TaggedAnswer) => {
       answer = structuredClone(answer);
@@ -464,10 +473,6 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     state.confirmedDone;
 
     const questionTitles = generateQuestionTitles(config.quiz);
-
-    // make sure the quiz link is valid
-    //const isValid = await window.telemetry?.isValid();
-    //console.log(isValid);
 
     const body = (
       <section>
@@ -531,7 +536,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       </div>
     );
     const wrapperRef = useRef<HTMLDivElement>(undefined);
-
+console.log(isValid);
     return (
       <QuizConfigContext.Provider value={config}>
         <div ref={wrapperRef} className={wrapperClass}>
@@ -543,7 +548,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
               </>
             )}
             <Header state={state} ended={ended} />
-            {body}
+            {isValid == null? "Loading..." : isValid.success? body : isValid.message}
           </div>
         </div>
       </QuizConfigContext.Provider>

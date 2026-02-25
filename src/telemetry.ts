@@ -37,12 +37,12 @@ class Telemetry {
       throw new Error(`Failed to log! ${JSON.stringify(response)}`);
     }
   }
-/*
-  async isValid() {
+
+  isValid() {
     const url = `${BASE_URL}`;
 
     const urlParams = new URLSearchParams(document.location.search);
-    const response = await fetch(url, {
+    return fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -52,16 +52,12 @@ class Telemetry {
         instructor_code: urlParams.get("teacherId"),
         method: "checkValidLink",
       })
-    });
+    })
+    .then(response => response.json())
+    .catch(error => ({"success": false, "message": "Could not validate quiz link"}));
 
-    if (!response.ok) {
-      console.error(`Failed to log! ${JSON.stringify(response)}`);
-    } else {
-      const data: Result = await response.json();
-      return data;
-    }
   }
-  */
+
 }
 
 if (typeof window !== "undefined") {
