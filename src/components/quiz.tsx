@@ -359,7 +359,7 @@ export const generateQuestionTitles = (quiz: Quiz): string[] => {
 };
 
 export const QuizView: React.FC<QuizViewProps> = observer(
-  ({ onFinish, ...config }) => {
+  async ({ onFinish, ...config }) => {
     const [quizHash] = useState(() => hash.MD5(config.quiz));
     const answerStorage = new AnswerStorage(config.name, quizHash);
     const questionStates = useMemo(
@@ -464,6 +464,9 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     state.confirmedDone;
 
     const questionTitles = generateQuestionTitles(config.quiz);
+
+    // make sure the quiz link is valid
+    const isValid = await window.telemetry?.isValid();
 
     const body = (
       <section>

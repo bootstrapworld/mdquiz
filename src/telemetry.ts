@@ -1,4 +1,4 @@
-const BASE_URL = "https://beta.BootstrapWorld.org/data/SubmitAssessment.php?method=mdquizLog";
+const BASE_URL = "https://beta.BootstrapWorld.org/data/SubmitAssessment.php";
 
 class Telemetry {
   async log(payload: object) {
@@ -32,6 +32,30 @@ class Telemetry {
     if (!response.ok) {
       throw new Error(`Failed to log! ${JSON.stringify(response)}`);
     }
+  }
+
+  async isValid() {
+    const url = `${BASE_URL}`;
+
+    const urlParams = new URLSearchParams(document.location.search);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        link_id: urlParams.get("assessmentId"),
+        instructor_code: urlParams.get("teacherId"),
+        method: "checkValidLink",
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to log! ${JSON.stringify(response)}`);
+    } else {
+      console.log(response);
+    }
+
   }
 }
 
