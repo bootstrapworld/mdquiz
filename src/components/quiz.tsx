@@ -143,7 +143,7 @@ const loadState = ({
     return {
       started: true,
       index: quiz.questions.length,
-      participant_code: "unknown",
+      participant_code: "",
       answers: stored.answers,
       encounteredInfos: quiz.questions.filter(q => q.type === "Informational")
         .length,
@@ -160,7 +160,7 @@ const loadState = ({
     return {
       started: autoStart || false,
       index: 0,
-      participant_code: "unknown",
+      participant_code: "",
       encounteredInfos: 0,
       attempt: 0,
       confirmedDone: false,
@@ -175,39 +175,44 @@ interface HeaderProps {
 }
 
 const Header = observer(({ state, ended }: HeaderProps) => {
-  console.log('ended?', ended)
   const { quiz } = useContext(QuizConfigContext)!;
-  const informationalCount = quiz.questions.filter(
-    q => q.type === "Informational"
-  ).length;
-  console.log('informationalCount is ', informationalCount);
+
+  // Pre-calculate constants to avoid repetition
+  const totalQuestions = useMemo(() =>
+    quiz.questions.filter(q => q.type !== "Informational").length,
+  [quiz]);
+
+  const isInformational = quiz.questions[state.index]?.type === "Informational";
+
+  // Determine the display number
+  // If it's a retry (attempt > 0), we find the index within the "wrongAnswers" array
+  const currentQuestionNum = useMemo(() => {
+    if (state.attempt === 0) {
+      return state.index + 1 - state.encounteredInfos;
+    }
+    // In retry mode, we show progress through the "failed" list
+    return (state.wrongAnswers?.indexOf(state.index) ?? 0) + 1;
+  }, [state.index, state.attempt, state.encounteredInfos, state.wrongAnswers]);
+
   return (
-    <header className={state.started? "started" : (ended? "ended" : "title") }>
-      <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
+    <header className={classNames({
+      "started": state.started,
+      "ended": ended,
+      "title": !state.started && !ended
+    })}>
+      <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" alt="Logo" />
       <h3>Show What You Know</h3>
-      <h4>{quiz.title || ""}</h4>
+      <h4>{quiz.title || "Quiz"}</h4>
+
       <div className="counter">
-        {state.started ? (
-          quiz.questions
-            .at(state.index)?.type === "Informational" ? (<></>) 
-            : !ended ? (
-            <>
-              Question{" "}
-              {(state.attempt === 0
-                ? state.index
-                : state.wrongAnswers!.indexOf(state.index)) +
-                1 -
-                state.encounteredInfos}{" "}
-              /{" "}
-              {state.attempt === 0
-                ? quiz.questions.length - informationalCount
-                : state.wrongAnswers!.length}
-            </>
-          ) : null
-        ) : (
+        {state.started && !ended && !isInformational && (
           <>
-            {quiz.questions.length - informationalCount} question
-            {quiz.questions.length - informationalCount > 1 && "s"}
+            Question {currentQuestionNum} / {state.attempt === 0 ? totalQuestions : state.wrongAnswers?.length}
+          </>
+        )}
+        {!state.started && !ended && (
+          <>
+            {totalQuestions} question{totalQuestions !== 1 ? "s" : ""}
           </>
         )}
       </div>
@@ -361,8 +366,17 @@ export const generateQuestionTitles = (quiz: Quiz): string[] => {
 
 export const QuizView: React.FC<QuizViewProps> = observer(
   ({ onFinish, ...config }) => {
-    const [quizHash] = useState(() => hash.MD5(config.quiz));
-    const answerStorage = new AnswerStorage(config.name, quizHash);
+    // Wrap the MD5 calculation in useMemo
+    const quizHash = useMemo(() => {
+      console.log("Recalculating quiz hash..."); // For debugging
+      return hash.MD5(config.quiz);
+    }, [config.quiz]); // Only re-run if the quiz object changes
+
+    // Pass the stable hash into your storage class
+    const answerStorage = useMemo(
+      () => new AnswerStorage(config.name, quizHash),
+      [config.name, quizHash]
+    );
     const questionStates = useMemo(
       () =>
         config.quiz.questions.map(q => {
@@ -413,12 +427,14 @@ export const QuizView: React.FC<QuizViewProps> = observer(
     // check to see if the quiz link is valid
     const [isValid, setIsValid] = useState(null);
     useEffect(() => {
+      let isMounted = true;
       (async () => {
         const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
         const result = await window.telemetry?.isValid();
         result.success = result.success || isLocalhost;
-        setIsValid(result);
+        if (isMounted) setIsValid(result);
       })();
+      return () => { isMounted = false; };
     }, []);
 
     const onSubmit = action((answer: TaggedAnswer) => {
@@ -507,16 +523,25 @@ export const QuizView: React.FC<QuizViewProps> = observer(
           )
         ) : (
           <>
-            <input type="text" size={6} placeholder="Your ID" id="participant_code" />
+            <input
+              type="text"
+              size={6}
+              placeholder="Your ID"
+              id="participant_code"
+              value={state.participant_code}
+              onChange={action((e) => {
+                state.participant_code = e.target.value;
+              })}
+            />
             <p/>
             <button
               type="button"
               className="start"
               onClick={action(() => {
-                const id_node = document.getElementById("participant_code") as HTMLInputElement;
-                state.participant_code = id_node.value;
                 state.started = true;
               })}
+              // Disable button if ID has less than 4 characters
+              disabled={state.participant_code.trim().length < 4}
             >
               Start
             </button>
