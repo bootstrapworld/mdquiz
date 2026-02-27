@@ -1,0 +1,17 @@
+{
+    "title": "Emmanuel's Short Answer Example",
+    "questions": [
+        {
+            "type": "ShortAnswer",
+            "prompt": {
+                "prompt": "What is the keyword used after `let` to indicate that a variable can be mutated?"
+            },
+            "image": "./react.svg",
+            "answer": {
+                "answer": "mut"
+            },
+            "context": "For example, you can make a mutable variable `x` by writing: `let mut x = 1`.\n",
+            "id": "dbbaea6a-f469-464f-9d60-99ae98456b6a"
+        }
+    ]
+}

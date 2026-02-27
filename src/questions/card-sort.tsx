@@ -6,8 +6,8 @@ import React, { useState } from "react";
 import hash from "object-hash";
 
 
-// a card is a tuple containing a title and some content
-type Card = { id?: string, title:string, content:string, top?: number, left?: number, children?: Card[] }
+// a card is a tuple containing an id, some content, a (left/top) position, and optionally some children
+type Card = { id?: string, content:string, top?: number, left?: number, children?: Card[] }
 // a CardSort Prompt contains a normal prompt and a CardArray
 type CardSortPrompt = { prompt: Markdown, cards: Card[] }
 type CardSortAnswer = { answer: Array<Array<string>>, ordered: string}
@@ -16,7 +16,11 @@ type CardSort = QuestionFields<CardSortPrompt, CardSortAnswer>;
 export { Card, CardSortPrompt, CardSortAnswer, CardSort };
 
 /**
- * This function computes the similarity score between the user's answer and the real answer, 0 to 1, where 1 is correct. If unordered, then the score is based on ratio of correct element. If ordered, then the partial credit is average between unordered score and a ratio of whether cards are in the right position.
+ * This function computes the similarity score between the user's answer
+ * and the real answer, 0 to 1, where 1 is correct. If unordered, then
+ * the score is based on ratio of correct element. If ordered, then the
+ * partial credit is average between unordered score and a ratio of whether
+ * cards are in the right position.
  * @param { answer: solution, ordered } solution
  * @param {userAnswer}
  * @returns A partial credit score for the answer.
@@ -24,77 +28,75 @@ export { Card, CardSortPrompt, CardSortAnswer, CardSort };
 function calculateSimilarityScore(
   { answer: solution, ordered }: CardSortAnswer,
   { answer: userAnswer }: CardSortAnswer
-): number {
+): {groupScore: number, cardScore: number} {
   console.log("ordered is ", ordered, typeof ordered);
 
-  const sanitize = (group) => (ordered ? group : new Set(group));
-  const sanitizedSolution = solution.map(sanitize);
-  const sanitizedUserAnswer = userAnswer.map(sanitize);
+  // For each X, iterate through the (sliced) rest of the array to form
+  // an array of alphabetized X-Y pairs. Then flatten all the arrays
+  const getPairs = arr => arr.map((X, idx) => arr.slice(idx+1).map(Y => [X,Y]))
+    .flat();
 
-  let totalItems = 0;
-  let matchingItems = 0;
+  // For each group in the solution and user-answer, make a list of all pairs
+  const solnGroupPairs = solution.map(getPairs);
+  const userGroupPairs = userAnswer.map(getPairs);
 
-  // Compare each group in the solution with each group in the user answer
-  sanitizedSolution.forEach((solutionGroup) => {
-  const solutionSet = new Set(solutionGroup);
-  totalItems += solutionSet.size;
+  // Within each group, join each pair as a string, creating two arrays:
+  //   1) Unordered pairs, where X is always in the same group as Y
+  const oSolnGroupPairs = solnGroupPairs.map(g => g.map(p => p.join("-")));
+  const oUserGroupPairs = userGroupPairs.map(g => g.map(p => p.join("-")));
 
-  // Find the best matching group in the user answer
-  let bestMatchCount = 0;
-  sanitizedUserAnswer.forEach((userGroup) => {
-    const userSet = new Set(userGroup);
-    const intersection = new Set(
-      [...solutionSet].filter((item) => userSet.has(item))
-    );
-    bestMatchCount = Math.max(bestMatchCount, intersection.size);
-  });
-    matchingItems += bestMatchCount;
-  });
-  // Check if the total number of groups matches
-  if (sanitizedSolution.length !== sanitizedUserAnswer.length) {
-    return 0; // Return 0 if the number of groups is not the same
-  }
-  // Calculate the similarity score
-  const unOrderedScore = totalItems > 0 ? matchingItems / totalItems : 0;
+  //   2) Ordered pairs, where X is always in the same group BEFORE Y
+  const uSolnGroupPairs = solnGroupPairs.map(g => g.map(p => p.sort().join("-")));
+  const uUserGroupPairs = userGroupPairs.map(g => g.map(p => p.sort().join("-")));
 
-  if (ordered === "true") {
-    console.log("Comparing ordered groups");
-    if (solution.length !== userAnswer.length) {
-      return 0; // Return 0 if the number of groups is not the same
-    }
-  
-    let totalItems = 0;
-    let matchingItems = 0;
-  
-    // Compare each group in order
-    for (let i = 0; i < solution.length; i++) {
-      const solutionGroup = solution[i];
-      const userGroup = userAnswer[i];
-  
-      // If group sizes don't match, return 0
-      if (solutionGroup.length !== userGroup.length) {
-        return 0;
-      }
-  
-      totalItems += solutionGroup.length;
-  
-      // Compare elements in the same order
-      for (let j = 0; j < solutionGroup.length; j++) {
-        if (solutionGroup[j] === userGroup[j]) {
-          matchingItems++;
-        }
-      }
-    }
-  
-    // Calculate the similarity score
-    const orderedScore = totalItems > 0 ? matchingItems / totalItems : 0;
-    console.log("Ordered score:", orderedScore);
-    console.log("Unordered score:", unOrderedScore);
-    return (orderedScore + unOrderedScore) / 2;
-  } else {
-    console.log("Comparing unordered groups");
-    return unOrderedScore;
-  }
+  // Compare groups
+  const orderedGroupStrings   = solution.map(g => g.join("-"));
+  const unOrderedGroupStrings = solution.map(g => g.sort().join("-"));
+
+  // How many user groups exactly match the solution groups?
+  const numOrderedRight = userAnswer.reduce((acc, g) =>
+    acc + Number(orderedGroupStrings.includes(g.join("-"))), 0);
+  const numUnOrderedRight = userAnswer.reduce((acc, g) =>
+    acc + Number(unOrderedGroupStrings.includes(g.sort().join("-"))), 0);
+
+  const pctOrderedGroupRight = numOrderedRight / solution.length;
+  const pctUnOrderedGroupRight = numUnOrderedRight / solution.length;
+
+  console.log(`${100*pctOrderedGroupRight}% orderedGroupMatches`);
+  console.log(`${100*pctUnOrderedGroupRight}% unOrderedGroupMatches`);
+
+  // Flatten these group-lists to compare individual card groupings
+  const oSolnPairs = oSolnGroupPairs.flat();
+  const oUserPairs = oUserGroupPairs.flat();
+  const uSolnPairs = uSolnGroupPairs.flat();
+  const uUserPairs = uUserGroupPairs.flat();
+
+  console.log('oSolnPairs', oSolnPairs)
+  console.log('uSolnPairs', uSolnPairs)
+
+  // count the number of correct and incorrect user-pairs that
+  // appear in the *ordered* set
+  const oCorrectUserPairs = oUserPairs.filter(p => oSolnPairs.includes(p)).length;
+  const oInorrectUserPairs = oUserPairs.filter(p => !oSolnPairs.includes(p)).length;
+  const oPctRight = (oCorrectUserPairs / oSolnPairs.length);
+
+  // count the number of correct and incorrect user-pairs that
+  // appear in the *unordered* set
+  const uCorrectUserPairs = uUserPairs.filter(p => uSolnPairs.includes(p)).length;
+  const uIncorrectUserPairs = uUserPairs.filter(p => !uSolnPairs.includes(p)).length;
+  const uPctRight = (uCorrectUserPairs / uSolnPairs.length);
+
+  console.log(`${oCorrectUserPairs} (${100*oPctRight}%) ordered pairings are correct`);
+  console.log(`${uCorrectUserPairs} (${100*uPctRight}%) unordered pairings are correct`);
+
+console.log(oInorrectUserPairs, 'incorrect ordered pairings');
+console.log(uIncorrectUserPairs, 'incorrect unordered pairings');
+
+  return {
+    groupScore: ordered? pctOrderedGroupRight : pctUnOrderedGroupRight,
+    cardScore: ordered? oPctRight : uPctRight
+  };
+
 }
 
 export const CardSortMethods: QuestionMethods<
@@ -111,71 +113,25 @@ export const CardSortMethods: QuestionMethods<
     )
   },
 
-  // not done yet - need to figure out how to return the state
+  // Scrape the DOM to produce an array of groups
+  // (each group is an array of id strings)
   getAnswerFromDOM(data, container):CardSortAnswer {
-    const containerElement = container as HTMLElement;
-    
-    const cards = Array.from(containerElement.querySelectorAll(".card"));
-    const cardData = cards.map((card) => {
-      const title = card.querySelector(".card-title")?.textContent || "";
-      const children = Array.from(card.querySelectorAll(".card-child")).map((child) => child.textContent || "");
-      return { title, children };
+    const containerElement = (container as HTMLElement).querySelector('.container');
+    const topLevelCards = Array.from(containerElement.querySelectorAll(":scope>.card"));
+
+    // NOTE(Emmanuel) hacky nonsense function, to work around
+    // the fact that we need to add periods to moved cards
+    // to trigger a React update. When that is fixed, this can go
+    const removePeriods = (s) => s.replaceAll('.', '');
+
+    // for each top level card, extract an array of all id strings
+    const cardData = topLevelCards.map((card) => {
+      const cardsInGroup = [card, ...card.querySelectorAll(".card")];
+      return cardsInGroup.map(c => removePeriods(c.id));
     });
     console.log("Extracted card data:", cardData);
 
-    const textContent = containerElement.innerText || containerElement.textContent || "";
-    const jsonMatch = textContent.match(/\[\s*{[\s\S]*}\s*\]/);
-    const jsonContent = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-    function extractTitlesOnly(data) {
-      if (Array.isArray(data)) {
-        return data.map(extractTitlesOnly);
-      } else if (typeof data === "object" && data !== null) {
-        if ("title" in data) {
-          return { title: data.title, children: extractTitlesOnly(data.children || []) };
-        }
-        return extractTitlesOnly(data.children || []);
-      }
-      return [];
-    }
-
-    function groupTitlesByParent(data) {
-      const result = [];
-    
-      function traverse(node) {
-        const group = [];
-    
-        // Add the current node's title
-        if (node.title) {
-          group.push(node.title);
-        }
-    
-        // Recursively process children and add their titles
-        if (node.children && Array.isArray(node.children)) {
-          node.children.forEach((child) => {
-            group.push(...traverse(child));
-          });
-        }
-    
-        return group;
-      }
-    
-      // Start traversal for each root node in the array
-      if (Array.isArray(data)) {
-        data.forEach((item) => {
-          result.push(traverse(item));
-        });
-      } else {
-        result.push(traverse(data));
-      }
-    
-      return result;
-    }
-
-    const titles = extractTitlesOnly(jsonContent);
-    // console.log("Extracted JSON content:", titles);
-    const groupedTitles = groupTitlesByParent(titles);
-    // console.log(groupedTitles);
-    return { answer: groupedTitles, ordered: "false" };
+    return { answer: cardData, ordered: "false" };
   },
 
   ResponseView: ({ prompt, submit, formValidators: { required } }) => {
@@ -194,19 +150,15 @@ export const CardSortMethods: QuestionMethods<
   compareAnswers(
     {answer, ordered}: CardSortAnswer,
     userAnswer: CardSortAnswer
-  ): boolean {
+  ): number {
 
-    // console.log("Extracted answer content:", answer);
-    // console.log("Extracted useranswer content:", userAnswer.answer);
+    console.log("Extracted answer content:", answer);
+    console.log("Extracted useranswer content:", userAnswer.answer);
 
     const score = calculateSimilarityScore({ answer, ordered }, userAnswer);
-    // console.log("Similarity score:", score);
+    console.log("Similarity score:", score);
 
-    if (score == 1) {
-      return true;
-    } else {
-      return false;
-    }
+    return score.cardScore;
 
   },
 
@@ -214,10 +166,7 @@ export const CardSortMethods: QuestionMethods<
     return (
       <div>
         <p>
-            {CardSortMethods.compareAnswers(baseline || { answer: [], ordered: "false" }, answer)
-            ? `${calculateSimilarityScore(baseline || { answer: [], ordered: "false" }, answer) * 100}% correct.`
-            : `The answer is ${(calculateSimilarityScore(baseline || { answer: [], ordered: "false" }, answer) * 100).toFixed(2)}% correct.`}
-
+            TBD
         </p>
         <p>{answer.answer.map((group, index) => (
                 <div key={index}>

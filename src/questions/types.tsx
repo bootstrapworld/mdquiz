@@ -31,7 +31,7 @@ export interface QuestionMethods<Prompt, Answer, State = any> {
 
   AnswerView: React.FC<{ answer: Answer; baseline: Answer; prompt: Prompt }>;
 
-  compareAnswers?(providedAnswer: Answer, userAnswer: Answer): boolean;
+  compareAnswers?(providedAnswer: Answer, userAnswer: Answer): number;
 
   validate?(prompt: Prompt, answer: Answer): boolean;
 }

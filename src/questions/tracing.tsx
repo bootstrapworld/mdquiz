@@ -153,14 +153,15 @@ export const TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
   compareAnswers(
     providedAnswer: TracingAnswer,
     userAnswer: TracingAnswer
-  ): boolean {
+  ): number {
     const clean = (s: string) => s.trim();
-    return (
+    const correct = (
       providedAnswer.doesCompile === userAnswer.doesCompile &&
       (providedAnswer.doesCompile
         ? clean(userAnswer.stdout!) === clean(providedAnswer.stdout!)
         : true)
       // : userAnswer.lineNumber! == providedAnswer.lineNumber!)
     );
+    return correct? 1 : 0;
   }
 };

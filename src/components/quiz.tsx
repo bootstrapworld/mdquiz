@@ -35,11 +35,12 @@ interface StoredAnswers {
 }
 
 declare global {
-  const telemetry:
-    | {
-        log: (endpoint: string, payload: any) => void;
-      }
-    | undefined;
+  interface Window {
+    telemetry?: {
+      log: (payload: any) => void;
+      isValid: () => Promise<{ success: boolean; message: string }>;
+    };
+  }
 }
 
 class AnswerStorage {
@@ -110,6 +111,7 @@ interface QuizState {
   index: number;
   encounteredInfos: number;
   confirmedDone: boolean;
+  participant_code: string;
   attempt: number;
   answers: TaggedAnswer[];
   wrongAnswers?: number[];
@@ -141,6 +143,7 @@ const loadState = ({
     return {
       started: true,
       index: quiz.questions.length,
+      participant_code: "unknown",
       answers: stored.answers,
       encounteredInfos: quiz.questions.filter(q => q.type === "Informational")
         .length,
@@ -157,6 +160,7 @@ const loadState = ({
     return {
       started: autoStart || false,
       index: 0,
+      participant_code: "unknown",
       encounteredInfos: 0,
       attempt: 0,
       confirmedDone: false,
@@ -171,13 +175,16 @@ interface HeaderProps {
 }
 
 const Header = observer(({ state, ended }: HeaderProps) => {
+  console.log('ended?', ended)
   const { quiz } = useContext(QuizConfigContext)!;
   const informationalCount = quiz.questions.filter(
     q => q.type === "Informational"
   ).length;
   return (
-    <header>
-      <h3>{quiz.title || "Quiz"}</h3>
+    <header className={state.started? "started" : (ended? "ended" : "title") }>
+      <img src="https://bootstrapworld.org/images/bootstrap-logo-light.webp" id="logo" />
+      <h3>Show What You Know</h3>
+      <h4>{quiz.title || ""}</h4>
       <div className="counter">
         {state.started ? (
           quiz.questions
@@ -238,9 +245,8 @@ const AnswerReview = ({
     </p>
   );
   const questionTitles = generateQuestionTitles(quiz);
-  return (
+  const unusedJSX = (
     <>
-      <h3>You've finished the assessment!</h3>
       <p>
         You answered{" "}
         <strong>
@@ -250,6 +256,13 @@ const AnswerReview = ({
         questions correctly.
       </p>
       Your answers (and final score) have been uploaded.
+    </>
+  );
+
+  return (
+    <>
+      <h3>Congratulations!</h3>
+      <h3>You've completed all of the assigned questions.</h3>
     </>
   );
 };
@@ -408,6 +421,18 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       }
     });
 
+    // check to see if the quiz link is valid
+    const [isValid, setIsValid] = useState(null);
+    useEffect(() => {
+      (async () => {
+        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+        const result = await window.telemetry?.isValid();
+        result.success = result.success || isLocalhost;
+        setIsValid(result);
+      })();
+    }, []);
+
+
     const onSubmit = action((answer: TaggedAnswer) => {
       answer = structuredClone(answer);
       if (state.attempt === 0) {
@@ -431,17 +456,19 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       if(state.index === (config.quiz.questions.length)) {
         window.telemetry?.log({
           type: "answers",
-          quizName: config.name,
+          quizName: config.quiz.title,
           quizHash,
+          questions:config.quiz.questions,
           answers: state.answers,
-          attempt: state.attempt
+          attempt: state.attempt,
+          participant_code: state.participant_code,
         });
       }
 
       if (state.index === config.quiz.questions.length) {
         const wrongAnswers = state.answers
           .map((a, i) => ({ a, i }))
-          .filter(({ a }) => !a.correct);
+          .filter(({ a }) => (a.correct < 1));
         if (wrongAnswers.length === 0 || !config.allowRetry) {
           state.confirmedDone = true;
         } else {
@@ -453,7 +480,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
       }
     });
 
-    const nCorrect = state.answers.filter(a => a.correct).length;
+    const nCorrect = state.answers.filter(a => (a.correct == 1)).length;
 
     // HACK: need this component to observe confirmedDone
     // on first render...
@@ -501,15 +528,21 @@ export const QuizView: React.FC<QuizViewProps> = observer(
             />
           )
         ) : (
-          <button
-            type="button"
-            className="start"
-            onClick={action(() => {
-              state.started = true;
-            })}
-          >
-            Start
-          </button>
+          <>
+            <input type="text" size={6} placeholder="Your ID" id="participant_code" />
+            <p/>
+            <button
+              type="button"
+              className="start"
+              onClick={action(() => {
+                const id_node = document.getElementById("participant_code") as HTMLInputElement;
+                state.participant_code = id_node.value;
+                state.started = true;
+              })}
+            >
+              Start
+            </button>
+          </>
         )}
       </section>
     );
@@ -527,7 +560,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
         ✕
       </div>
     );
-    const wrapperRef = useRef<HTMLDivElement>(undefined);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     return (
       <QuizConfigContext.Provider value={config}>
@@ -540,7 +573,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(
               </>
             )}
             <Header state={state} ended={ended} />
-            {body}
+            {isValid == null? "Loading..." : isValid.success? body : isValid.message}
           </div>
         </div>
       </QuizConfigContext.Provider>

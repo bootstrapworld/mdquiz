@@ -64,11 +64,12 @@ export const ShortAnswerMethods: QuestionMethods<
   compareAnswers(
     providedAnswer: ShortAnswerAnswer,
     userAnswer: ShortAnswerAnswer
-  ): boolean {
+  ): number {
     const clean = (s: string) => s.toLowerCase().trim();
     const possibleAnswers = [providedAnswer.answer]
       .concat(providedAnswer.alternatives || [])
       .map(clean);
-    return possibleAnswers.includes(clean(userAnswer.answer));
+    const correct = possibleAnswers.includes(clean(userAnswer.answer));
+    return correct? 1 : 0;
   }
 };

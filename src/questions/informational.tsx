@@ -36,7 +36,7 @@ export const InformationalMethods: QuestionMethods<
   },
 
   compareAnswers() {
-    return true; // Always correct since no answer is required.
+    return 1; // Always correct since no answer is required.
   },
 
   AnswerView: () => (<></>)

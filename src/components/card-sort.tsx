@@ -16,7 +16,7 @@ import hash from "object-hash";
 
 const containerStyle: CSSProperties = {
   position: 'relative', 
-  overflow: 'hidden',
+  overflow: 'scroll',
 }
 export interface DragItem {
   id: string
@@ -29,10 +29,10 @@ export const CardSortView: React.FC<{
   data: Card[], 
   setCards: Dispatch<SetStateAction<Card[]>>,
 }> = ({data, setCards}) => {
-
+  const copy = structuredClone(data);
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container cards={data} setCards={setCards}/>
+      <Container cards={copy} setCards={setCards}/>
     </DndProvider>);
 }
 
@@ -145,7 +145,6 @@ const Container: React.FC<{
           <Card
             key={card.id}
             id={card.id}
-            title={card.title}
             content={card.content}
             moveCard={moveCard}
             addCardToGroup={addCardToGroup}
@@ -162,7 +161,6 @@ const Container: React.FC<{
 
 const Card = ({ 
   id, 
-  title, 
   content, 
   moveCard, 
   addCardToGroup, 
@@ -221,13 +219,11 @@ const Card = ({
       onMouseDown={() => setClicked(true)}
       onMouseLeave={() => setClicked(false)}
     >
-      <h3>{title}</h3>
       <MarkdownView markdown={content} />
       {cards.map( (card, idx) => (
           <Card
             key={card.id}
             id={card.id}
-            title={card.title}
             content={card.content}
             moveCard={moveCard}
             addCardToGroup={(id, parent) => false}
