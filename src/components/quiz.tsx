@@ -143,6 +143,24 @@ class QuizStore {
     }
   };
 
+  // Add this inside your QuizStore class
+  goBack = () => {
+    if (this.index === 0) return;
+
+    if (this.attempt === 0) {
+      // Normal mode: Just go back one
+      this.index--;
+    } else {
+      // Retry mode: Go to the previous index in the wrongAnswers list
+      const currentRetryList = this.wrongAnswers || [];
+      const currentPos = currentRetryList.indexOf(this.index);
+
+      if (currentPos > 0) {
+        this.index = currentRetryList[currentPos - 1];
+      }
+    }
+  };
+
   private handleQuizCompletion() {
     window.telemetry?.log({
       type: "answers",
@@ -348,6 +366,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
             question={config.quiz.questions[store.index]}
             questionState={questionStates[store.index]}
             onSubmit={store.submitAnswer}
+            onBack={store.goBack}
+            canGoBack={store.index !== (store.attempt === 0 ? 0 : store.wrongAnswers?.[0])}
           />
         )
       ) : (

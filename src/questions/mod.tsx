@@ -128,6 +128,8 @@ interface QuestionViewProps {
   attempt: number;
   questionState?: any;
   onSubmit: (answer: TaggedAnswer) => void;
+  onBack: () => void;
+  canGoBack: boolean;
 }
 
 interface MultipartContextProps {
@@ -159,7 +161,9 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   title,
   attempt,
   questionState,
-  onSubmit
+  onSubmit,
+  onBack,
+  canGoBack
 }) => {
   const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
   const start = useMemo(now, [quizName, question, index]);
@@ -255,16 +259,28 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
             />
           </>
         )}
-        {shouldPrompt && !showExplanation ? (
-          <button type="button" onClick={() => setShowExplanation(true)}>
-            Submit
+
+        <div className="question-footer">
+          <button
+            type="button"
+            className="back-button"
+            onClick={onBack}
+            disabled={!canGoBack}
+          >
+            Back
           </button>
-        ) : (
-          <input
-            type="submit"
-            value={question.type === "Informational" ? "Continue" : "Submit"}
-          />
-        )}
+
+          {shouldPrompt && !showExplanation ? (
+            <button type="button" onClick={() => setShowExplanation(true)}>
+              Submit
+            </button>
+          ) : (
+            <input
+              type="submit"
+              value={question.type === "Informational" ? "Continue" : "Submit"}
+            />
+          )}
+        </div>
       </form>
     </div>
   );
