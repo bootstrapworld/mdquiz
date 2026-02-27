@@ -277,7 +277,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
           ) : (
             <input
               type="submit"
-              value={question.type === "Informational" ? "Continue" : "Submit"}
+              value={question.type === "Informational" ? "Continue" : "Next"}
             />
           )}
         </div>
