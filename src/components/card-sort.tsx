@@ -59,11 +59,9 @@ const Container: React.FC<{
         parentCard.children = parentCard.children.filter(c => c.id !== id)
       }
 
-      // update the moved card with new posn, and change
-      // the id so react redraws it
+      // update the moved card with new posn
       movedCard.left = left; 
       movedCard.top = top;
-      movedCard.id += ".";
 
       // set state
       return setCards(newCards.concat([movedCard]));
