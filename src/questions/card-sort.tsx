@@ -71,7 +71,6 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
 
   /**
    * Scrapes the DOM to produce an array of groups.
-   * Stability fix: IDs no longer contain temporary periods.
    */
   getAnswerFromDOM(_data, container): CardSortAnswer {
     const containerElement = (container as HTMLElement).querySelector('.card-sort-container')
@@ -83,7 +82,6 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
 
     const cardData = topLevelCards.map((card) => {
       const cardsInGroup = [card, ...card.querySelectorAll(".card")];
-      // Map IDs directly; cleaning logic is no longer required with the new store
       return cardsInGroup.map(c => c.id);
     });
 
