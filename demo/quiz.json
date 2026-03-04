@@ -29,30 +29,6 @@
             "id": "dbbaea6a-f469-464f-9d60-99ae98456b6a"
         },
         {
-            "type": "MultipleChoice",
-            "prompt": {
-                "prompt": "What does it mean if a variable `x` is immutable?\n",
-                "distractors": [
-                    "`x` is stored in the immutable region of memory.",
-                    "After being defined, `x` can be changed at most once.![](./run-dist.png)",
-                    "You cannot create a reference to `x`.![alt text](./react.svg 'react logo')"
-                ]
-            },
-            "answer": {
-                "answer": ["`x` cannot be changed after being assigned to a value.", "MEEEEEEE"]
-            },
-            "context": "Immutable means \"not mutable\", or not changeable.\n"
-        },
-        {
-            "type": "Informational",
-            "prompt": {
-                "prompt": "Hello! Good news! This is just a poster, no questions to answer."
-            },
-            "image": "https://www.bootstrapworld.org/images/icon.png",
-            "context": "It's so awesome!\n",
-            "id": "dbbaea6a-f469-464f-9d60-99ae98456b6a"
-        },
-        {
             "type": "CardSort",
             "prompt": {
                 "prompt": "Sort these cards into colors and animals",
@@ -75,6 +51,30 @@
                 ],
                 "ordered": "false"
             }
+        },
+        {
+            "type": "MultipleChoice",
+            "prompt": {
+                "prompt": "What does it mean if a variable `x` is immutable?\n",
+                "distractors": [
+                    "`x` is stored in the immutable region of memory.",
+                    "After being defined, `x` can be changed at most once.![](./run-dist.png)",
+                    "You cannot create a reference to `x`.![alt text](./react.svg 'react logo')"
+                ]
+            },
+            "answer": {
+                "answer": ["`x` cannot be changed after being assigned to a value.", "MEEEEEEE"]
+            },
+            "context": "Immutable means \"not mutable\", or not changeable.\n"
+        },
+        {
+            "type": "Informational",
+            "prompt": {
+                "prompt": "Hello! Good news! This is just a poster, no questions to answer."
+            },
+            "image": "https://www.bootstrapworld.org/images/icon.png",
+            "context": "It's so awesome!\n",
+            "id": "dbbaea6a-f469-464f-9d60-99ae98456b6a"
         },
         {
             "type": "Pyret",
