@@ -90,8 +90,24 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
     return { answer: cardData, ordered: "false" };
   },
 
-  ResponseView: ({ prompt }) => {
-    const [cardGrouping, setCardGrouping] = useState(prompt.cards);
+  questionState: (prompt, answer) => {
+    // If we already have state (e.g. from a saved session), use it
+    // Otherwise, generate random positions once
+    const width = 800; // Default boundary
+    const height = 600;
+
+    const initializedCards = prompt.cards.map(card => ({
+      ...card,
+      children: card.children || [],
+      left: card.left ?? Math.random() * (width - 250),
+      top: card.top ?? Math.random() * (height - 250),
+    }));
+    console.log('initialized cards:', initializedCards);
+    return initializedCards;
+  },
+
+  ResponseView: ({ prompt, state }) => {
+    const [cardGrouping, setCardGrouping] = useState(state);
 
     return (
       <div className="card-sort-response">
