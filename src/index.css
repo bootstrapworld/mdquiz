@@ -56,6 +56,8 @@ section { height: 100%; }
 .prompt { font-size: 14pt; margin: 20px auto; }
 .prompt p { margin: 0; }
 
+.question-footer input, .question-footer submit { margin: 5px 20px !important; }
+
 /*******************************************************************
  * MULTIPLE CHOICE
  */
@@ -156,7 +158,7 @@ section { height: 100%; }
  * SHORT-ANSWER
  */
 .short-answer fieldset { border: none; }
-.short-answer input { width: 90%; padding: 10px; }
+.short-answer input[type="text"] { width: 90%; padding: 10px; }
 
 /*******************************************************************
  * PYRET
