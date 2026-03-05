@@ -34,25 +34,24 @@ function calculateSimilarityScore(
   const solnGroupPairs = solution.map(getPairs);
   const userGroupPairs = userAnswer.map(getPairs);
 
-  const oSolnPairs = solnGroupPairs.map(g => g.map(p => p.join("-"))).flat();
-  const oUserPairs = userGroupPairs.map(g => g.map(p => p.join("-"))).flat();
+  // Helper to format pairs into strings for Set comparison
+  const format = (p: string[]) => (isOrdered ? p.join("-") : [...p].sort().join("-"));
 
-  const uSolnPairs = solnGroupPairs.map(g => g.map(p => [...p].sort().join("-"))).flat();
-  const uUserPairs = userGroupPairs.map(g => g.map(p => [...p].sort().join("-"))).flat();
+  // Convert to Sets for proper comparison and performance
+  const oSolnPairs = new Set(solnGroupPairs.flat().map(format));
+  const oUserPairs = new Set(userGroupPairs.flat().map(format));
 
-  const unOrderedGroupStrings = solution.map(g => [...g].sort().join("-"));
-  const numUnOrderedRight = userAnswer.reduce((acc, g) =>
-    acc + Number(unOrderedGroupStrings.includes([...g].sort().join("-"))), 0);
+  // Handle the edge case where no pairs exist in solution or user answer
+  if (oSolnPairs.size === 0 && oUserPairs.size === 0) {
+    return { groupScore: 0, cardScore: 1 };
+  }
 
-  const oCorrectCount = oUserPairs.filter(p => oSolnPairs.includes(p)).length;
-  const uCorrectCount = uUserPairs.filter(p => uSolnPairs.includes(p)).length;
-
-  const oPctRight = oSolnPairs.length > 0 ? oCorrectCount / oSolnPairs.length : 0;
-  const uPctRight = uSolnPairs.length > 0 ? uCorrectCount / uSolnPairs.length : 0;
+  const intersection = new Set([...oSolnPairs].filter(x => oUserPairs.has(x)));
+  const union = new Set([...oSolnPairs, ...oUserPairs]);
 
   return {
-    groupScore: isOrdered ? (numUnOrderedRight / solution.length) : (numUnOrderedRight / solution.length),
-    cardScore: isOrdered ? oPctRight : uPctRight
+    groupScore: 0,
+    cardScore: intersection.size / union.size
   };
 }
 
