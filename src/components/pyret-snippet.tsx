@@ -23,6 +23,9 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
     const setupEditor = async () => {
       const editor = await makeEmbed("EmbeddedEditor", ref.current, "https://pyret-horizon.herokuapp.com/editor")
 
+      // Log this to your console to verify the saved code is arriving
+      console.log("Initializing Pyret with:", options.program);
+
       // hide the loading indicator and re-enable the submit button
       setIsLoading(false);
       submitButton.disabled = false;
@@ -36,7 +39,7 @@ export const PyretSnippet: React.FC<SnippetOptions> = options => {
     }
 
     setupEditor();
-  }, [options]);
+  }, [options.program]); // only reset if the program changes
 
   // the "loading" spinner, which is null if we're done loading
   const spinner = isLoading? (

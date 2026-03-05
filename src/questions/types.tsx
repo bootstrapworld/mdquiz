@@ -27,7 +27,7 @@ export interface QuestionMethods<Prompt, Answer, State = any> {
     data: { [key: string]: any },
     container: HTMLFormElement,
     prompt?: Prompt,
-  ): Answer;
+  ): Promise<Answer>;
 
   AnswerView: React.FC<{ answer: Answer; baseline: Answer; prompt: Prompt }>;
 
