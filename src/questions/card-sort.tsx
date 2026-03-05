@@ -7,23 +7,20 @@ import React, { useEffect, useState } from "react";
 /**
  * Data Types
  */
-export type CardData = {
+export type Card = {
   id?: string;
   content: string;
   top?: number;
   left?: number;
-  children?: CardData[];
+  children?: Card[];
 };
 
-export type CardSortPrompt = { prompt: Markdown; cards: CardData[] };
+export type CardSortPrompt = { prompt: Markdown; cards: Card[] };
 export type CardSortAnswer = { answer: string[][]; ordered: string };
 export type CardSort = QuestionFields<CardSortPrompt, CardSortAnswer>;
 
-// Re-exporting Card for compatibility with other components
-export { CardData as Card };
-
 /**
- * Logic to compute similarity score between user answer and solution.
+ * Compute similarity score between user answer and solution.
  */
 function calculateSimilarityScore(
   { answer: solution, ordered }: CardSortAnswer,
@@ -69,10 +66,10 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
     </div>
   ),
 
+  // If we already have state (e.g. from a saved session), use it
+  // Otherwise, generate random positions *once*, within 800x600
   questionState: (prompt, answer) => {
-    // If we already have state (e.g. from a saved session), use it
-    // Otherwise, generate random positions once
-    const width = 800; // Default boundary
+    const width = 800;
     const height = 600;
 
     const initializedCards = prompt.cards.map(card => ({
@@ -81,12 +78,13 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
       left: card.left ?? Math.random() * (width - 250),
       top: card.top ?? Math.random() * (height - 250),
     }));
-    console.log('initialized cards:', initializedCards);
     return initializedCards;
   },
 
+  // Grab state from a prior answer, if it exists
   ResponseView: ({ state, formValidators }) => {
-    const [cardGrouping, setCardGrouping] = useState(state);
+    const savedCardState = formValidators.getValues("answer");
+    const [cardGrouping, setCardGrouping] = useState(savedCardState || state);
 
     // Sync the interactive card state to the react-hook-form state
     useEffect(() => {
