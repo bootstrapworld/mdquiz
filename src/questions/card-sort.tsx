@@ -16,17 +16,16 @@ export type Card = {
 };
 
 export type CardSortPrompt = { prompt: Markdown; cards: Card[] };
-export type CardSortAnswer = { answer: string[][]; ordered: string };
+export type CardSortAnswer = { answer: string[][]; ordered: boolean };
 export type CardSort = QuestionFields<CardSortPrompt, CardSortAnswer>;
 
 /**
  * Compute similarity score between user answer and solution.
  */
 function calculateSimilarityScore(
-  { answer: solution, ordered }: CardSortAnswer,
+  { answer: solution, ordered: isOrdered }: CardSortAnswer,
   { answer: userAnswer }: CardSortAnswer
 ): { groupScore: number; cardScore: number } {
-  const isOrdered = String(ordered) === "true";
 
   const getPairs = (arr: string[]) =>
     arr.map((X, idx) => arr.slice(idx + 1).map(Y => [X, Y])).flat();
