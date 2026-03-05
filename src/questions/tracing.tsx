@@ -108,7 +108,7 @@ export const TracingMethods: QuestionMethods<TracingPrompt, TracingAnswer> = {
     );
   },
 
-  getAnswerFromDOM(data) {
+  async getAnswerFromDOM(data) {
     const doesCompile = data.doesCompile === "true";
     if (doesCompile) {
       const stdout = data.stdout;

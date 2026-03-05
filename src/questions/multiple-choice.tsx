@@ -76,8 +76,11 @@ export const MultipleChoiceMethods: QuestionMethods<
     </>
   ),
 
-  getAnswerFromDOM(data) {
-    if (Array.isArray(data.answer)) data.answer.sort();
+  // data.answer will be the string (radio) or array of strings (checkbox)
+  async getAnswerFromDOM(data) {
+    if (Array.isArray(data.answer)) {
+      return { answer: [...data.answer].sort() };
+    }
     return { answer: data.answer };
   },
 

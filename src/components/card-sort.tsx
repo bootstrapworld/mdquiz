@@ -18,6 +18,7 @@ const containerStyle: CSSProperties = {
   position: 'relative', 
   overflow: 'scroll',
 }
+
 export interface DragItem {
   id: string
   card: Card,
@@ -29,10 +30,9 @@ export const CardSortView: React.FC<{
   data: Card[], 
   setCards: Dispatch<SetStateAction<Card[]>>,
 }> = ({data, setCards}) => {
-  const copy = structuredClone(data);
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container cards={copy} setCards={setCards}/>
+      <Container cards={data} setCards={setCards}/>
     </DndProvider>);
 }
 
@@ -42,22 +42,6 @@ const Container: React.FC<{
 }> = ({cards, setCards}) => {
   // create a ref, so that we can render into the DOM
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect( () =>{
-    // take the original data and extend it with empty child
-    // arrays and randomly-distributed coords
-    if(ref.current && !cards.some(card => card.children && card.left && card.top)) {
-      let { width, height } = ref.current.getBoundingClientRect();
-      width  -= 250;
-      height -= 250;
-      setCards(cards.map( card => {
-        card.children = card.children || [];
-        card.left     = Math.random() * width;
-        card.top      = Math.random() * height;
-        return card
-      }));
-    }
-  }, [ref])
 
   const moveCard = useCallback( 
     (id, left, top) => {
@@ -75,11 +59,9 @@ const Container: React.FC<{
         parentCard.children = parentCard.children.filter(c => c.id !== id)
       }
 
-      // update the moved card with new posn, and change
-      // the id so react redraws it
+      // update the moved card with new posn
       movedCard.left = left; 
       movedCard.top = top;
-      movedCard.id += ".";
 
       // set state
       return setCards(newCards.concat([movedCard]));

@@ -130,6 +130,7 @@ interface QuestionViewProps {
   onSubmit: (answer: TaggedAnswer) => void;
   onBack: () => void;
   canGoBack: boolean;
+  savedAnswer?: TaggedAnswer;
 }
 
 interface MultipartContextProps {
@@ -163,12 +164,32 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   questionState,
   onSubmit,
   onBack,
-  canGoBack
+  canGoBack,
+  savedAnswer,
 }) => {
   const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
   const start = useMemo(now, [quizName, question, index]);
   const ref = useRef<HTMLFormElement>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(!!savedAnswer?.explanation);
+
+  // Initialize form with saved values if they exist
+  const formValidators = useForm({
+    defaultValues: useMemo(() => {
+      if (!savedAnswer) return {};
+
+      // If the question type uses a complex object for the answer, spread it.
+      // Otherwise, handle it as a direct value
+      // (depending on how QuestionMethods are structured)
+      const baseAnswer = (typeof savedAnswer.answer === 'object')
+        ? savedAnswer.answer : { answer: savedAnswer.answer };
+
+      return {
+        ...baseAnswer,
+        explanation: savedAnswer.explanation
+      };
+    }, [savedAnswer])
+  });
+
   const methods = getQuestionMethods(question.type);
   if (!methods) {
     return (
@@ -178,7 +199,6 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
     );
   }
 
-  const formValidators = useForm();
   const required = (name: string, options?: RegisterOptions) => {
     const attrs = formValidators.register(name, { ...options, required: true });
     const className = classNames({

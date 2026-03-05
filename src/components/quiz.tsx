@@ -123,11 +123,16 @@ class QuizStore {
   submitAnswer = (answer: TaggedAnswer) => {
     const currentAnswer = structuredClone(answer);
 
+    // Always set by index to ensure we overwrite previous attempts at this question
+    this.answers[this.index] = currentAnswer;
+
     if (this.attempt === 0) {
-      this.answers.push(currentAnswer);
-      this.index++;
+      // Only increment index if we aren't at the end
+      if (this.index < this.config.quiz.questions.length) {
+        this.index++;
+      }
     } else {
-      this.answers[this.index] = currentAnswer;
+      // Retry mode logic
       const currentRetryList = this.wrongAnswers || [];
       const currentPos = currentRetryList.indexOf(this.index);
 
@@ -313,7 +318,8 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
   const questionStates = useMemo(() =>
     config.quiz.questions.map(q => {
       if (!q.id) q.id = hash.MD5(q);
-      return getQuestionMethods(q.type).questionState?.(q.prompt, q.answer);
+      const methods = getQuestionMethods(q.type);
+      return methods.questionState?.(q.prompt, q.answer);
     }),
   [config.quiz]);
 
@@ -368,6 +374,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
             onSubmit={store.submitAnswer}
             onBack={store.goBack}
             canGoBack={store.index !== (store.attempt === 0 ? 0 : store.wrongAnswers?.[0])}
+            savedAnswer={store.answers[store.index]}
           />
         )
       ) : (
