@@ -30,10 +30,7 @@ export const CardSortView: React.FC<{
   data: Card[], 
   setCards: Dispatch<SetStateAction<Card[]>>,
 }> = ({data, setCards}) => {
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <Container cards={data} setCards={setCards}/>
-    </DndProvider>);
+  return (<Container cards={data} setCards={setCards}/>)
 }
 
 const Container: React.FC<{

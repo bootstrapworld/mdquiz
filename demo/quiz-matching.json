@@ -1,0 +1,63 @@
+{
+  "title": "Matching Logic & Relationships Quiz",
+  "questions": [
+    {
+      "type": "Matching",
+      "id": "one-to-one-logic",
+      "prompt": {
+        "prompt": "### One-to-One: Computer Science Basics\nMatch each term to its primary definition.",
+        "leftColumn": ["Variable", "Function", "Boolean"],
+        "rightColumn": ["A reusable block of code", "A container for storing data", "A data type with two possible values"]
+      },
+      "answer": {
+        "answer": {
+          "Variable": ["A container for storing data"],
+          "Function": ["A reusable block of code"],
+          "Boolean": ["A data type with two possible values"]
+        }
+      },
+      "context": "In a one-to-one relationship, every item in the left column has exactly one unique partner in the right column."
+    },
+    {
+      "type": "Matching",
+      "id": "many-to-one-logic",
+      "prompt": {
+        "prompt": "### Many-to-One: Data Types\nMatch the specific values to their general Data Type category.",
+        "leftColumn": ["42", "\"Hello\"", "3.14", "\"Bootstrap\""],
+        "rightColumn": ["Number", "String", "Boolean"]
+      },
+      "answer": {
+        "answer": {
+          "42": ["Number"],
+          "3.14": ["Number"],
+          "\"Hello\"": ["String"],
+          "\"Bootstrap\"": ["String"]
+        }
+      },
+      "context": "This is many-to-one because multiple items on the left (42 and 3.14) both map to a single category on the right (Number)."
+    },
+    {
+      "type": "Matching",
+      "id": "one-to-many-logic",
+      "prompt": {
+        "prompt": "### One-to-Many: Pyret Capabilities\nWhich features are associated with these Pyret functions? (Some functions may have multiple features).",
+        "leftColumn": ["rectangle", "image-url"],
+        "rightColumn": ["Requires a width and height", "Requires a URL string", "Returns an Image", "Can be outlined or solid"]
+      },
+      "answer": {
+        "answer": {
+          "rectangle": [
+            "Requires a width and height",
+            "Returns an Image",
+            "Can be outlined or solid"
+          ],
+          "image-url": [
+            "Requires a URL string",
+            "Returns an Image"
+          ]
+        }
+      },
+      "context": "In one-to-many, a single item (like `rectangle`) requires multiple matches to be fully described."
+    }
+  ]
+}

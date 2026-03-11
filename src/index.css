@@ -155,6 +155,22 @@ section { height: 100%; }
 .card-sort fieldset { padding: 0; }
 
 /*******************************************************************
+ * MATCHING
+ */
+.matching-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.matching-row select {
+  min-width: 200px;
+  padding: 5px;
+}
+
+/*******************************************************************
  * SHORT-ANSWER
  */
 .short-answer fieldset { border: none; }
