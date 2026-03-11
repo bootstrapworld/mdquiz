@@ -31,7 +31,7 @@ export const InformationalMethods: QuestionMethods<
     </div>
   ),
 
-  getAnswerFromDOM() {
+  async getAnswerFromDOM() {
     return null;
   },
 
