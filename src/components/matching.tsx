@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import { useDrag, useDrop, DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDrag, useDrop } from 'react-dnd';
 
 const Card = ({ name }: { name: string }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -8,9 +7,8 @@ const Card = ({ name }: { name: string }) => {
     type: 'MATCHING_ITEM',
     item: { name },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
-  }));
+  }), [name]); // Dependency: Re-create if name changes
 
-  // Fix: Call the connector on the ref
   drag(ref);
 
   return (
@@ -32,11 +30,13 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'MATCHING_ITEM',
-    drop: (item: { name: string }) => onDrop(item.name),
+    drop: (item: { name: string }) => {
+      onDrop(item.name);
+      return { name: item.name };
+    },
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
-  }));
+  }), [onDrop]); // CRITICAL: Re-create drop handler when onDrop changes
 
-  // Fix: Call the connector on the ref
   drop(ref);
 
   return (
@@ -46,7 +46,8 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
       padding: '15px',
       margin: '10px 0',
       borderRadius: '8px',
-      position: 'relative'
+      position: 'relative',
+      minHeight: '60px'
     }}>
       <strong>{label}</strong>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px' }}>
@@ -65,19 +66,18 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
 
 export const MatchingView = ({ prompt, value, onChange }: any) => {
   const handleDrop = (leftItem: string, cardName: string) => {
-    // Get existing matches for this bucket or an empty array
-    const currentMatches = value[leftItem] || [];
+    // Functional update 'prev => ...' ensures we never use stale data
+    onChange((prev: Record<string, string[]>) => {
+      const currentMatches = prev[leftItem] || [];
 
-    // Only add if it's not already in this specific bucket
-    if (!currentMatches.includes(cardName)) {
-      const nextMapping = {
-        ...value,
+      // Check for duplicates
+      if (currentMatches.includes(cardName)) return prev;
+
+      return {
+        ...prev,
         [leftItem]: [...currentMatches, cardName]
       };
-
-      // Send the entire updated object back up to ResponseView
-      onChange(nextMapping);
-    }
+    });
   };
 
   return (
@@ -90,9 +90,11 @@ export const MatchingView = ({ prompt, value, onChange }: any) => {
             matches={value[item] || []}
             onDrop={(card: string) => handleDrop(item, card)}
             onClear={() => {
-              const next = { ...value };
-              delete next[item];
-              onChange(next);
+              onChange((prev: any) => {
+                const next = { ...prev };
+                delete next[item];
+                return next;
+              });
             }}
           />
         ))}

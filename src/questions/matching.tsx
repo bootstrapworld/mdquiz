@@ -1,82 +1,65 @@
-import React, {useState} from "react";
-import { QuestionMethods } from "./types";
-import { QuestionFields, Markdown } from "../bindings/Question";
-import { MatchingView } from "../components/matching"; // Point to the DnD component
+import React, { useState, useEffect } from "react";
+import { MatchingView } from "../components/matching";
+import type { QuestionMethods } from "./types";
+import type { QuestionFields, Markdown } from "../bindings/Question";
 
 /**
- * Data Types
+ * Define the structure for this specific question type
  */
 export type MatchingPrompt = {
   prompt: Markdown;
   leftColumn: string[];
-  rightColumn: string[]
+  rightColumn: string[];
 };
 
-export type MatchingAnswer = {
-  answer: Record<string, string[]>
-};
-
-// This is the member your Question.ts was missing
+// The answer is a mapping of Left Items to an array of Right Items
+export type MatchingAnswer = Record<string, string[]>;
 export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
 
 export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = {
-  PromptView: ({ prompt }) => <h3>{prompt.prompt}</h3>,
+  PromptView: ({ prompt }) => (
+    <div className="matching-prompt">
+      <p>{prompt.prompt}</p>
+    </div>
+  ),
 
   ResponseView: ({ prompt, formValidators }) => {
-    const { setValue, getValues, register } = formValidators;
+    const { setValue, getValues } = formValidators;
 
-    // 1. Initialize local state from the form's current value (or empty object)
-    const [mapping, setMapping] = useState(getValues("answer") || {});
+    // 1. Initialize local state from the form's current value
+    const [currentMapping, setCurrentMapping] = useState<MatchingAnswer>(
+      getValues("answer") || {}
+    );
 
-    const handleChange = (newMapping: any) => {
-      // 2. Update local state to trigger a re-render
-      setMapping(newMapping);
-
-      // 3. Update the form state so the quiz engine can grade it
-      // we use { shouldDirty: true } to let the form know the user has interacted
-      setValue("answer", newMapping, { shouldDirty: true });
-    };
+    // 2. Whenever local state changes, sync it back to the form
+    useEffect(() => {
+      setValue("answer", currentMapping);
+    }, [currentMapping, setValue]);
 
     return (
       <div className="matching-question">
         <MatchingView
           prompt={prompt}
-          value={mapping}
-          onChange={handleChange}
+          value={currentMapping}
+          onChange={setCurrentMapping} // This triggers the re-render!
         />
-        {/* We keep this hidden input to ensure react-hook-form registers the 'answer' field */}
-        <input type="hidden" {...register("answer")} />
+        {/* Register the hidden field so the form knows to look for "answer" */}
+        <input type="hidden" {...formValidators.register("answer")} />
       </div>
     );
   },
 
-  compareAnswers(provided, user): number {
-    const solution = provided.answer;
-    const submission = user.answer || {};
-    let correct = 0;
-    let total = 0;
+  // Boilerplate for the quiz engine
+  questionState() { return {}; },
 
-    Object.keys(solution).forEach(key => {
-      const solSet = new Set(solution[key]);
-      const userSet = new Set(submission[key] || []);
+  getAnswerFromDOM: async (data) => data.answer,
 
-      solSet.forEach(item => {
-        total++;
-        if (userSet.has(item)) correct++;
-      });
-      userSet.forEach(item => {
-        if (!solSet.has(item)) correct = Math.max(0, correct - 0.5);
-      });
-    });
-
-    return total === 0 ? 1 : Math.max(0, correct / total);
+  compareAnswers: (provided, user) => {
+     // Your scoring logic here (e.g., check if user object matches provided object)
+     return JSON.stringify(provided) === JSON.stringify(user) ? 1 : 0;
   },
 
   AnswerView: ({ answer }) => (
-    <div className="matching-review">
-      {Object.entries(answer.answer || {}).map(([k, v]) => (
-        <div key={k}><strong>{k}</strong>: {(v as string[]).join(", ")}</div>
-      ))}
-    </div>
+    <pre>{JSON.stringify(answer, null, 2)}</pre>
   )
 };
