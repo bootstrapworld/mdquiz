@@ -1,3 +1,5 @@
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import classNames from "classnames";
 import { makeAutoObservable, toJS } from "mobx";
 import { observer, useLocalObservable } from "mobx-react";
@@ -401,26 +403,28 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
   );
 
   return (
-    <QuizConfigContext.Provider value={config}>
-      <div ref={wrapperRef} className={classNames("mdbook-quiz-wrapper", { expanded: showFullscreen })}>
-        <div className="mdbook-quiz">
-          {showFullscreen && (
-            <>
-              <div className="exit" onClick={store.exit} title="Exit Quiz">✕</div>
-              <ExitExplanation wrapperRef={wrapperRef} />
-            </>
-          )}
-          <Header store={store} />
-          {isValid == null ? (
-            <div className="loading">Checking quiz status...</div>
-          ) : isValid.success ? (
-            body
-          ) : (
-            <div className="error">{isValid.message}</div>
-          )}
+    <DndProvider backend={HTML5Backend}>
+      <QuizConfigContext.Provider value={config}>
+        <div ref={wrapperRef} className={classNames("mdbook-quiz-wrapper", { expanded: showFullscreen })}>
+          <div className="mdbook-quiz">
+            {showFullscreen && (
+              <>
+                <div className="exit" onClick={store.exit} title="Exit Quiz">✕</div>
+                <ExitExplanation wrapperRef={wrapperRef} />
+              </>
+            )}
+            <Header store={store} />
+            {isValid == null ? (
+              <div className="loading">Checking quiz status...</div>
+            ) : isValid.success ? (
+              body
+            ) : (
+              <div className="error">{isValid.message}</div>
+            )}
+          </div>
         </div>
-      </div>
-    </QuizConfigContext.Provider>
+      </QuizConfigContext.Provider>
+    </DndProvider>
   );
 });
 

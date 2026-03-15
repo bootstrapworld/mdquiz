@@ -5,6 +5,7 @@ import type { ShortAnswer } 	from "../questions/short-answer";
 import type { Tracing } 		from "../questions/tracing";
 import type { Informational } 	from "../questions/informational";
 import type { CardSort } 		from "../questions/card-sort";
+import type { Matching } 		from "../questions/matching";
 import type { Pyret } 			from "../questions/pyret";
 
 export type Question = 
@@ -13,6 +14,7 @@ export type Question =
 	{ "type": "MultipleChoice" } & MultipleChoice | 
 	{ "type": "Informational" }  & Informational  | 
 	{ "type": "CardSort" } 		 & CardSort	 	  |
+	{ "type": "Matching" } 		 & Matching 	  |
 	{ "type": "Pyret" }          & Pyret;
 
 export interface QuestionFields<Prompt, Answer> {
