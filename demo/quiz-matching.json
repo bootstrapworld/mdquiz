@@ -5,7 +5,7 @@
       "type": "Matching",
       "id": "one-to-one-logic",
       "prompt": {
-        "prompt": "### One-to-One: Computer Science Basics\nMatch each term to its primary definition.",
+        "prompt": "One-to-One: *Computer Science Basics*\n\nMatch each term to its primary definition.",
         "leftColumn": ["Variable", "Function", "Boolean"],
         "rightColumn": ["A reusable block of code", "A container for storing data", "A data type with two possible values"]
       },
@@ -22,7 +22,7 @@
       "type": "Matching",
       "id": "many-to-one-logic",
       "prompt": {
-        "prompt": "### Many-to-One: Data Types\nMatch the specific values to their general Data Type category.",
+        "prompt": "Many-to-One: Data Types\n\nMatch the specific values to their general Data Type category.",
         "leftColumn": ["42", "\"Hello\"", "3.14", "\"Bootstrap\""],
         "rightColumn": ["Number", "String", "Boolean"]
       },
@@ -40,7 +40,7 @@
       "type": "Matching",
       "id": "one-to-many-logic",
       "prompt": {
-        "prompt": "### One-to-Many: Pyret Capabilities\nWhich features are associated with these Pyret functions? (Some functions may have multiple features).",
+        "prompt": "One-to-Many: Pyret Capabilities\n\nWhich features are associated with these Pyret functions? (Some functions may have multiple features).",
         "leftColumn": ["rectangle", "image-url"],
         "rightColumn": ["Requires a width and height", "Requires a URL string", "Returns an Image", "Can be outlined or solid"]
       },

@@ -1,31 +1,45 @@
-import React, { useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
+import React, { useState, useEffect, useRef } from "react";
+import { useDrag, useDrop } from "react-dnd";
+import { MarkdownView } from "../components/markdown";
+import type { QuestionFields, Markdown } from "../bindings/Question";
 
-const Card = ({ name }: { name: string }) => {
+/**
+ * Data Structures
+ */
+export type MatchingPrompt = {
+  prompt: Markdown;
+  leftColumn: Markdown[];  // Labels for buckets (Markdown supported)
+  rightColumn: Markdown[]; // Content for cards (Markdown supported)
+};
+
+export type MatchingAnswer = Record<string, string[]>;
+export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
+
+/**
+ * Sub-Component: Card
+ */
+const Card = ({ content }: { content: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'MATCHING_ITEM',
-    item: { name },
+    item: { name: content },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
-  }), [name]); // Dependency: Re-create if name changes
+  }), [content]);
 
   drag(ref);
 
   return (
     <div ref={ref} className="matching-card" style={{
-      opacity: isDragging ? 0.5 : 1,
-      cursor: 'move',
-      padding: '10px',
-      margin: '5px',
-      backgroundColor: 'white',
-      border: '2px solid #013A63',
-      borderRadius: '4px'
+      opacity: isDragging ? 0.5 : 1
     }}>
-      {name}
+      <MarkdownView markdown={content} />
     </div>
   );
 };
 
+/**
+ * Sub-Component: Bucket
+ */
 const Bucket = ({ label, matches, onDrop, onClear }: any) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
@@ -35,44 +49,48 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
       return { name: item.name };
     },
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
-  }), [onDrop]); // CRITICAL: Re-create drop handler when onDrop changes
+  }), [onDrop]);
 
   drop(ref);
 
   return (
     <div ref={ref} className="matching-bucket" style={{
-      background: isOver ? '#e0f7fa' : '#f9f9f9',
+      background: isOver ? '#e0f7fa' : '#f4f4f4',
       border: isOver ? '2px dashed #013A63' : '1px solid #ccc',
-      padding: '15px',
-      margin: '10px 0',
-      borderRadius: '8px',
-      position: 'relative',
-      minHeight: '60px'
     }}>
-      <strong>{label}</strong>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px' }}>
+      <div className="bucket-label">
+        <MarkdownView markdown={label} />
+      </div>
+
+      <div className="bucket-matches">
         {matches.map((m: string, i: number) => (
-          <span key={i} style={{ background: '#85C8BE', color: 'white', padding: '2px 8px', borderRadius: '10px' }}>
-            {m}
-          </span>
+          <div key={i} className="match-tag">
+            <MarkdownView markdown={m} />
+          </div>
         ))}
       </div>
+
       {matches.length > 0 && (
-        <button onClick={onClear} style={{ position: 'absolute', top: 5, right: 5 }}>✕</button>
+        <button
+          onClick={onClear}
+          className="bucket-reset"
+          title="Clear bucket"
+        >
+          ✕
+        </button>
       )}
     </div>
   );
 };
 
+/**
+ * Main View
+ */
 export const MatchingView = ({ prompt, value, onChange }: any) => {
   const handleDrop = (leftItem: string, cardName: string) => {
-    // Functional update 'prev => ...' ensures we never use stale data
     onChange((prev: Record<string, string[]>) => {
       const currentMatches = prev[leftItem] || [];
-
-      // Check for duplicates
       if (currentMatches.includes(cardName)) return prev;
-
       return {
         ...prev,
         [leftItem]: [...currentMatches, cardName]
@@ -81,8 +99,9 @@ export const MatchingView = ({ prompt, value, onChange }: any) => {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '20px' }}>
-      <div style={{ flex: 2 }}>
+    <div>
+      {/* Left Column: The Buckets */}
+      <div className="matching-buckets">
         {prompt.leftColumn.map((item: string) => (
           <Bucket
             key={item}
@@ -99,8 +118,13 @@ export const MatchingView = ({ prompt, value, onChange }: any) => {
           />
         ))}
       </div>
-      <div style={{ flex: 1, borderLeft: '1px solid #ccc', paddingLeft: '10px' }}>
-        {prompt.rightColumn.map((item: string) => <Card key={item} name={item} />)}
+
+      {/* Right Column: The Available Cards */}
+      <div className="matching-cards">
+        <h5 style={{ marginTop: 0 }}>Items to Match</h5>
+        {prompt.rightColumn.map((item: string) => (
+          <Card key={item} content={item} />
+        ))}
       </div>
     </div>
   );

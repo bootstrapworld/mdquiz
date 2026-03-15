@@ -157,17 +157,69 @@ section { height: 100%; }
 /*******************************************************************
  * MATCHING
  */
-.matching-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+.matching-question > div {
+  display:      flex;
+  gap:          30px;
+  align-items:  flex-start;
 }
 
-.matching-row select {
-  min-width: 200px;
-  padding: 5px;
+.matching-cards {
+  flex:           1;
+  padding:        10px;
+  background:     #fff;
+  border-radius:  8px;
+  border:         1px solid #eee;
+}
+
+.matching-card {
+  cursor:         move;
+  padding:        8px 12px;
+  margin:         8px 0;
+  background:     white;
+  border:         1px solid #013A63;
+  border-radius:  4px;
+  box-shadow:     1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.matching-buckets {
+  flex: 1;
+}
+.matching-bucket {
+  padding:        12px;
+  margin-bottom:  10px;
+  border-radius:  6px;
+  position:       relative;
+  min-height:     80px;
+}
+
+.bucket-label {
+  font-weight:    bold;
+  margin-bottom:  8px;
+  border-bottom:  1px solid #ddd;
+}
+
+.bucket-matches {
+  display:        flex;
+  flex-wrap:      wrap;
+  gap:            8px;
+}
+
+.bucket-reset {
+  position:       absolute;
+  top:            5px;
+  right:          5px;
+  cursor:         pointer;
+  border:         none;
+  background:     transparent;
+}
+
+.match-tag {
+  background:     #85C8BE;
+  color:          #013A63;
+  padding:        2px 10px;
+  border-radius:  15px;
+  font-size:      0.9em;
+  border:         1px solid #6cb3a8;
 }
 
 /*******************************************************************
