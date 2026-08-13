@@ -144,7 +144,7 @@ class QuizStore {
   };
 
   setBirthDay = (value: string) => {
-    this.birthDay = value.padStart(2, '0');
+    this.birthDay = value;
     this.updateParticipantCode();
   };
 
