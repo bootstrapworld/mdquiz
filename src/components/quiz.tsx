@@ -445,7 +445,7 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
                 value={store.birthDay}
                 onChange={(e) => store.setBirthDay(e.target.value)}
               >
-                <option value="" disabled>Day</option>
+                <option value="" disabled></option>
                 {DAYS_OF_MONTH.map(day => (
                   <option key={day} value={String(day)}>{day}</option>
                 ))}
