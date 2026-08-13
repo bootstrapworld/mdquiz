@@ -54,7 +54,7 @@ section { height: 100%; }
 .response input[type=submit], button { width: 100px; margin: 20px auto; }
 
 .prompt { font-size: 14pt; margin: 20px auto; }
-.prompt p { margin: 0; }
+.prompt p { margin: 0; margin-bottom: 1em; }
 
 .question-footer input, .question-footer submit { margin: 5px 20px !important; }
 
@@ -70,6 +70,7 @@ section { height: 100%; }
 .participant-id-fields {
   width: 80%;
   flex-direction: row;
+  justify-content: center;
 }
 .participant-id-fields label > * {
   font-size: 38pt;

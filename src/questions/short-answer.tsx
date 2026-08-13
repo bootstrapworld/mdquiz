@@ -51,7 +51,7 @@ export const ShortAnswerMethods: QuestionMethods<
           : "incorrect"
       }
     >
-      {answer.answer}
+      {answer?.answer ?? ""}
     </code>
   ),
 
@@ -59,8 +59,16 @@ export const ShortAnswerMethods: QuestionMethods<
     providedAnswer: ShortAnswerAnswer,
     userAnswer: ShortAnswerAnswer
   ): number {
+    // Quiz data can be malformed (e.g. a shortAnswer question authored
+    // without an "answer" key at all -- so providedAnswer itself, not just
+    // providedAnswer.answer, is undefined) -- rather than crash, treat a
+    // missing provided answer as `false`, which can never match any
+    // user-typed string, so the question is just always marked incorrect.
+    const correctAnswer = providedAnswer?.answer ?? false;
+    if (correctAnswer === false) return 0;
+
     const clean = (s: string) => s.toLowerCase().trim();
-    const possibleAnswers = [providedAnswer.answer]
+    const possibleAnswers = [correctAnswer]
       .concat(providedAnswer.alternatives || [])
       .map(clean);
     const correct = possibleAnswers.includes(clean(userAnswer.answer));
