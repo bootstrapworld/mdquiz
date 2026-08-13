@@ -21,6 +21,8 @@ import {
 
 import type { Question, Markdown } from "../bindings/Question";
 
+const DAYS_OF_MONTH = Array.from({ length: 31 }, (_, i) => i + 1);
+
 /* -------------------------------- Types ------------------------------- */
 
 export type Quiz = {
@@ -72,7 +74,14 @@ class AnswerStorage {
 class QuizStore {
   started = false;
   index = 0;
+  // participant_code is the concatenation of firstInitials + lastInitials +
+  // birthDay's last digit (see updateParticipantCode) -- kept as its own
+  // plain field, rather than a computed, so it can still be restored
+  // verbatim from localStorage without needing to decompose it back out.
   participant_code = "";
+  firstInitials = "";
+  lastInitials = "";
+  birthDay = "";
   attempt = 0;
   answers: TaggedAnswer[] = [];
   wrongAnswers?: number[] = [];
@@ -117,7 +126,37 @@ class QuizStore {
       .filter(q => q.type === "Informational").length;
   }
 
+  get participantInfoComplete() {
+    return this.firstInitials.length === 2 && this.lastInitials.length === 2 && this.birthDay !== "";
+  }
+
   // Actions
+  // Strips non-letters, capitalizes, and caps at 2 characters -- so the
+  // stored value is always either "", 1, or 2 valid capital letters.
+  setFirstInitials = (value: string) => {
+    this.firstInitials = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 2);
+    this.updateParticipantCode();
+  };
+
+  setLastInitials = (value: string) => {
+    this.lastInitials = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 2);
+    this.updateParticipantCode();
+  };
+
+  setBirthDay = (value: string) => {
+    this.birthDay = value.padStart(2, '0');
+    this.updateParticipantCode();
+  };
+
+  // participant_code = first two letters of first name + first two letters
+  // of last name + the last digit of the birth day (so 3, 13, and 23 all
+  // contribute "3"). Recomputed on every keystroke/selection so it's always
+  // in sync with the three fields, even while they're only partially filled.
+  private updateParticipantCode = () => {
+    const dayDigit = this.birthDay === "" ? "" : this.birthDay.slice(-1);
+    this.participant_code = this.firstInitials + this.lastInitials + dayDigit;
+  };
+
   start = () => {
     this.started = true;
   };
@@ -381,19 +420,45 @@ export const QuizView: React.FC<QuizViewProps> = observer(({ onFinish, ...config
         )
       ) : (
         <div className="quiz-intro">
-          <p>Please enter your ID to begin the quiz:</p>
-          <input
-            type="text"
-            placeholder="Your ID"
-            value={store.participant_code}
-            onChange={(e) => (store.participant_code = e.target.value)}
-          />
+          <p>Please enter your information to begin the quiz:</p>
+          <div className="participant-id-fields">
+            <label>
+              <input
+                type="text"
+                maxLength={2}
+                value={store.firstInitials}
+                onChange={(e) => store.setFirstInitials(e.target.value)}
+              />
+              First two letters of your first name
+            </label>
+            <label>
+              <input
+                type="text"
+                maxLength={2}
+                value={store.lastInitials}
+                onChange={(e) => store.setLastInitials(e.target.value)}
+              />
+              First two letters of your last name
+            </label>
+            <label>
+              <select
+                value={store.birthDay}
+                onChange={(e) => store.setBirthDay(e.target.value)}
+              >
+                <option value="" disabled>Day</option>
+                {DAYS_OF_MONTH.map(day => (
+                  <option key={day} value={String(day)}>{day}</option>
+                ))}
+              </select>
+              Day of the month you were born
+            </label>
+          </div>
           <br/>
           <button
             type="button"
             className="start"
             onClick={store.start}
-            disabled={store.participant_code.trim().length < 4}
+            disabled={!store.participantInfoComplete}
           >
             Start Quiz
           </button>

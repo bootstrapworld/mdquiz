@@ -59,6 +59,30 @@ section { height: 100%; }
 .question-footer input, .question-footer submit { margin: 5px 20px !important; }
 
 /*******************************************************************
+ * PARTICIPANT ID for login
+ */
+.quiz-intro, .participant-id-fields, .participant-id-fields label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.participant-id-fields {
+  width: 80%;
+  flex-direction: row;
+}
+.participant-id-fields label > * {
+  font-size: 38pt;
+  width: 150px;
+  text-align: center;
+  font-weight: bold;
+}
+.participant-id-fields label input[type="text"] {
+  letter-spacing: 10px;
+  text-indent: 10px; /* Balance out the space after the last letter */
+}
+
+/*******************************************************************
  * MULTIPLE CHOICE
  */
 .multiple-choice fieldset {
