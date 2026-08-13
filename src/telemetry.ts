@@ -1,4 +1,4 @@
-const BASE_URL = "https://beta.BootstrapWorld.org/data/SubmitAssessment.php";
+const BASE_URL = "https://BootstrapWorld.org/data/SubmitAssessment.php";
 
 type Result =
   | { success: true; data: string }
