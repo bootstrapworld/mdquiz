@@ -54,7 +54,7 @@ section { height: 100%; }
 .response input[type=submit], button { width: 100px; margin: 20px auto; }
 
 .prompt { font-size: 14pt; margin: 20px auto; }
-.prompt p { margin: 0; margin-bottom: 1em; }
+.prompt p { margin: 0; }
 
 .question-footer input, .question-footer submit { margin: 5px 20px !important; }
 
@@ -89,9 +89,10 @@ section { height: 100%; }
  */
 .multiple-choice fieldset {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
-  border: none;
+  grid-template-rows: auto;
+  grid-auto-rows: auto;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
 }
 
 @media only screen and (max-width: 700px) {
@@ -112,6 +113,10 @@ section { height: 100%; }
     padding:        5px 10px;
     background:     white;
     box-shadow:     1px 1px 2px gray;
+    min-width:      180px;
+    max-width:      500px;
+    text-wrap:      balance;
+    line-break:     auto;
 }
 
 .multiple-choice .choice label div { width: 100%; text-align: center; }
