@@ -86,7 +86,7 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
 /**
  * Main View
  */
-export const MatchingView = ({ prompt, value, onChange }: any) => {
+export const MatchingView = ({ prompt, value, onChange, hideUsedCards }: any) => {
   const handleDrop = (leftItem: string, cardName: string) => {
     onChange((prev: Record<string, string[]>) => {
       const currentMatches = prev[leftItem] || [];
@@ -97,6 +97,14 @@ export const MatchingView = ({ prompt, value, onChange }: any) => {
       };
     });
   };
+
+  // When hideUsedCards is set, an item that has already been dropped into
+  // any bucket moves out of the pool of available cards, rather than
+  // staying available to be dropped into additional buckets.
+  const usedCards = new Set(Object.values(value).flat() as string[]);
+  const availableCards = hideUsedCards
+    ? prompt.rightColumn.filter((item: string) => !usedCards.has(item))
+    : prompt.rightColumn;
 
   return (
     <div>
@@ -122,7 +130,7 @@ export const MatchingView = ({ prompt, value, onChange }: any) => {
       {/* Right Column: The Available Cards */}
       <div className="matching-cards">
         <h5 style={{ marginTop: 0 }}>Items to Match</h5>
-        {prompt.rightColumn.map((item: string) => (
+        {availableCards.map((item: string) => (
           <Card key={item} content={item} />
         ))}
       </div>

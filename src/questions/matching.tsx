@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { MatchingView } from "../components/matching";
 import type { QuestionMethods } from "./types";
 import type { QuestionFields, Markdown } from "../bindings/Question";
@@ -20,7 +20,7 @@ export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
 export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = {
   PromptView: ({ prompt }) => <MarkdownView markdown={prompt.prompt} />,
 
-  ResponseView: ({ prompt, formValidators }) => {
+  ResponseView: ({ prompt, answer, formValidators }) => {
     const { setValue, getValues } = formValidators;
     const [currentMapping, setCurrentMapping] = useState<MatchingAnswer>(getValues("answer") || {});
 
@@ -28,12 +28,32 @@ export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = 
       setValue("answer", currentMapping);
     }, [currentMapping, setValue]);
 
+    // If the answer key never places the same rightColumn item into more
+    // than one bucket, this question is 1:1 or 1:many (from the bucket's
+    // side) rather than many:many. In that case, a dropped item should
+    // move into its bucket instead of remaining available to drop again.
+    const usesEachRightItemOnce = useMemo(() => {
+      const seen = new Set<string>();
+      for (const items of Object.values(answer || {})) {
+        // Guard against malformed answer data (e.g. a bucket's value that
+        // isn't an array of strings) so a bad quiz.json can't crash the
+        // whole question -- fall back to the permissive many:many behavior.
+        if (!Array.isArray(items)) return false;
+        for (const item of items) {
+          if (seen.has(item)) return false;
+          seen.add(item);
+        }
+      }
+      return true;
+    }, [answer]);
+
     return (
       <div className="matching-question">
         <MatchingView
           prompt={prompt}
           value={currentMapping}
           onChange={setCurrentMapping}
+          hideUsedCards={usesEachRightItemOnce}
         />
         <input type="hidden" {...formValidators.register("answer")} />
       </div>
