@@ -6,14 +6,14 @@ import type { QuestionFields, Markdown } from "../bindings/Question";
 /**
  * Data Structures
  */
-export type MatchingPrompt = {
+export type CategorizePrompt = {
   prompt: Markdown;
   leftColumn: Markdown[];  // Labels for buckets (Markdown supported)
   rightColumn: Markdown[]; // Content for cards (Markdown supported)
 };
 
-export type MatchingAnswer = Record<string, string[]>;
-export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
+export type CategorizeAnswer = Record<string, string[]>;
+export type Categorize = QuestionFields<CategorizePrompt, CategorizeAnswer>;
 
 /**
  * Sub-Component: Card
@@ -21,7 +21,7 @@ export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
 const Card = ({ content }: { content: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'MATCHING_ITEM',
+    type: 'CATEGORIZE_ITEM',
     item: { name: content },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
   }), [content]);
@@ -29,7 +29,7 @@ const Card = ({ content }: { content: string }) => {
   drag(ref);
 
   return (
-    <div ref={ref} className="matching-card" style={{
+    <div ref={ref} className="categorize-card" style={{
       opacity: isDragging ? 0.5 : 1
     }}>
       <MarkdownView markdown={content} />
@@ -43,7 +43,7 @@ const Card = ({ content }: { content: string }) => {
 const Bucket = ({ label, matches, onDrop, onClear }: any) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'MATCHING_ITEM',
+    accept: 'CATEGORIZE_ITEM',
     drop: (item: { name: string }) => {
       onDrop(item.name);
       return { name: item.name };
@@ -54,7 +54,7 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
   drop(ref);
 
   return (
-    <div ref={ref} className="matching-bucket" style={{
+    <div ref={ref} className="categorize-bucket" style={{
       background: isOver ? '#e0f7fa' : '#f4f4f4',
       border: isOver ? '2px dashed #013A63' : '1px solid #ccc',
     }}>
@@ -142,7 +142,7 @@ const useAutoScrollOnDrag = () => {
 /**
  * Main View
  */
-export const MatchingView = ({ prompt, value, onChange, hideUsedCards }: any) => {
+export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) => {
   useAutoScrollOnDrag();
 
   const handleDrop = (leftItem: string, cardName: string) => {
@@ -167,7 +167,7 @@ export const MatchingView = ({ prompt, value, onChange, hideUsedCards }: any) =>
   return (
     <div>
       {/* Left Column: The Buckets */}
-      <div className="matching-buckets">
+      <div className="categorize-buckets">
         {prompt.leftColumn.map((item: string) => (
           <Bucket
             key={item}
@@ -186,7 +186,7 @@ export const MatchingView = ({ prompt, value, onChange, hideUsedCards }: any) =>
       </div>
 
       {/* Right Column: The Available Cards */}
-      <div className="matching-cards">
+      <div className="categorize-cards">
         <h5 style={{ marginTop: 0 }}>Items to Match</h5>
         {availableCards.map((item: string) => (
           <Card key={item} content={item} />

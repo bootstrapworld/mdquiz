@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { MatchingView } from "../components/matching";
+import { CategorizeView } from "../components/categorize";
 import type { QuestionMethods } from "./types";
 import type { QuestionFields, Markdown } from "../bindings/Question";
 import { MarkdownView } from "../components/markdown";
@@ -7,22 +7,22 @@ import { MarkdownView } from "../components/markdown";
 /**
  * Define the structure for this specific question type
  */
-export type MatchingPrompt = {
+export type CategorizePrompt = {
   prompt: Markdown;
   leftColumn: string[];
   rightColumn: string[];
 };
 
 // The answer is a mapping of Left Items to an array of Right Items
-export type MatchingAnswer = Record<string, string[]>;
-export type Matching = QuestionFields<MatchingPrompt, MatchingAnswer>;
+export type CategorizeAnswer = Record<string, string[]>;
+export type Categorize = QuestionFields<CategorizePrompt, CategorizeAnswer>;
 
-export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = {
+export const CategorizeMethods: QuestionMethods<CategorizePrompt, CategorizeAnswer> = {
   PromptView: ({ prompt }) => <MarkdownView markdown={prompt.prompt} />,
 
   ResponseView: ({ prompt, answer, formValidators }) => {
     const { setValue, getValues } = formValidators;
-    const [currentMapping, setCurrentMapping] = useState<MatchingAnswer>(getValues("answer") || {});
+    const [currentMapping, setCurrentMapping] = useState<CategorizeAnswer>(getValues("answer") || {});
 
     useEffect(() => {
       setValue("answer", currentMapping);
@@ -48,8 +48,8 @@ export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = 
     }, [answer]);
 
     return (
-      <div className="matching">
-        <MatchingView
+      <div className="categorize">
+        <CategorizeView
           prompt={prompt}
           value={currentMapping}
           onChange={setCurrentMapping}

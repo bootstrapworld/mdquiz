@@ -13,7 +13,7 @@ import { MultipleChoiceMethods } from "./multiple-choice";
 import { ShortAnswerMethods } from "./short-answer";
 import { TracingMethods } from "./tracing";
 import { CardSortMethods } from "./card-sort";
-import { MatchingMethods } from "./matching";
+import { CategorizeMethods } from "./categorize";
 import { PyretMethods } from "./pyret";
 import type { QuestionMethods } from "./types";
 
@@ -28,7 +28,7 @@ const methodMapping = {
   MultipleChoice: MultipleChoiceMethods,
   Informational: InformationalMethods,
   CardSort: CardSortMethods,
-  Matching: MatchingMethods,
+  Categorize: CategorizeMethods,
   Pyret : PyretMethods
 };
 
