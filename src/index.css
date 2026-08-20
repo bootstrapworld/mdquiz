@@ -141,6 +141,7 @@ section { height: 100%; }
   align-content: start;
 }
 
+
 /*******************************************************************
  * CARD SORT
  */
@@ -188,7 +189,7 @@ section { height: 100%; }
 /*******************************************************************
  * MATCHING
  */
-.matching-question > div {
+.matching > div {
   display:      flex;
   gap:          30px;
   align-items:  flex-start;
@@ -211,6 +212,8 @@ section { height: 100%; }
   border-radius:  4px;
   box-shadow:     1px 1px 3px rgba(0,0,0,0.1);
 }
+
+.matching-card img { max-width: 100%; max-height: 300px; width: auto; }
 
 .matching-buckets {
   flex: 1;

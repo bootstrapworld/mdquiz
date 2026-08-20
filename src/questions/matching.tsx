@@ -48,7 +48,7 @@ export const MatchingMethods: QuestionMethods<MatchingPrompt, MatchingAnswer> = 
     }, [answer]);
 
     return (
-      <div className="matching-question">
+      <div className="matching">
         <MatchingView
           prompt={prompt}
           value={currentMapping}

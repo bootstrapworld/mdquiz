@@ -84,9 +84,67 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
 };
 
 /**
+ * Auto-scrolls the page while a card is being dragged near the top or
+ * bottom edge of the viewport, so a bucket that's currently offscreen
+ * (e.g. above the fold) can be scrolled into view without dropping.
+ */
+const AUTOSCROLL_EDGE_PX = 60;
+const AUTOSCROLL_MAX_SPEED = 20;
+
+const useAutoScrollOnDrag = () => {
+  useEffect(() => {
+    let rafId: number | null = null;
+    let pointerY = -1;
+
+    const scrollStep = () => {
+      const vh = window.innerHeight;
+      let dy = 0;
+      if (pointerY >= 0 && pointerY < AUTOSCROLL_EDGE_PX) {
+        dy = -AUTOSCROLL_MAX_SPEED * (1 - pointerY / AUTOSCROLL_EDGE_PX);
+      } else if (pointerY >= 0 && pointerY > vh - AUTOSCROLL_EDGE_PX) {
+        dy = AUTOSCROLL_MAX_SPEED * (1 - (vh - pointerY) / AUTOSCROLL_EDGE_PX);
+      }
+
+      if (dy !== 0) {
+        window.scrollBy(0, dy);
+        rafId = requestAnimationFrame(scrollStep);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const handleDragOver = (e: DragEvent) => {
+      pointerY = e.clientY;
+      if (rafId === null) rafId = requestAnimationFrame(scrollStep);
+    };
+
+    const stopScrolling = () => {
+      pointerY = -1;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
+
+    document.addEventListener('dragover', handleDragOver);
+    document.addEventListener('dragend', stopScrolling);
+    document.addEventListener('drop', stopScrolling);
+
+    return () => {
+      document.removeEventListener('dragover', handleDragOver);
+      document.removeEventListener('dragend', stopScrolling);
+      document.removeEventListener('drop', stopScrolling);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+};
+
+/**
  * Main View
  */
 export const MatchingView = ({ prompt, value, onChange, hideUsedCards }: any) => {
+  useAutoScrollOnDrag();
+
   const handleDrop = (leftItem: string, cardName: string) => {
     onChange((prev: Record<string, string[]>) => {
       const currentMatches = prev[leftItem] || [];
