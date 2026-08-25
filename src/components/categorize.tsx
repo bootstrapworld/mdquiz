@@ -17,19 +17,29 @@ export type Categorize = QuestionFields<CategorizePrompt, CategorizeAnswer>;
 
 /**
  * Sub-Component: Card
+ *
+ * Used both for the pool of unplaced items and for items already sitting
+ * in a bucket -- in both cases it stays draggable. `sourceBucket` is
+ * carried in the drag payload so a drop target can tell whether a card
+ * is arriving fresh from the pool (undefined) or being moved out of
+ * another bucket (its label), and react accordingly.
  */
-const Card = ({ content }: { content: string }) => {
+const Card = ({ content, sourceBucket, className = "categorize-card" }: {
+  content: string;
+  sourceBucket?: string;
+  className?: string;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'CATEGORIZE_ITEM',
-    item: { name: content },
+    item: { name: content, sourceBucket },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
-  }), [content]);
+  }), [content, sourceBucket]);
 
   drag(ref);
 
   return (
-    <div ref={ref} className="categorize-card" style={{
+    <div ref={ref} className={className} style={{
       opacity: isDragging ? 0.5 : 1
     }}>
       <MarkdownView markdown={content} />
@@ -44,8 +54,8 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CATEGORIZE_ITEM',
-    drop: (item: { name: string }) => {
-      onDrop(item.name);
+    drop: (item: { name: string; sourceBucket?: string }) => {
+      onDrop(item.name, item.sourceBucket);
       return { name: item.name };
     },
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
@@ -64,9 +74,7 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
 
       <div className="bucket-matches">
         {matches.map((m: string, i: number) => (
-          <div key={i} className="match-tag">
-            <MarkdownView markdown={m} />
-          </div>
+          <Card key={i} content={m} sourceBucket={label} className="match-tag" />
         ))}
       </div>
 
@@ -79,6 +87,37 @@ const Bucket = ({ label, matches, onDrop, onClear }: any) => {
           ✕
         </button>
       )}
+    </div>
+  );
+};
+
+/**
+ * Sub-Component: CardPool
+ *
+ * The "Items to Match" list, doubling as a drop target: dropping a card
+ * here that came from a bucket (i.e. has a sourceBucket) removes it from
+ * that bucket, returning it to the unplaced pool.
+ */
+const CardPool = ({ items, onReturn }: { items: string[]; onReturn: (cardName: string, sourceBucket: string) => void }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'CATEGORIZE_ITEM',
+    drop: (item: { name: string; sourceBucket?: string }) => {
+      if (item.sourceBucket) onReturn(item.name, item.sourceBucket);
+    },
+    collect: (monitor) => ({ isOver: !!monitor.isOver() }),
+  }), [onReturn]);
+
+  drop(ref);
+
+  return (
+    <div ref={ref} className="categorize-cards" style={{
+      background: isOver ? '#e0f7fa' : undefined,
+    }}>
+      <h5 style={{ marginTop: 0 }}>Items to Match</h5>
+      {items.map((item: string) => (
+        <Card key={item} content={item} />
+      ))}
     </div>
   );
 };
@@ -145,14 +184,24 @@ const useAutoScrollOnDrag = () => {
 export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) => {
   useAutoScrollOnDrag();
 
-  const handleDrop = (leftItem: string, cardName: string) => {
+  // Single entry point for every placement change: dropping a fresh card
+  // from the pool (sourceBucket undefined) just adds it to targetBucket;
+  // dragging a card that's already in a bucket -- whether onto a
+  // different bucket or back onto the pool (targetBucket null) -- removes
+  // it from sourceBucket first, so it's a move rather than a copy.
+  const moveCard = (cardName: string, targetBucket: string | null, sourceBucket?: string) => {
     onChange((prev: Record<string, string[]>) => {
-      const currentMatches = prev[leftItem] || [];
-      if (currentMatches.includes(cardName)) return prev;
-      return {
-        ...prev,
-        [leftItem]: [...currentMatches, cardName]
-      };
+      const next = { ...prev };
+      if (sourceBucket) {
+        next[sourceBucket] = (next[sourceBucket] || []).filter((c) => c !== cardName);
+      }
+      if (targetBucket) {
+        const current = next[targetBucket] || [];
+        if (!current.includes(cardName)) {
+          next[targetBucket] = [...current, cardName];
+        }
+      }
+      return next;
     });
   };
 
@@ -173,7 +222,7 @@ export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) 
             key={item}
             label={item}
             matches={value[item] || []}
-            onDrop={(card: string) => handleDrop(item, card)}
+            onDrop={(card: string, sourceBucket?: string) => moveCard(card, item, sourceBucket)}
             onClear={() => {
               onChange((prev: any) => {
                 const next = { ...prev };
@@ -186,12 +235,10 @@ export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) 
       </div>
 
       {/* Right Column: The Available Cards */}
-      <div className="categorize-cards">
-        <h5 style={{ marginTop: 0 }}>Items to Match</h5>
-        {availableCards.map((item: string) => (
-          <Card key={item} content={item} />
-        ))}
-      </div>
+      <CardPool
+        items={availableCards}
+        onReturn={(card: string, sourceBucket: string) => moveCard(card, null, sourceBucket)}
+      />
     </div>
   );
 };
