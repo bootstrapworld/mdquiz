@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionFields, Markdown } from "../bindings/Question";
@@ -205,13 +205,26 @@ export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) 
     });
   };
 
+  // Shuffle the pool once per question (not on every render -- re-running
+  // this on every drag would make cards jump around mid-interaction).
+  // Keyed on prompt.rightColumn, so a fresh shuffle only happens when the
+  // question itself changes.
+  const shuffledRightColumn = useMemo(() => {
+    const shuffled = [...prompt.rightColumn];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }, [prompt.rightColumn]);
+
   // When hideUsedCards is set, an item that has already been dropped into
   // any bucket moves out of the pool of available cards, rather than
   // staying available to be dropped into additional buckets.
   const usedCards = new Set(Object.values(value).flat() as string[]);
   const availableCards = hideUsedCards
-    ? prompt.rightColumn.filter((item: string) => !usedCards.has(item))
-    : prompt.rightColumn;
+    ? shuffledRightColumn.filter((item: string) => !usedCards.has(item))
+    : shuffledRightColumn;
 
   return (
     <div>
