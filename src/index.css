@@ -267,4 +267,13 @@ section { height: 100%; }
  */
 .pyret iframe { min-height: 400px; min-width: 750px; border: solid 1px black !important; }
 
+/* Loading spinner shown while the embedded Pyret editor boots up
+   (see PyretSnippet) -- a plain rotating SVG, no dependency needed. */
+@keyframes pyret-spinner-spin {
+  to { transform: rotate(360deg); }
+}
+.pyret-spinner {
+  animation: pyret-spinner-spin 0.75s linear infinite;
+}
+
 code { background: #ddd; }
