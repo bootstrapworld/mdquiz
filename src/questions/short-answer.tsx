@@ -30,6 +30,7 @@ export const ShortAnswerMethods: QuestionMethods<
           <input
             {...formFields}
             type="text"
+            autoComplete="off"
             placeholder="Write your answer here..."
             onKeyDown={e => {
               if (e.key === "Enter") submit();
