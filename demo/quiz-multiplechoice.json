@@ -4,16 +4,16 @@
         {
             "type": "MultipleChoice",
             "prompt": {
-                "prompt": "What does it mean if a variable `x` is immutable?\n",
+                "prompt": "How do you feel?",
                 "distractors": [
-                    "A",
-                    "C",
-                    "D",
-                    "E"
+                    "😭",
+                    "😢",
+                    "😐",
+                    "😌"
                 ]
             },
             "answer": {
-                "answer": "B"
+                "answer": "😀"
             },
             "context": "Immutable means \"not mutable\", or not changeable.\n"
         }
