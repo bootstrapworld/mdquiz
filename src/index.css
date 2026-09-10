@@ -58,6 +58,8 @@ section { height: 100%; }
 
 .question-footer input, .question-footer submit { margin: 5px 20px !important; }
 
+.field-error { display: block; font-weight: bold; font-style: italic; }
+
 /*******************************************************************
  * PARTICIPANT ID for login
  */

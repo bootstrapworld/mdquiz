@@ -4,10 +4,16 @@ import type { QuestionMethods } from "./types";
 import React from "react";
 
 type ShortAnswerResponseFormat = "short" | "long" | "code";
-type ShortAnswerPrompt = { prompt: Markdown, response?: ShortAnswerResponseFormat, }
+type ShortAnswerValidation = {
+  required?: boolean,  // default: true, matching pre-existing always-required behavior
+  numeric?: boolean,   // default: false
+  min?: number,        // inclusive; only meaningful when numeric is true
+  max?: number,        // inclusive; only meaningful when numeric is true
+}
+type ShortAnswerPrompt = { prompt: Markdown, response?: ShortAnswerResponseFormat, validation?: ShortAnswerValidation, }
 type ShortAnswerAnswer = { answer: string, alternatives?: Array<string>, }
 type ShortAnswer = QuestionFields<ShortAnswerPrompt, ShortAnswerAnswer>;
-export { ShortAnswer, ShortAnswerAnswer, ShortAnswerPrompt, ShortAnswerResponseFormat };
+export { ShortAnswer, ShortAnswerAnswer, ShortAnswerPrompt, ShortAnswerResponseFormat, ShortAnswerValidation };
 
 export const ShortAnswerMethods: QuestionMethods<
   ShortAnswerPrompt,
@@ -22,13 +28,36 @@ export const ShortAnswerMethods: QuestionMethods<
       />
     </div>
   ),
-  ResponseView: ({ prompt, submit, formValidators: { required } }) => {
-    const formFields = required("answer");
+  ResponseView: ({ prompt, submit, formValidators }) => {
+    const v = prompt.validation ?? {};
+    const isRequired = v.required ?? true;
+
+    // Bypasses the shared `required()` helper (which always sets
+    // required:true) since ShortAnswer questions can now be optional, and
+    // adds numeric/min/max checks on top -- validate() only runs its own
+    // checks once a non-empty value has already cleared `required`.
+    const formFields = formValidators.register("answer", {
+      required: isRequired ? "This field is required" : false,
+      validate: (val: string) => {
+        if (val === "" || val == null) return true;
+        if (v.numeric) {
+          const num = Number(val);
+          if (isNaN(num)) return "Must be a number";
+          if (v.min != null && num < v.min) return `Must be at least ${v.min}`;
+          if (v.max != null && num > v.max) return `Must be at most ${v.max}`;
+        }
+        return true;
+      },
+    });
+    const error = formValidators.formState.errors.answer;
+    const className = error ? "error" : "";
+
     return (
       <>
         {!prompt.response || prompt.response === "short" ? (
           <input
             {...formFields}
+            className={className}
             type="text"
             autoComplete="off"
             placeholder="Write your answer here..."
@@ -38,7 +67,10 @@ export const ShortAnswerMethods: QuestionMethods<
           />
         ) : (
           /* prompt.response == "long" */
-          <textarea {...formFields} placeholder="Write your answer here..." />
+          <textarea {...formFields} className={className} placeholder="Write your answer here..." />
+        )}
+        {typeof error?.message === "string" && error.message && (
+          <div className="field-error">{error.message}</div>
         )}
       </>
     );

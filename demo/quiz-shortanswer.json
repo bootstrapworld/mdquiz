@@ -9,6 +9,23 @@
             "image": "./react.svg",
             "context": "For example, you can make a mutable variable `x` by writing: `let mut x = 1`.\n",
             "id": "dbbaea6a-f469-464f-9d60-99ae98456b6a"
+        },
+        {
+            "type": "ShortAnswer",
+            "prompt": {
+                "prompt": "How many degrees are in a right angle?",
+                "validation": { "numeric": true, "min": 0, "max": 360 }
+            },
+            "answer": { "answer": "90" },
+            "id": "d6f2d6f4-9f4e-4e7a-8f9a-validation-demo-1"
+        },
+        {
+            "type": "ShortAnswer",
+            "prompt": {
+                "prompt": "Any notes on your approach? (optional)",
+                "validation": { "required": false }
+            },
+            "id": "d6f2d6f4-9f4e-4e7a-8f9a-validation-demo-2"
         }
     ]
 }
