@@ -19,6 +19,12 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      // These three are React Compiler rules; this project isn't compiled
+      // with React Compiler (react is aliased to @preact/compat), so they
+      // warn rather than fail.
+      'react-hooks/refs': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/use-memo': 'warn',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

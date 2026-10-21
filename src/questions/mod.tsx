@@ -170,7 +170,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   savedAnswer,
 }) => {
   const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
-  const start = useMemo(now, [quizName, question, index]);
+  const start = useMemo(() => now(), [quizName, question, index]);
   const ref = useRef<HTMLFormElement>(null);
   const [showExplanation, setShowExplanation] = useState(!!savedAnswer?.explanation);
 
