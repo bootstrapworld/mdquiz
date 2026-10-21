@@ -16,8 +16,25 @@ export type Card = {
 };
 
 export type CardSortPrompt = { prompt: Markdown; cards: Card[] };
+// The authored answer key: groups of card ids.
 export type CardSortAnswer = { answer: string[][]; ordered: boolean };
+// What a student actually submits: the card tree from the sorting UI -- cards
+// with ids and positions, where a card stacked onto another is its child.
+export type CardSortResponse = { answer: Card[] };
 export type CardSort = QuestionFields<CardSortPrompt, CardSortAnswer>;
+
+const collectIds = (card: Card, ids: string[] = []): string[] => {
+  if (card.id) ids.push(card.id);
+  card.children?.forEach(child => collectIds(child, ids));
+  return ids;
+};
+
+const isResponse = (a: CardSortAnswer | CardSortResponse): a is CardSortResponse =>
+  a.answer.some(group => !Array.isArray(group));
+
+// Groups of card ids, whether given the answer key or a student's card tree.
+const groupsOf = (a: CardSortAnswer | CardSortResponse): string[][] =>
+  isResponse(a) ? a.answer.map(card => collectIds(card)) : a.answer;
 
 /**
  * Compute similarity score between user answer and solution.
@@ -57,7 +74,12 @@ function calculateSimilarityScore(
 /**
  * Question Methods Export
  */
-export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = {
+export const CardSortMethods: QuestionMethods<
+  CardSortPrompt,
+  CardSortAnswer,
+  Card[],
+  CardSortAnswer | CardSortResponse
+> = {
   PromptView: ({ prompt }) => (
     <div>
       <MarkdownView markdown={prompt.prompt} />
@@ -106,33 +128,13 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
   compareAnswers({ answer, ordered }, userAnswer): number {
     console.log(answer, ordered, userAnswer)
 
-    // Extract the card array from the form data object
-    const userAnswerState = userAnswer.answer;
-
     // Safety check in case data is malformed or empty
-    if (!userAnswerState || !Array.isArray(userAnswerState)) {
+    if (!userAnswer?.answer || !Array.isArray(userAnswer.answer)) {
       return 0;
     }
 
-    // The declared answer type is string[][], but at runtime the form data is
-    // the card tree (cards with ids and nested children), so say so explicitly.
-    const userGroups: string[][] = (userAnswerState as unknown as Card[]).map((card) => {
-      const idsInGroup: string[] = [];
-
-      // Recursive helper to gather all IDs in a nested group
-      const collectIds = (c: Card) => {
-        if (c.id) idsInGroup.push(c.id);
-        if (c.children) {
-          c.children.forEach(collectIds);
-        }
-      };
-
-      collectIds(card);
-      return idsInGroup;
-    });
-
     const formattedUserAnswer = {
-      answer: userGroups,
+      answer: groupsOf(userAnswer),
       ordered: ordered
     };
 
@@ -143,7 +145,7 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
   AnswerView: ({ answer }) => (
     <div>
       <p><strong>Review Groupings:</strong></p>
-      {answer.answer.map((group, index) => (
+      {groupsOf(answer).map((group, index) => (
         <div key={index} style={{ marginBottom: '8px' }}>
           Group {index + 1}: {group.join(", ")}
         </div>

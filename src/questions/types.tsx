@@ -5,7 +5,10 @@ import type {
   UseFormReturn
 } from "react-hook-form";
 
-export interface QuestionMethods<Prompt, Answer, State = any> {
+// Answer is the authored answer key. UserAnswer is what a student's submission
+// looks like at runtime; for most question types that is the same shape as the
+// key, so it defaults to Answer.
+export interface QuestionMethods<Prompt, Answer, State = any, UserAnswer = Answer> {
   PromptView: React.FC<{ prompt: Prompt; image?: string }>;
 
   ResponseView: React.FC<{
@@ -27,11 +30,11 @@ export interface QuestionMethods<Prompt, Answer, State = any> {
     data: { [key: string]: any },
     container: HTMLFormElement,
     prompt?: Prompt,
-  ): Promise<Answer>;
+  ): Promise<UserAnswer>;
 
-  AnswerView: React.FC<{ answer: Answer; baseline: Answer; prompt: Prompt }>;
+  AnswerView: React.FC<{ answer: UserAnswer; baseline: Answer; prompt: Prompt }>;
 
-  compareAnswers?(providedAnswer: Answer, userAnswer: Answer): number;
+  compareAnswers?(providedAnswer: Answer, userAnswer: UserAnswer): number;
 
   validate?(prompt: Prompt, answer: Answer): boolean;
 }
