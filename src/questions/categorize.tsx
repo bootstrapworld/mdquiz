@@ -62,6 +62,18 @@ export const CategorizeMethods: QuestionMethods<CategorizePrompt, CategorizeAnsw
 
   questionState() { return {}; },
   getAnswerFromDOM: async (data) => data.answer,
-  compareAnswers: (provided, user) => (JSON.stringify(provided) === JSON.stringify(user) ? 1 : 0),
+  // Compare as sets: neither the order buckets were filled in nor the order
+  // cards were dropped into a bucket should matter, and an empty bucket is the
+  // same as an absent one.
+  compareAnswers: (provided, user) => {
+    const canonical = (mapping: CategorizeAnswer) =>
+      JSON.stringify(
+        Object.entries(mapping || {})
+          .filter(([, items]) => items?.length)
+          .map(([bucket, items]) => [bucket, [...items].sort()])
+          .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+      );
+    return canonical(provided) === canonical(user) ? 1 : 0;
+  },
   AnswerView: ({ answer }) => <pre>{JSON.stringify(answer, null, 2)}</pre>
 };

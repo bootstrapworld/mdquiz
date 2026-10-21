@@ -89,7 +89,7 @@ export const MultipleChoiceMethods: QuestionMethods<
 
   compareAnswers(provided, user) {
     const toList = (s: Markdown | Markdown[]) =>
-      (Array.isArray(s) ? s : [s]).sort();
+      [...(Array.isArray(s) ? s : [s])].sort();
     const correct = isEqual(toList(provided.answer), toList(user.answer));
     return correct? 1 : 0;
   },
