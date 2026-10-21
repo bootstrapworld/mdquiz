@@ -173,6 +173,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   const start = useMemo(() => now(), [quizName, question, index]);
   const ref = useRef<HTMLFormElement>(null);
   const [showExplanation, setShowExplanation] = useState(!!savedAnswer?.explanation);
+  const explanationId = useId();
 
   // Initialize form with saved values if they exist
   const formValidators = useForm({
@@ -228,8 +229,6 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   });
 
   const shouldPrompt = question.promptExplanation && attempt === 0;
-
-  const explanationId = useId();
 
   return (
     <div className={classNames("question", questionClass)}>

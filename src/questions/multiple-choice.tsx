@@ -50,10 +50,12 @@ export const MultipleChoiceMethods: QuestionMethods<
     return { choices };
   },
 
-  ResponseView: ({ answer, state, formValidators: { required, register } }) => (
+  ResponseView: ({ answer, state, formValidators: { required, register } }) => {
+    const baseId = useId();
+    return (
     <>
       {state!.choices.map((choice, i) => {
-        const id = useId();
+        const id = `${baseId}-${i}`;
         const multiAnswer = Array.isArray(answer.answer);
         return (
           <div className="choice" key={i}>
@@ -74,7 +76,8 @@ export const MultipleChoiceMethods: QuestionMethods<
         );
       })}
     </>
-  ),
+    );
+  },
 
   // data.answer will be the string (radio) or array of strings (checkbox)
   async getAnswerFromDOM(data) {
