@@ -53,7 +53,7 @@ export const PyretMethods: QuestionMethods<PyretPrompt, PyretAnswer> = {
 
   async getAnswerFromDOM(_, parentNode, prompt) {
     const editorNode = document.getElementById('EmbeddedEditor');
-    const editor = (editorNode as any).pyretEmbed as API;
+    const editor = (editorNode as unknown as { pyretEmbed: API }).pyretEmbed;
 
     editor.runDefinitions();
     editor.setInteractions(prompt?.checkblock || "");

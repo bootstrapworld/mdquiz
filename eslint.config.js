@@ -27,10 +27,10 @@ export default tseslint.config(
       'react-hooks/refs': 'warn',
       'react-hooks/purity': 'warn',
       'react-hooks/use-memo': 'warn',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      // Fast Refresh only matters under a dev server with HMR; this package is
+      // only ever built (vite build) and previewed, so the rule has nothing to
+      // protect, and it flags every question-type module's exported *Methods.
+      'react-refresh/only-export-components': 'off',
     },
   },
 )

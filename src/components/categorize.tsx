@@ -50,7 +50,12 @@ const Card = ({ content, sourceBucket, className = "categorize-card" }: {
 /**
  * Sub-Component: Bucket
  */
-const Bucket = ({ label, matches, onDrop, onClear }: any) => {
+const Bucket = ({ label, matches, onDrop, onClear }: {
+  label: string;
+  matches: string[];
+  onDrop: (cardName: string, sourceBucket?: string) => void;
+  onClear: () => void;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CATEGORIZE_ITEM',
@@ -181,7 +186,12 @@ const useAutoScrollOnDrag = () => {
 /**
  * Main View
  */
-export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) => {
+export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: {
+  prompt: CategorizePrompt;
+  value: Record<string, string[]>;
+  onChange: React.Dispatch<React.SetStateAction<Record<string, string[]>>>;
+  hideUsedCards?: boolean;
+}) => {
   useAutoScrollOnDrag();
 
   // Single entry point for every placement change: dropping a fresh card
@@ -237,7 +247,7 @@ export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: any) 
             matches={value[item] || []}
             onDrop={(card: string, sourceBucket?: string) => moveCard(card, item, sourceBucket)}
             onClear={() => {
-              onChange((prev: any) => {
+              onChange((prev: Record<string, string[]>) => {
                 const next = { ...prev };
                 delete next[item];
                 return next;

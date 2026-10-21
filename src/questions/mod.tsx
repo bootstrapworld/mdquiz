@@ -62,7 +62,7 @@ const BugReporter = ({
   useCaptureMdbookShortcuts(show);
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
-    const data = new FormData(event.target as any);
+    const data = new FormData(event.target as HTMLFormElement);
     const feedback = data.get("feedback")!.toString();
     window.telemetry!.log({
       type: "bug",

@@ -10,7 +10,7 @@ import "./index.css";
 declare global {
   interface Window {
     telemetry?: {
-      log: (payload: any) => void;
+      log: (payload: Record<string, unknown>) => void;
       isValid: () => Promise<{ success: boolean; message: string }>;
     };
   }

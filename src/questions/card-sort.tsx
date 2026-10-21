@@ -114,11 +114,13 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
       return 0;
     }
 
-    const userGroups: string[][] = userAnswerState.map((card: any) => {
+    // The declared answer type is string[][], but at runtime the form data is
+    // the card tree (cards with ids and nested children), so say so explicitly.
+    const userGroups: string[][] = (userAnswerState as unknown as Card[]).map((card) => {
       const idsInGroup: string[] = [];
 
       // Recursive helper to gather all IDs in a nested group
-      const collectIds = (c: any) => {
+      const collectIds = (c: Card) => {
         if (c.id) idsInGroup.push(c.id);
         if (c.children) {
           c.children.forEach(collectIds);

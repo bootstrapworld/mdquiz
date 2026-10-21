@@ -16,7 +16,7 @@ interface MultipleChoiceState {
   choices: string[];
 }
 
-const shuffle = (n:any[]) => [...n].sort(() => 0.5 - Math.random());
+const shuffle = <T,>(n: T[]) => [...n].sort(() => 0.5 - Math.random());
 
 export const MultipleChoiceMethods: QuestionMethods<
   MultipleChoicePrompt,

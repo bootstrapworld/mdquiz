@@ -1,7 +1,7 @@
 const BASE_URL = "https://BootstrapWorld.org/data/SubmitAssessment.php";
 
 class Telemetry {
-  async log(payload: object) {
+  async log(payload: Record<string, unknown>) {
     const url = `${BASE_URL}`;
 
     const urlParams = new URLSearchParams(document.location.search);
@@ -14,11 +14,11 @@ class Telemetry {
     }
 
     // manually attach the teacherId and quizPath
-    (payload as any).instructor_code = urlParams.get("teacherId");
-    (payload as any).class_name = urlParams.get("groupId");
-    (payload as any).link_id    = urlParams.get("assessmentId");
-    (payload as any).method     = "submitEntry";
-    (payload as any).quizPath   = quizPath;
+    payload.instructor_code = urlParams.get("teacherId");
+    payload.class_name = urlParams.get("groupId");
+    payload.link_id    = urlParams.get("assessmentId");
+    payload.method     = "submitEntry";
+    payload.quizPath   = quizPath;
     console.log('sending payload', payload);
 
     const response = await fetch(url, {
