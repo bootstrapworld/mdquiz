@@ -32,8 +32,8 @@ export default function buildQuiz(rootNode, quizConfig) {
         console.log('trying to parse quiz string as JSON');
         quizConfig = parse(quizConfig) as unknown as Quiz;
       } catch (error) {
-        const { message, reason, excerpt, pointer, location } = error
-          const { column, line, offset } = location.start
+        const { reason, excerpt, pointer, location } = error
+          const { column, line } = location.start
 
         return (
           <div className="json-error">

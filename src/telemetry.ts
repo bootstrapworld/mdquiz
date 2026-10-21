@@ -1,9 +1,5 @@
 const BASE_URL = "https://BootstrapWorld.org/data/SubmitAssessment.php";
 
-type Result =
-  | { success: true; data: string }
-  | { success: false; message: Error };
-
 class Telemetry {
   async log(payload: object) {
     const url = `${BASE_URL}`;
@@ -54,7 +50,7 @@ class Telemetry {
       })
     })
     .then(response => response.json())
-    .catch(error => ({"success": false, "message": "Could not validate quiz link"}));
+    .catch(() => ({"success": false, "message": "Could not validate quiz link"}));
 
   }
 

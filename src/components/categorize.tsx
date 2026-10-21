@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionFields, Markdown } from "../bindings/Question";

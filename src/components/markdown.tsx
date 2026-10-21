@@ -42,7 +42,7 @@ export const MarkdownView: React.FC<{
   markdown: string;
   imag?: string;
   snippetOptions?: Partial<SnippetOptions>;
-}> = ({ markdown, imag = null, snippetOptions }) => {
+}> = ({ markdown, snippetOptions }) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     //renderIde(ref.current!, snippetOptions);

@@ -66,7 +66,7 @@ export const CardSortMethods: QuestionMethods<CardSortPrompt, CardSortAnswer> = 
 
   // If we already have state (e.g. from a saved session), use it
   // Otherwise, generate random positions *once*, within 800x600
-  questionState: (prompt, answer) => {
+  questionState: (prompt) => {
     const width = 800;
     const height = 600;
 

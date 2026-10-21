@@ -1,18 +1,14 @@
 import React, { 
   useState, 
-  useEffect, 
   useRef, 
   useCallback, 
   CSSProperties,
   Dispatch,
-  SetStateAction,
-  RefObject
+  SetStateAction
 } from "react";
-import { DndProvider, useDrag, useDrop, XYCoord } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDrag, useDrop, XYCoord } from 'react-dnd';
 import { MarkdownView } from "./markdown";
-import { CardSortPrompt, Card } from "../questions/card-sort";
-import hash from "object-hash";
+import { Card } from "../questions/card-sort";
 
 const containerStyle: CSSProperties = {
   position: 'relative', 
@@ -107,7 +103,6 @@ const Container: React.FC<{
           return;
         }
         const change = monitor.getDifferenceFromInitialOffset() as XYCoord
-        const coord = monitor.getClientOffset() as XYCoord
         const left   = Math.round(item.left + change.x)
         const top    = Math.round(item.top  + change.y)
         //console.log(item,'dropped at', left, top)
@@ -118,9 +113,9 @@ const Container: React.FC<{
     [moveCard],
   )
 
-  // @ts-ignore
+  // @ts-expect-error react-dnd's connector return type isn't a valid ref type
   return (<div ref={drop(ref)} style={containerStyle} className="container">
-        {cards.map( (card, idx) => (
+        {cards.map( (card) => (
           <Card
             key={card.id}
             id={card.id}
@@ -171,7 +166,7 @@ const Card = ({
     collect: (monitor) => ({
         isUnder: monitor.isOver() && !inGroup
     }),
-    drop: (item:DragItem, monitor) => {
+    drop: (item:DragItem) => {
       addCardToGroup(item.id, id);
     },
   });
@@ -185,7 +180,7 @@ const Card = ({
   }
 
   if(isDragging) {
-    // @ts-ignore
+    // @ts-expect-error react-dnd's connector return type isn't a valid ref type
     return <div ref={drag} />
   }
 
@@ -199,13 +194,13 @@ const Card = ({
       onMouseLeave={() => setClicked(false)}
     >
       <MarkdownView markdown={content} />
-      {cards.map( (card, idx) => (
+      {cards.map( (card) => (
           <Card
             key={card.id}
             id={card.id}
             content={card.content}
             moveCard={moveCard}
-            addCardToGroup={(id, parent) => false}
+            addCardToGroup={() => false}
             left={card.left}
             top={card.top}
             cards={[]}

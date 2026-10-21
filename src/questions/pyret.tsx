@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import React, { useId, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { API } from "pyret-embed";
 
 import { MarkdownView } from "../components/markdown";
