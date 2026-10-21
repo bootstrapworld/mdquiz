@@ -5,7 +5,7 @@ import type { ShortAnswerPrompt } from "./short-answer";
 import React from "react";
 
 type InformationalPrompt = { prompt: Markdown, }
-type Informational = QuestionFields<InformationalPrompt, any>;
+type Informational = QuestionFields<InformationalPrompt, null>;
 export { Informational, InformationalPrompt };
 
 export const InformationalMethods: QuestionMethods<

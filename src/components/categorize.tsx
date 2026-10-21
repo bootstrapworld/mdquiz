@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { MarkdownView } from "../components/markdown";
 import type { QuestionFields, Markdown } from "../bindings/Question";
@@ -15,6 +15,16 @@ export type CategorizePrompt = {
 export type CategorizeAnswer = Record<string, string[]>;
 export type Categorize = QuestionFields<CategorizePrompt, CategorizeAnswer>;
 
+// Fisher-Yates shuffle into a new array.
+const shuffled = <T,>(items: T[]): T[] => {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+};
+
 /**
  * Sub-Component: Card
  *
@@ -29,17 +39,14 @@ const Card = ({ content, sourceBucket, className = "categorize-card" }: {
   sourceBucket?: string;
   className?: string;
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'CATEGORIZE_ITEM',
     item: { name: content, sourceBucket },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
   }), [content, sourceBucket]);
 
-  drag(ref);
-
   return (
-    <div ref={ref} className={className} style={{
+    <div ref={node => { drag(node); }} className={className} style={{
       opacity: isDragging ? 0.5 : 1
     }}>
       <MarkdownView markdown={content} />
@@ -56,7 +63,6 @@ const Bucket = ({ label, matches, onDrop, onClear }: {
   onDrop: (cardName: string, sourceBucket?: string) => void;
   onClear: () => void;
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CATEGORIZE_ITEM',
     drop: (item: { name: string; sourceBucket?: string }) => {
@@ -66,10 +72,8 @@ const Bucket = ({ label, matches, onDrop, onClear }: {
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
   }), [onDrop]);
 
-  drop(ref);
-
   return (
-    <div ref={ref} className="categorize-bucket" style={{
+    <div ref={node => { drop(node); }} className="categorize-bucket" style={{
       background: isOver ? '#e0f7fa' : '#f4f4f4',
       border: isOver ? '2px dashed #013A63' : '1px solid #ccc',
     }}>
@@ -104,7 +108,6 @@ const Bucket = ({ label, matches, onDrop, onClear }: {
  * that bucket, returning it to the unplaced pool.
  */
 const CardPool = ({ items, onReturn }: { items: string[]; onReturn: (cardName: string, sourceBucket: string) => void }) => {
-  const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CATEGORIZE_ITEM',
     drop: (item: { name: string; sourceBucket?: string }) => {
@@ -113,10 +116,8 @@ const CardPool = ({ items, onReturn }: { items: string[]; onReturn: (cardName: s
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
   }), [onReturn]);
 
-  drop(ref);
-
   return (
-    <div ref={ref} className="categorize-cards" style={{
+    <div ref={node => { drop(node); }} className="categorize-cards" style={{
       background: isOver ? '#e0f7fa' : undefined,
     }}>
       <h5 style={{ marginTop: 0 }}>Items to Match</h5>
@@ -219,14 +220,10 @@ export const CategorizeView = ({ prompt, value, onChange, hideUsedCards }: {
   // this on every drag would make cards jump around mid-interaction).
   // Keyed on prompt.rightColumn, so a fresh shuffle only happens when the
   // question itself changes.
-  const shuffledRightColumn = useMemo(() => {
-    const shuffled = [...prompt.rightColumn];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  }, [prompt.rightColumn]);
+  const shuffledRightColumn = useMemo(
+    () => shuffled(prompt.rightColumn),
+    [prompt.rightColumn]
+  );
 
   // When hideUsedCards is set, an item that has already been dropped into
   // any bucket moves out of the pool of available cards, rather than

@@ -22,6 +22,7 @@
     "build-demo": "vite build -c vite.config-demo.ts && vite preview --open",
     "dev": "npm run build && vite build -c vite.config-demo.ts && vite preview --open -c vite.config-demo.ts",
     "lint": "eslint .",
+    "test": "vitest run",
     "prepare": "npm run build",
     "prepublish": "npm run build"
   },
@@ -50,6 +51,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/preact": "^3.2.4",
+    "@testing-library/user-event": "^14.6.8",
     "@types/object-hash": "^3.0.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -57,6 +61,7 @@
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
+    "jsdom": "^29.1.1",
     "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5"
   }

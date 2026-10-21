@@ -1,5 +1,6 @@
 import React from "react";
 import type {
+  FieldValues,
   RegisterOptions,
   UseFormRegisterReturn,
   UseFormReturn
@@ -8,7 +9,7 @@ import type {
 // Answer is the authored answer key. UserAnswer is what a student's submission
 // looks like at runtime; for most question types that is the same shape as the
 // key, so it defaults to Answer.
-export interface QuestionMethods<Prompt, Answer, State = any, UserAnswer = Answer> {
+export interface QuestionMethods<Prompt, Answer, State = unknown, UserAnswer = Answer> {
   PromptView: React.FC<{ prompt: Prompt; image?: string }>;
 
   ResponseView: React.FC<{
@@ -27,7 +28,7 @@ export interface QuestionMethods<Prompt, Answer, State = any, UserAnswer = Answe
   questionState?(prompt: Prompt, answer: Answer): State;
 
   getAnswerFromDOM?(
-    data: { [key: string]: any },
+    data: FieldValues,
     container: HTMLFormElement,
     prompt?: Prompt,
   ): Promise<UserAnswer>;

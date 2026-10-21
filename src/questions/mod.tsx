@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import isEqual from "fast-deep-equal";
 import React, { useContext, useId, useMemo, useRef, useState } from "react";
-import { type RegisterOptions, useForm } from "react-hook-form";
+import { type FieldValues, type RegisterOptions, useForm } from "react-hook-form";
 
 import type { Question } from "../bindings/Question";
 import type { Quiz } from "../components/quiz";
@@ -32,8 +32,11 @@ const methodMapping = {
   Pyret : PyretMethods
 };
 
+// The registry holds a different Prompt/Answer pair per question type, so
+// callers see the erased type.
 export const getQuestionMethods = (
   type: Question["type"]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): QuestionMethods<any, any> => methodMapping[type];
 
 const questionNameToCssClass = (name: string) => {
@@ -107,7 +110,7 @@ const BugReporter = ({
 };
 
 export interface TaggedAnswer {
-  answer: any;
+  answer: unknown;
   correct: number;
   start: number;
   end: number;
@@ -128,7 +131,7 @@ interface QuestionViewProps {
   index: number;
   title: string;
   attempt: number;
-  questionState?: any;
+  questionState?: unknown;
   onSubmit: (answer: TaggedAnswer) => void;
   onBack: () => void;
   canGoBack: boolean;
@@ -170,21 +173,23 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
   savedAnswer,
 }) => {
   const { name: quizName, showBugReporter } = useContext(QuizConfigContext)!;
+  // Re-stamp the start time whenever a different question is shown.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const start = useMemo(() => now(), [quizName, question, index]);
   const ref = useRef<HTMLFormElement>(null);
   const [showExplanation, setShowExplanation] = useState(!!savedAnswer?.explanation);
   const explanationId = useId();
 
   // Initialize form with saved values if they exist
-  const formValidators = useForm({
+  const formValidators = useForm<FieldValues>({
     defaultValues: useMemo(() => {
       if (!savedAnswer) return {};
 
       // If the question type uses a complex object for the answer, spread it.
       // Otherwise, handle it as a direct value
       // (depending on how QuestionMethods are structured)
-      const baseAnswer = (typeof savedAnswer.answer === 'object')
-        ? savedAnswer.answer : { answer: savedAnswer.answer };
+      const baseAnswer = (typeof savedAnswer.answer === 'object' && savedAnswer.answer !== null)
+        ? savedAnswer.answer as Record<string, unknown> : { answer: savedAnswer.answer };
 
       return {
         ...baseAnswer,
@@ -212,7 +217,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
 
   const questionClass = questionNameToCssClass(question.type);
 
-  const submit = formValidators.handleSubmit(async data => {
+  const submit = (event?: React.BaseSyntheticEvent) => formValidators.handleSubmit(async data => {
     const answer = methods.getAnswerFromDOM
       ? await methods.getAnswerFromDOM(data, ref.current!, question.prompt)
       : data;
@@ -226,7 +231,7 @@ export const QuestionView: React.FC<QuestionViewProps> = ({
       end: now(),
       explanation: data.explanation
     });
-  });
+  })(event);
 
   const shouldPrompt = question.promptExplanation && attempt === 0;
 
