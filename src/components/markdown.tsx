@@ -1,38 +1,59 @@
-import React, { useEffect, useRef } from "react";
-import { Markdown as Showdown, type ShowdownExtension } from "react-showdown";
+import React, { useEffect, useMemo, useRef } from "react";
+import MarkdownIt from "markdown-it";
 
 import { type SnippetOptions, snippetToNode } from "./snippet";
 
-const highlightExtension = (
+// Mirror the old showdown defaults: raw HTML passes through, and no tables,
+// strikethrough or autolinks (existing quizzes don't use them).
+const md = new MarkdownIt({ html: true, linkify: false }).disable([
+  "table",
+  "strikethrough"
+]);
+
+// Quiz markdown is trusted, but the result is injected as HTML, so drop the
+// things that would execute: <script>, on* handlers and javascript: URLs.
+const stripActiveContent = (root: ParentNode) => {
+  root.querySelectorAll("script").forEach(n => n.remove());
+  root.querySelectorAll("*").forEach(el => {
+    for (const attr of Array.from(el.attributes)) {
+      const unsafeUrl =
+        ["href", "src", "xlink:href", "action", "formaction"].includes(
+          attr.name
+        ) && /^\s*javascript:/i.test(attr.value);
+      if (attr.name.startsWith("on") || unsafeUrl) el.removeAttribute(attr.name);
+    }
+  });
+};
+
+const renderMarkdown = (
+  markdown: string,
   options?: Partial<SnippetOptions>
-): ShowdownExtension => ({
-  type: "output",
-  filter(text:string) {
-    const parser = new DOMParser();
-    const document = parser.parseFromString(text, "text/html");
-    const snippets = document.querySelectorAll("pre > code");
-    snippets.forEach(node => {
-      if (node.classList.contains("ide")) return;
+): string => {
+  const parser = new DOMParser();
+  const document = parser.parseFromString(md.render(markdown), "text/html");
+  const snippets = document.querySelectorAll("pre > code");
+  snippets.forEach(node => {
+    if (node.classList.contains("ide")) return;
 
-      let language = undefined;
-      node.classList.forEach(cls => {
-        const prefix = "language-";
-        if (cls.startsWith(prefix)) {
-          language = cls.slice(prefix.length);
-        }
-      });
-
-      const newNode = snippetToNode({
-        ...(options || {}),
-        snippet: node.textContent!,
-        language
-      });
-      const pre = node.parentNode as HTMLPreElement;
-      pre.replaceWith(newNode);
+    let language = undefined;
+    node.classList.forEach(cls => {
+      const prefix = "language-";
+      if (cls.startsWith(prefix)) {
+        language = cls.slice(prefix.length);
+      }
     });
-    return document.body.innerHTML;
-  }
-});
+
+    const newNode = snippetToNode({
+      ...(options || {}),
+      snippet: node.textContent!,
+      language
+    });
+    const pre = node.parentNode as HTMLPreElement;
+    pre.replaceWith(newNode);
+  });
+  stripActiveContent(document.body);
+  return document.body.innerHTML;
+};
 
 declare global {
   function initAquascopeBlocks(root: HTMLElement): void;
@@ -49,12 +70,10 @@ export const MarkdownView: React.FC<{
     window.initAquascopeBlocks?.(ref.current!);
   }, [markdown]);
 
-  return (
-    <div ref={ref}>
-      <Showdown
-        markdown={markdown}
-        extensions={[highlightExtension(snippetOptions)]}
-      />
-    </div>
+  const html = useMemo(
+    () => renderMarkdown(markdown, snippetOptions),
+    [markdown, snippetOptions]
   );
+
+  return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
 };
