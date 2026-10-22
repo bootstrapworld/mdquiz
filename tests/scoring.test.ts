@@ -166,6 +166,23 @@ describe("MultipleChoice scoring", () => {
   });
 });
 
+describe("MultipleChoice without an answer key (surveys)", () => {
+  it("is never scored wrong", () => {
+    const compare = MultipleChoiceMethods.compareAnswers!;
+    expect(compare(undefined, { answer: "Confident" })).toBe(1);
+    expect(compare(undefined, { answer: ["a", "b"] })).toBe(1);
+    expect(compare({ answer: [] }, { answer: "a" })).toBe(1);
+  });
+
+  it("builds its choices from the distractors alone", () => {
+    const state = MultipleChoiceMethods.questionState!(
+      { prompt: "", distractors: ["Low", "Medium", "High"], sortAnswers: true },
+      undefined
+    );
+    expect(state.choices).toEqual(["High", "Low", "Medium"]);
+  });
+});
+
 describe("MultipleChoice choices", () => {
   const choicesOf = (prompt: object, answer: object) =>
     (MultipleChoiceMethods.questionState as (p: unknown, a: unknown) => { choices: string[] })(
@@ -203,8 +220,9 @@ describe("ShortAnswer scoring", () => {
     expect(compare({ answer: "a b" }, { answer: "ab" })).toBe(0);
   });
 
-  it("marks a question with no answer key as always wrong instead of crashing", () => {
-    expect(compare(undefined as never, { answer: "anything" })).toBe(0);
-    expect(compare({} as never, { answer: "anything" })).toBe(0);
+  it("treats a question with no answer key as unscored instead of wrong", () => {
+    expect(compare(undefined as never, { answer: "anything" })).toBe(1);
+    expect(compare({} as never, { answer: "anything" })).toBe(1);
+    expect(compare({ answer: "  " }, { answer: "anything" })).toBe(1);
   });
 });

@@ -382,7 +382,7 @@ export const AnswerView: React.FC<AnswerViewProps> = ({
             />
           </div>
         </div>
-        {showCorrect && (correct < 1) && (
+        {showCorrect && (correct < 1) && question.answer != null && (
           <div>
             <div className="answer-header">The correct answer is:</div>
             <div>

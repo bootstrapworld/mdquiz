@@ -79,9 +79,11 @@ export const ShortAnswerMethods: QuestionMethods<
   AnswerView: ({ answer, baseline }) => (
     <code
       className={
-        ShortAnswerMethods.compareAnswers!(baseline, answer)
-          ? "correct"
-          : "incorrect"
+        baseline?.answer == null || String(baseline.answer).trim() === ""
+          ? undefined
+          : ShortAnswerMethods.compareAnswers!(baseline, answer)
+            ? "correct"
+            : "incorrect"
       }
     >
       {answer?.answer ?? ""}
@@ -92,13 +94,10 @@ export const ShortAnswerMethods: QuestionMethods<
     providedAnswer: ShortAnswerAnswer,
     userAnswer: ShortAnswerAnswer
   ): number {
-    // Quiz data can be malformed (e.g. a shortAnswer question authored
-    // without an "answer" key at all -- so providedAnswer itself, not just
-    // providedAnswer.answer, is undefined) -- rather than crash, treat a
-    // missing provided answer as `false`, which can never match any
-    // user-typed string, so the question is just always marked incorrect.
-    const correctAnswer = providedAnswer?.answer ?? false;
-    if (correctAnswer === false) return 0;
+    // A question with no answer key (or a blank one) is an open-ended or survey
+    // question: it is never scored, so there is nothing to get wrong.
+    const correctAnswer = providedAnswer?.answer;
+    if (correctAnswer == null || String(correctAnswer).trim() === "") return 1;
 
     const clean = (s: string) => s.toLowerCase().trim();
     const possibleAnswers = [correctAnswer]
